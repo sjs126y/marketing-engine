@@ -1,0 +1,5 @@
+spring:
+  config:
+    name: big-market-sjs-app
+  profiles:
+    active: dev
