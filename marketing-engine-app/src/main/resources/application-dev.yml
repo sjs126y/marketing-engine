@@ -1,5 +1,5 @@
 server:
-  port: 8091
+  port: 8092
 
 # 线程池配置
 thread:
@@ -31,9 +31,9 @@ spring:
   type: com.zaxxer.hikari.HikariDataSource
 
 # MyBatis 配置【如需使用记得打开】
-#mybatis:
-#  mapper-locations: classpath:/mybatis/mapper/*.xml
-#  config-location:  classpath:/mybatis/config/mybatis-config.xml
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  config-location:  classpath:/mybatis/config/mybatis-config.xml
 
 # 日志
 logging:
