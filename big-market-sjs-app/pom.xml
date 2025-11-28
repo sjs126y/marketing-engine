@@ -88,6 +88,10 @@
             <groupId>com.sjs</groupId>
             <artifactId>big-market-sjs-infrastructure</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
