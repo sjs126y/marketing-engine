@@ -1,9 +1,7 @@
 package com.sjs.domain.strategy.service.armory;
 
-public interface IStrategyArmoryService {
+public interface IStrategyArmory {
 
     boolean assembleLotteryStrategy(Long strategyId);
-
-    Integer getRandomAwardId(Long strategyId);
 
 }
