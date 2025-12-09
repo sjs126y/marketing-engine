@@ -1,4 +1,4 @@
-package com.sjs.domain.strategy.service.rule;
+package com.sjs.domain.strategy.service.rule.filter;
 
 
 import com.sjs.domain.strategy.model.entity.RuleActionEntity;

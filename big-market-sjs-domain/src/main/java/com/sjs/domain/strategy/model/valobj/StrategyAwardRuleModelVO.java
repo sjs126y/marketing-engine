@@ -1,6 +1,6 @@
 package com.sjs.domain.strategy.model.valobj;
 
-import com.sjs.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import com.sjs.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import com.sjs.types.common.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
