@@ -32,6 +32,11 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy{
 
     @Override
     protected RuleActionEntity<RuleActionEntity.RaffleBeforeEntity> doCheckRaffleBeforeLogic(RaffleFactorEntity raffleFactorEntity, String... ruleModel) {
+        if (ruleModel == null || 0 == ruleModel.length) return RuleActionEntity.<RuleActionEntity.RaffleBeforeEntity>builder()
+                .code(RuleLogicCheckTypeVO.ALLOW.getCode())
+                .info(RuleLogicCheckTypeVO.ALLOW.getInfo())
+                .build();
+
         //1.先获取工厂策略
         Map<String, ILogicFilter<RuleActionEntity.RaffleBeforeEntity>> stringILogicFilterMap = logicFactory.openLogicFilter();
 
@@ -67,7 +72,7 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy{
             ruleMatterEntity.setUserId(raffleFactorEntity.getUserId());
             ruleMatterEntity.setStrategyId(raffleFactorEntity.getStrategyId());
             ruleMatterEntity.setRuleModel(rule);
-            ruleMatterEntity.setAwardId(ruleMatterEntity.getAwardId());
+            ruleMatterEntity.setAwardId(raffleFactorEntity.getAwardId());
 
             ruleActionEntity = logicFilter.filter(ruleMatterEntity);
             //如果不放行则直接返回
@@ -79,5 +84,38 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy{
 
         return ruleActionEntity;
 
+    }
+
+    @Override
+    protected RuleActionEntity<RuleActionEntity.RaffleCenterEntity> doCheckRaffleCenterLogic(RaffleFactorEntity raffleFactorEntity, String[] ruleModel) {
+        //1.判断是否有规则
+        if(ruleModel == null || ruleModel.length == 0){
+            return RuleActionEntity.<RuleActionEntity.RaffleCenterEntity>builder()
+                    .code(RuleLogicCheckTypeVO.ALLOW.getCode())
+                    .info(RuleLogicCheckTypeVO.ALLOW.getInfo())
+                    .build();
+        }
+
+        //2.获取工厂策略
+        Map<String, ILogicFilter<RuleActionEntity.RaffleCenterEntity>> stringILogicFilterMap = logicFactory.openLogicFilter();
+
+        RuleActionEntity<RuleActionEntity.RaffleCenterEntity> ruleActionEntity = null;
+        for (String rule : ruleModel) {
+            ILogicFilter<RuleActionEntity.RaffleCenterEntity> logicFilter = stringILogicFilterMap.get(rule);
+            RuleMatterEntity ruleMatterEntity = new RuleMatterEntity();
+            ruleMatterEntity.setUserId(raffleFactorEntity.getUserId());
+            ruleMatterEntity.setStrategyId(raffleFactorEntity.getStrategyId());
+            ruleMatterEntity.setRuleModel(rule);
+            ruleMatterEntity.setAwardId(raffleFactorEntity.getAwardId());
+
+            ruleActionEntity = logicFilter.filter(ruleMatterEntity);
+            //如果不放行则直接返回
+            log.info("抽奖前规则过滤 userId: {} ruleModel: {} code: {} info: {}", raffleFactorEntity.getUserId(), ruleModel, ruleActionEntity.getCode(), ruleActionEntity.getInfo());
+            if(!RuleLogicCheckTypeVO.ALLOW.getCode().equals(ruleActionEntity.getCode())){
+                return ruleActionEntity;
+            }
+        }
+
+        return ruleActionEntity;
     }
 }

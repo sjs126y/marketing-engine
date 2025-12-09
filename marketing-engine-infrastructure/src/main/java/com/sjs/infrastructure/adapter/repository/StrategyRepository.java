@@ -4,6 +4,7 @@ import com.sjs.domain.strategy.adapter.repository.IStrategyRepository;
 import com.sjs.domain.strategy.model.entity.StrategyAwardEntity;
 import com.sjs.domain.strategy.model.entity.StrategyEntity;
 import com.sjs.domain.strategy.model.entity.StrategyRuleEntity;
+import com.sjs.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.sjs.infrastructure.dao.IStrategyAwardDao;
 import com.sjs.infrastructure.dao.IStrategyDao;
 import com.sjs.infrastructure.dao.IStrategyRuleDao;
@@ -129,5 +130,17 @@ public class StrategyRepository implements IStrategyRepository {
         strategyRuleReq.setRuleModel(ruleModel);
 
         return strategyRuleDao.queryStrategyRuleValue(strategyRuleReq);
+    }
+
+    @Override
+    public StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId) {
+        StrategyAward strategyAwardReq = new StrategyAward();
+        strategyAwardReq.setStrategyId(strategyId);
+        strategyAwardReq.setAwardId(awardId);
+
+        StrategyAward strategyAwardRes = strategyAwardDao.queryStrategyAward(strategyAwardReq);
+        return StrategyAwardRuleModelVO.builder()
+                .ruleModels(strategyAwardRes.getRuleModels())
+                .build();
     }
 }
