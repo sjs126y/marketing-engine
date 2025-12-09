@@ -108,3 +108,7 @@ Caused by: com.mysql.cj.exceptions.CJException: Unknown database 'big_market'
 	at com.mysql.cj.NativeSession.connect(NativeSession.java:157)
 	at com.mysql.cj.jdbc.ConnectionImpl.connectWithRetries(ConnectionImpl.java:850)
 	... 83 common frames omitted
+25-12-09.17:24:51.987 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=48s861ms77µs600ns).
+25-12-09.17:27:59.013 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=48s789ms393µs200ns).
+25-12-09.17:29:12.560 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m13s547ms160µs400ns).
+25-12-09.17:36:00.498 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m46s408ms956µs600ns).
