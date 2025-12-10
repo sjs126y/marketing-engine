@@ -117,3 +117,10 @@ Caused by: com.mysql.cj.exceptions.CJException: Unknown database 'big_market'
 25-12-09.22:20:00.136 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=51s13ms785µs200ns).
 25-12-09.23:34:15.755 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m41s900ms112µs600ns).
 25-12-09.23:36:32.527 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m56s709ms897µs100ns).
+25-12-10.18:03:50.702 [main            ] ERROR RuleLuckAwardLogicTreeNode - 规则过滤-兜底奖品，兜底奖品未配置告警 userId:xiaofuge strategyId:100006 awardId:101
+25-12-10.18:05:14.675 [main            ] ERROR RuleLuckAwardLogicTreeNode - 规则过滤-兜底奖品，兜底奖品未配置告警 userId:xiaofuge strategyId:100006 awardId:102
+25-12-10.18:05:54.372 [main            ] ERROR StrategyRepository     - 库存扣减失败 cacheKey:strategy_award_count_key_100006_102
+25-12-10.18:05:57.890 [main            ] ERROR StrategyRepository     - 库存扣减失败 cacheKey:strategy_award_count_key_100006_102
+25-12-10.18:12:49.451 [main            ] ERROR StrategyRepository     - 库存扣减失败 cacheKey:strategy_award_count_key_100006_102
+25-12-10.18:12:49.470 [main            ] ERROR StrategyRepository     - 库存扣减失败 cacheKey:strategy_award_count_key_100006_102
+25-12-10.18:18:14.231 [main            ] ERROR StrategyRepository     - 库存不足 cacheKey:strategy_award_count_key_100006_102
