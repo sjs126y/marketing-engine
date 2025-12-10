@@ -4,6 +4,7 @@ import com.sjs.domain.strategy.adapter.repository.IStrategyRepository;
 import com.sjs.domain.strategy.model.entity.StrategyAwardEntity;
 import com.sjs.domain.strategy.model.entity.StrategyEntity;
 import com.sjs.domain.strategy.model.entity.StrategyRuleEntity;
+import com.sjs.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,14 @@ public class StrategyArmory implements IStrategyArmory, IStrategyDispatch {
     public boolean assembleLotteryStrategy(Long strategyId) {
         //1.获取策略配置信息
         List<StrategyAwardEntity> strategyAwardEntities = strategyRepository.queryStrategyAwardList(strategyId);
+
+        //填充库存
+        for (StrategyAwardEntity strategyAwardEntity : strategyAwardEntities) {
+            Integer awardId = strategyAwardEntity.getAwardId();
+            Integer awardCount = strategyAwardEntity.getAwardCount();
+            cacheStrategyAwardCount(strategyId, awardId, awardCount);
+        }
+
         assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
 
         //2.查询策略
@@ -46,6 +55,11 @@ public class StrategyArmory implements IStrategyArmory, IStrategyDispatch {
         }
 
         return true;
+    }
+
+    private void cacheStrategyAwardCount(Long strategyId, Integer awardId, Integer awardCount) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
+        strategyRepository.cacheStrategyAwardCount(cacheKey, awardCount);
     }
 
     private void assembleLotteryStrategy(String key, List<StrategyAwardEntity> strategyAwardEntities) {
@@ -102,5 +116,11 @@ public class StrategyArmory implements IStrategyArmory, IStrategyDispatch {
         int rateRange = strategyRepository.getRateRange(key);
         // 通过生成的随机值，获取概率值奖品查找表的结果
         return strategyRepository.getStrategyAwardAssemble(key, new SecureRandom().nextInt(rateRange));
+    }
+
+    @Override
+    public Boolean subtractionAwardStock(Long strategyId, Integer awardId) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
+        return strategyRepository.subtractionAwardStock(cacheKey);
     }
 }

@@ -3,6 +3,8 @@ package com.sjs.domain.strategy.service.raffle;
 import com.sjs.domain.strategy.adapter.repository.IStrategyRepository;
 import com.sjs.domain.strategy.model.valobj.RuleTreeVO;
 import com.sjs.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
+import com.sjs.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
+import com.sjs.domain.strategy.service.IRaffleStock;
 import com.sjs.domain.strategy.service.armory.IStrategyDispatch;
 import com.sjs.domain.strategy.service.rule.AbstractRaffleStrategy;
 import com.sjs.domain.strategy.service.rule.chain.ILogicChain;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
+public class DefaultRaffleStrategy extends AbstractRaffleStrategy implements IRaffleStock {
 
 
     public DefaultRaffleStrategy(IStrategyDispatch strategyDispatch, IStrategyRepository repository, DefaultChainFactory defaultChainFactory, DefaultTreeFactory defaultTreeFactory) {
@@ -45,4 +47,13 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
         return decisionTreeEngine.process(userId, strategyId, awardId);
     }
 
+    @Override
+    public StrategyAwardStockKeyVO takeQueueValue() throws InterruptedException {
+        return repository.takeQueueValue();
+    }
+
+    @Override
+    public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
+        repository.updateStrategyAwardStock(strategyId, awardId);
+    }
 }

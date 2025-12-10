@@ -9,6 +9,10 @@ import com.sjs.infrastructure.dao.*;
 import com.sjs.infrastructure.dao.po.*;
 import com.sjs.infrastructure.redis.IRedisService;
 import com.sjs.types.common.Constants;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBlockingQueue;
+import org.redisson.api.RDelayedQueue;
+import org.redisson.api.RLock;
 import org.redisson.api.RMap;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Repository
 public class StrategyRepository implements IStrategyRepository {
 
@@ -198,5 +204,52 @@ public class StrategyRepository implements IStrategyRepository {
 
         redisService.setValue(cacheKey, ruleTreeVODB);
         return ruleTreeVODB;
+    }
+
+    @Override
+    public void cacheStrategyAwardCount(String cacheKey, Integer awardCount) {
+        if(redisService.isExists(cacheKey)) return;
+        redisService.setAtomicLong(cacheKey, awardCount);
+    }
+
+    @Override
+    public Boolean subtractionAwardStock(String cacheKey) {
+        //开始减库存
+        long surplus = redisService.decr(cacheKey);
+        if(surplus < 0){
+            redisService.setAtomicLong(cacheKey, 0);
+            log.error("库存不足 cacheKey:{}", cacheKey);
+            return false;
+        }
+
+        //进行兜底上锁
+        String lockKey = cacheKey+ Constants.UNDERLINE + surplus;
+        boolean isLock = redisService.setNx(lockKey);
+        if(!isLock){
+            log.error("库存扣减失败 cacheKey:{}", cacheKey);
+        }
+
+        return isLock;
+
+    }
+
+    @Override
+    public void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUERY_KEY;
+        RBlockingQueue<Object> blockingQueue = redisService.getBlockingQueue(cacheKey);
+        RDelayedQueue<Object> delayedQueue = redisService.getDelayedQueue(blockingQueue);
+        delayedQueue.offer(strategyAwardStockKeyVO, 5, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public StrategyAwardStockKeyVO takeQueueValue() throws InterruptedException {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUERY_KEY;
+        RBlockingQueue<StrategyAwardStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
+        return blockingQueue.poll();
+    }
+
+    @Override
+    public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
+        strategyAwardDao.subtractStrategyAwardStock(strategyId, awardId);
     }
 }
