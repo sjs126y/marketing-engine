@@ -3,6 +3,7 @@ package com.sjs.domain.strategy.service.rule;
 import com.sjs.domain.strategy.adapter.repository.IStrategyRepository;
 import com.sjs.domain.strategy.model.entity.RaffleAwardEntity;
 import com.sjs.domain.strategy.model.entity.RaffleFactorEntity;
+import com.sjs.domain.strategy.model.entity.StrategyAwardEntity;
 import com.sjs.domain.strategy.service.IRaffleStrategy;
 import com.sjs.domain.strategy.service.armory.IStrategyDispatch;
 import com.sjs.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
@@ -43,10 +44,7 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
         DefaultChainFactory.StrategyAwardVO chainStrategyAwardVO = raffleLogicChain(userId, strategyId);
         log.info("执行抽奖前规则过滤 chainStrategyAwardVO:{}", chainStrategyAwardVO);
         if(DefaultChainFactory.LogicModel.RULE_BLACKLIST.getCode().equals(chainStrategyAwardVO.getLogicModel())){
-            return RaffleAwardEntity.builder()
-                    .awardId(chainStrategyAwardVO.getAwardId())
-                    .awardDesc("黑名单抽奖")
-                    .build();
+            return buildRaffleAwardEntity(strategyId, chainStrategyAwardVO.getAwardId(), null);
         }
 
         //3.执行抽奖策略树
@@ -54,8 +52,15 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
         log.info("执行抽奖策略树 treeStrategyAwardVO:{}", treeStrategyAwardVO);
 
         //4.返回抽奖结果
+        return buildRaffleAwardEntity(strategyId, treeStrategyAwardVO.getAwardId(), treeStrategyAwardVO.getAwardRuleValue());
+    }
+
+    private RaffleAwardEntity buildRaffleAwardEntity(Long strategyId, Integer awardId, String awardRuleValue) {
+        StrategyAwardEntity strategyAward = repository.queryStrategyAwardEntity(strategyId, awardId);
         return RaffleAwardEntity.builder()
-                .awardId(treeStrategyAwardVO.getAwardId())
+                .awardId(awardId)
+                .awardConfig(awardRuleValue)
+                .sort(strategyAward.getSort())
                 .build();
     }
 

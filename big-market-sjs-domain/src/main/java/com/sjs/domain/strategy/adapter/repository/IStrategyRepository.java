@@ -1,5 +1,6 @@
 package com.sjs.domain.strategy.adapter.repository;
 
+import com.sjs.domain.strategy.model.entity.RaffleAwardEntity;
 import com.sjs.domain.strategy.model.entity.StrategyAwardEntity;
 import com.sjs.domain.strategy.model.entity.StrategyEntity;
 import com.sjs.domain.strategy.model.entity.StrategyRuleEntity;
@@ -57,4 +58,6 @@ public interface IStrategyRepository {
      * @param awardId 奖品ID
      */
     void updateStrategyAwardStock(Long strategyId, Integer awardId);
+
+    StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Integer awardId);
 }
