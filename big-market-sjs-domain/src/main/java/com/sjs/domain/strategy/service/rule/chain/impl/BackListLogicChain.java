@@ -32,6 +32,7 @@ public class BackListLogicChain extends AbstractLogicChain {
         String[] userBackIds = splitRuleValue[1].split(Constants.SPLIT);
         for (String userBackId : userBackIds) {
             if(userId.equals(userBackId)){
+                log.info("抽奖责任链-黑名单接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, ruleModel(), awardId);
                 return awardId;
             }
         }

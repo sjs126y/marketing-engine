@@ -18,6 +18,8 @@ public class StrategyAwardRuleModelVO {
     String ruleModels;
 
     public String[] raffleCenterRuleModelList(){
+        if(ruleModels == null) return null;
+
         String[] ruleValues = ruleModels.split(Constants.SPLIT);
 
         List<String> ruleModelList = new ArrayList<>();
