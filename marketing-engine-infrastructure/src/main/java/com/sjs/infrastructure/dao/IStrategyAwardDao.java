@@ -20,4 +20,6 @@ public interface IStrategyAwardDao {
     String queryStrategyAwardRuleModels(StrategyAward strategyAwardReq);
 
     void subtractStrategyAwardStock(Long strategyId, Integer awardId);
+
+    StrategyAward queryStrategyAward(StrategyAward strategyAwardReq);
 }

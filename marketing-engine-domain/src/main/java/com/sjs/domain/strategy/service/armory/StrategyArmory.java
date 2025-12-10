@@ -5,6 +5,8 @@ import com.sjs.domain.strategy.model.entity.StrategyAwardEntity;
 import com.sjs.domain.strategy.model.entity.StrategyEntity;
 import com.sjs.domain.strategy.model.entity.StrategyRuleEntity;
 import com.sjs.types.common.Constants;
+import com.sjs.types.enums.ResponseCode;
+import com.sjs.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,10 @@ public class StrategyArmory implements IStrategyArmory, IStrategyDispatch {
         if(null == ruleWeight) return true;
 
         StrategyRuleEntity strategyRuleEntity = strategyRepository.queryStrategyRuleEntity(strategyId, ruleWeight);
+        // 业务异常，策略规则中 rule_weight 权重规则已适用但未配置
+        if (null == strategyRuleEntity) {
+            throw new AppException(ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getCode(), ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getInfo());
+        }
 
         Map<String, List<Integer>> ruleWeightValueMap = strategyRuleEntity.getRuleWeightValues();
         if(ruleWeightValueMap == null || ruleWeightValueMap.isEmpty()) return true;
