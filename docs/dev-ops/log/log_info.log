@@ -246,3 +246,202 @@ Caused by: org.apache.ibatis.binding.BindingException: Parameter 'strategyId' no
 25-12-11.16:13:28.033 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
 25-12-11.16:13:58.105 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
 25-12-11.16:14:28.141 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:14:58.006 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:15:28.042 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:15:58.081 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:16:27.995 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:16:58.043 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:17:28.022 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:17:55.976 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:18:29.475 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:18:56.775 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:19:29.668 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:19:57.003 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:20:29.489 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:20:58.085 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:21:29.327 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:21:58.130 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:22:28.160 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:22:58.077 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:23:27.906 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:23:58.042 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:24:27.955 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:24:57.760 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:25:27.262 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:25:56.844 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:26:27.903 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:26:57.877 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:27:28.014 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:27:57.891 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:28:27.977 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:28:57.899 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:29:27.920 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:29:57.910 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:30:27.997 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:30:57.879 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:31:27.910 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:31:57.887 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:32:25.868 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:32:57.973 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:33:27.767 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:33:57.944 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:34:27.791 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:34:57.959 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:35:27.872 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:35:57.899 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:36:27.881 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:36:57.792 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:37:27.908 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:37:57.923 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:38:27.703 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:38:57.171 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:39:26.288 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:39:57.721 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:40:27.852 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:40:57.795 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:41:27.657 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:41:57.851 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:42:27.840 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:42:57.714 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:43:27.741 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:43:57.727 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:44:27.780 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:44:57.764 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:45:25.536 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:45:57.611 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:46:27.686 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:46:57.551 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:47:27.693 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:47:57.608 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:48:27.659 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:48:57.548 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:49:29.254 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:49:56.695 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:50:28.825 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:50:57.512 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:51:28.238 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:51:56.338 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:52:27.771 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:52:58.154 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:53:27.970 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:53:57.796 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:54:27.973 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:54:57.748 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:55:27.993 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:55:57.771 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:56:27.993 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:56:57.906 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:57:27.942 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:57:57.893 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:58:25.776 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:58:57.692 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:59:27.592 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.16:59:57.811 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:00:27.722 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:00:57.827 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:01:26.726 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:01:59.078 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:02:27.790 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:02:57.781 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:03:27.772 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:03:57.726 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:04:27.711 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:04:55.412 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:05:27.739 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:05:57.482 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:06:27.479 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:06:57.578 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:07:27.512 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:07:57.620 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:08:27.503 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:08:57.509 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:09:27.563 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:09:57.446 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:10:24.949 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:10:57.414 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:11:27.486 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:11:57.403 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:12:27.399 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:12:57.403 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:13:27.406 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:13:57.428 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:14:27.341 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:14:57.489 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:15:27.283 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:15:54.741 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:16:27.398 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:16:57.336 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:17:27.378 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:17:57.382 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:18:27.364 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:18:57.331 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:19:27.325 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:19:57.441 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:20:27.372 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:20:54.572 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:21:27.405 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:21:57.329 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:22:27.378 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:22:57.268 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:23:27.352 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:23:57.320 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.17:58:40.288 [SpringApplicationShutdownHook] INFO  HikariDataSource       - HikariPool-1 - Shutdown initiated...
+25-12-11.17:58:40.309 [SpringApplicationShutdownHook] INFO  HikariDataSource       - HikariPool-1 - Shutdown completed.
+25-12-11.18:24:47.177 [main            ] INFO  Application            - Starting Application v1.0-SNAPSHOT using Java 1.8.0_472 on 505600f2be31 with PID 1 (/big-market-sjs-app.jar started by root in /)
+25-12-11.18:24:47.180 [main            ] INFO  Application            - The following 1 profile is active: "dev"
+25-12-11.18:24:48.107 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-11.18:24:48.110 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-11.18:24:48.148 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 16 ms. Found 0 Redis repository interfaces.
+25-12-11.18:24:49.050 [main            ] INFO  TomcatWebServer        - Tomcat initialized with port(s): 8092 (http)
+25-12-11.18:24:49.059 [main            ] INFO  Http11NioProtocol      - Initializing ProtocolHandler ["http-nio-8092"]
+25-12-11.18:24:49.060 [main            ] INFO  StandardService        - Starting service [Tomcat]
+25-12-11.18:24:49.060 [main            ] INFO  StandardEngine         - Starting Servlet engine: [Apache Tomcat/9.0.75]
+25-12-11.18:24:49.132 [main            ] INFO  [/]                    - Initializing Spring embedded WebApplicationContext
+25-12-11.18:24:49.132 [main            ] INFO  ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1895 ms
+25-12-11.18:24:49.510 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-11.18:24:49.923 [redisson-netty-2-6] INFO  MasterPubSubConnectionPool - 1 connections initialized for redis/172.18.0.5:6379
+25-12-11.18:24:49.974 [redisson-netty-2-14] INFO  MasterConnectionPool   - 5 connections initialized for redis/172.18.0.5:6379
+25-12-11.18:24:51.124 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-11.18:24:51.142 [main            ] INFO  Http11NioProtocol      - Starting ProtocolHandler ["http-nio-8092"]
+25-12-11.18:24:51.163 [main            ] INFO  TomcatWebServer        - Tomcat started on port(s): 8092 (http) with context path ''
+25-12-11.18:24:51.177 [main            ] INFO  Application            - Started Application in 4.665 seconds (JVM running for 5.493)
+25-12-11.18:25:00.000 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.18:25:18.126 [http-nio-8092-exec-1] INFO  [/]                    - Initializing Spring DispatcherServlet 'dispatcherServlet'
+25-12-11.18:25:18.127 [http-nio-8092-exec-1] INFO  DispatcherServlet      - Initializing Servlet 'dispatcherServlet'
+25-12-11.18:25:18.129 [http-nio-8092-exec-1] INFO  DispatcherServlet      - Completed initialization in 2 ms
+25-12-11.18:25:30.000 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.18:25:48.337 [http-nio-8092-exec-11] INFO  RaffleController       - 查询抽奖奖品列表配置 strategyId:0
+25-12-11.18:25:48.356 [http-nio-8092-exec-11] INFO  HikariDataSource       - HikariPool-1 - Starting...
+25-12-11.18:25:48.610 [http-nio-8092-exec-11] INFO  HikariDataSource       - HikariPool-1 - Start completed.
+25-12-11.18:25:46.399 [http-nio-8092-exec-11] INFO  RaffleController       - 查询抽奖奖品列表配置完成 strategyId：0 response: {"code":"0000","data":[],"info":"成功"}
+25-12-11.18:25:52.606 [http-nio-8092-exec-14] INFO  RaffleController       - 查询抽奖奖品列表配置 strategyId:100001
+25-12-11.18:25:52.622 [http-nio-8092-exec-14] INFO  RaffleController       - 查询抽奖奖品列表配置完成 strategyId：100001 response: {"code":"0000","data":[{"awardId":101,"awardTitle":"随机积分","sort":1},{"awardId":102,"awardTitle":"5次使用","sort":2},{"awardId":103,"awardTitle":"10次使用","sort":3},{"awardId":104,"awardTitle":"20次使用","sort":4},{"awardId":105,"awardTitle":"增加gpt-4对话模型","sort":5},{"awardId":106,"awardTitle":"增加dall-e-2画图模型","sort":6},{"awardId":107,"awardSubtitle":"抽奖1次后解锁","awardTitle":"增加dall-e-3画图模型","sort":7},{"awardId":108,"awardSubtitle":"抽奖2次后解锁","awardTitle":"增加100次使用","sort":8},{"awardId":109,"awardSubtitle":"抽奖6次后解锁","awardTitle":"解锁全部模型","sort":9}],"info":"成功"}
+25-12-11.18:25:54.620 [http-nio-8092-exec-16] INFO  RaffleController       - 策略预热 strategyId:100001
+25-12-11.18:25:54.804 [http-nio-8092-exec-16] INFO  RaffleController       - 抽奖策略装配完成 strategyId：100001 response: {"code":"0000","data":true,"info":"成功"}
+25-12-11.18:25:57.577 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-11.18:25:58.565 [http-nio-8092-exec-18] INFO  RaffleController       - 随机抽奖开始 strategyId: 100001
+25-12-11.18:25:58.568 [http-nio-8092-exec-18] INFO  BackListLogicChain     - 责任链过滤-黑名单 userId:system strategyId:100001 ruleModel:rule_blacklist
+25-12-11.18:25:58.587 [http-nio-8092-exec-18] INFO  BackListLogicChain     - 抽奖责任链-黑名单放行 userId: system strategyId: 100001 ruleModel: rule_blacklist
+25-12-11.18:25:58.587 [http-nio-8092-exec-18] INFO  RuleWeightLogicChain   - 规则过滤-权重范围 userId:system strategyId:100001 ruleModel:rule_weight
+25-12-11.18:25:58.589 [http-nio-8092-exec-18] INFO  RuleWeightLogicChain   - 抽奖责任链-权重放行 userId: system strategyId: 100001 ruleModel: rule_weight
+25-12-11.18:25:58.593 [http-nio-8092-exec-18] INFO  DefaultLogicChain      - 抽奖责任链-默认处理 userId: system strategyId: 100001 ruleModel: rule_default awardId: 101
+25-12-11.18:25:58.594 [http-nio-8092-exec-18] INFO  AbstractRaffleStrategy - 执行抽奖前规则过滤 chainStrategyAwardVO:DefaultChainFactory.StrategyAwardVO(awardId=101, logicModel=rule_default)
+25-12-11.18:25:58.601 [http-nio-8092-exec-18] INFO  RuleStockLogicTreeNode - 规则过滤-库存扣减 userId:system strategyId:100001 awardId:101
+25-12-11.18:25:58.605 [http-nio-8092-exec-18] INFO  RuleStockLogicTreeNode - 规则过滤-库存扣减成功 userId:system strategyId:100001 awardId:101
+25-12-11.18:25:58.624 [http-nio-8092-exec-18] INFO  DecisionTreeEngine     - 决策树引擎【规则树-兜底奖励】treeId:tree_luck_award node:rule_stock code:0001
+25-12-11.18:25:58.625 [http-nio-8092-exec-18] INFO  AbstractRaffleStrategy - 执行抽奖策略树 treeStrategyAwardVO:DefaultTreeFactory.StrategyAwardVO(awardId=101, awardRuleValue=null)
+25-12-11.18:25:58.629 [http-nio-8092-exec-18] INFO  RaffleController       - 随机抽奖完成 strategyId: 100001 response: {"code":"0000","data":{"awardId":101,"awardIndex":1},"info":"成功"}
+25-12-11.18:26:16.567 [http-nio-8092-exec-19] INFO  RaffleController       - 随机抽奖开始 strategyId: 100001
+25-12-11.18:26:16.569 [http-nio-8092-exec-19] INFO  BackListLogicChain     - 责任链过滤-黑名单 userId:system strategyId:100001 ruleModel:rule_blacklist
+25-12-11.18:26:16.572 [http-nio-8092-exec-19] INFO  BackListLogicChain     - 抽奖责任链-黑名单放行 userId: system strategyId: 100001 ruleModel: rule_blacklist
+25-12-11.18:26:16.572 [http-nio-8092-exec-19] INFO  RuleWeightLogicChain   - 规则过滤-权重范围 userId:system strategyId:100001 ruleModel:rule_weight
+25-12-11.18:26:16.574 [http-nio-8092-exec-19] INFO  RuleWeightLogicChain   - 抽奖责任链-权重放行 userId: system strategyId: 100001 ruleModel: rule_weight
+25-12-11.18:26:16.576 [http-nio-8092-exec-19] INFO  DefaultLogicChain      - 抽奖责任链-默认处理 userId: system strategyId: 100001 ruleModel: rule_default awardId: 102
+25-12-11.18:26:16.576 [http-nio-8092-exec-19] INFO  AbstractRaffleStrategy - 执行抽奖前规则过滤 chainStrategyAwardVO:DefaultChainFactory.StrategyAwardVO(awardId=102, logicModel=rule_default)
+25-12-11.18:26:16.578 [http-nio-8092-exec-19] INFO  RuleStockLogicTreeNode - 规则过滤-库存扣减 userId:system strategyId:100001 awardId:102
+25-12-11.18:26:16.579 [http-nio-8092-exec-19] INFO  RuleStockLogicTreeNode - 规则过滤-库存扣减成功 userId:system strategyId:100001 awardId:102
+25-12-11.18:26:16.581 [http-nio-8092-exec-19] INFO  DecisionTreeEngine     - 决策树引擎【规则树-兜底奖励】treeId:tree_luck_award node:rule_stock code:0001
+25-12-11.18:26:16.581 [http-nio-8092-exec-19] INFO  AbstractRaffleStrategy - 执行抽奖策略树 treeStrategyAwardVO:DefaultTreeFactory.StrategyAwardVO(awardId=102, awardRuleValue=null)
+25-12-11.18:26:16.584 [http-nio-8092-exec-19] INFO  RaffleController       - 随机抽奖完成 strategyId: 100001 response: {"code":"0000","data":{"awardId":102,"awardIndex":2},"info":"成功"}
+25-12-11.18:26:28.786 [SpringApplicationShutdownHook] INFO  HikariDataSource       - HikariPool-1 - Shutdown initiated...
+25-12-11.18:26:28.799 [SpringApplicationShutdownHook] INFO  HikariDataSource       - HikariPool-1 - Shutdown completed.
