@@ -1,26 +1,49 @@
-# /usr/local/bin/docker-compose -f /docs/dev-ops/environment/environment-docker-compose-2.4.yml up -d
 version: '3.8'
-# docker-compose -f docker-compose-app.yml up -d
-# 你需要修改system为你自身系统的仓库名
+# 命令执行 docker-compose -f docker-compose-app.yml up -d
 services:
-  marketing-engine:
-    image: system/marketing-engine:1.0-SNAPSHOT
-    container_name: marketing-engine
-    restart: on-failure
+  marketing-engine-app:
+    image: sjs/marketing-engine-app:1.0-SNAPSHOT
+    container_name: marketing-engine-app
+    restart: always
     ports:
-      - "8091:8091"
+      - "8092:8092"
     environment:
       - TZ=PRC
-      - SERVER_PORT=8091
+      - SERVER_PORT=8092
+      - APP_CONFIG_API_VERSION=v1
+      - APP_CONFIG_CROSS_ORIGIN=*
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/marketing_engine?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
+      - REDIS_SDK_CONFIG_HOST=redis
+      - REDIS_SDK_CONFIG_PORT=6379
     volumes:
       - ./log:/data/log
+    networks:
+      - my-network
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+  marketing-engine-front-app:
+    container_name: marketing-engine-front-app
+    image: sjs/marketing-engine-front-app:1.0
+    restart: always
     networks:
       - my-network
+    ports:
+      - 3000:3000
+    environment:
+      - API_HOST_URL=http://127.0.0.1:8092
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://0.0.0.0:3000/" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
 
 networks:
   my-network:

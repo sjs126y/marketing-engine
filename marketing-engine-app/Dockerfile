@@ -1,8 +1,8 @@
 # 基础镜像
-FROM openjdk:8-jre-slim
+FROM amazoncorretto:8
 
 # 作者
-MAINTAINER demo_user
+MAINTAINER sjs
 
 # 配置
 ENV PARAMS=""

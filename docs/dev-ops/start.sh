@@ -1,5 +1,5 @@
 CONTAINER_NAME=marketing-engine
-IMAGE_NAME=system/marketing-engine:1.0-SNAPSHOT
+IMAGE_NAME=fuzhengwei/marketing-engine-app:1.0
 PORT=8091
 
 echo "容器部署开始 ${CONTAINER_NAME}"
