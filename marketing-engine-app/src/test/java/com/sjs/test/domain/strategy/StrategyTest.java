@@ -1,4 +1,4 @@
-package com.sjs.test.domain;
+package com.sjs.test.domain.strategy;
 
 import com.sjs.domain.strategy.service.armory.IStrategyArmory;
 import com.sjs.domain.strategy.service.armory.IStrategyDispatch;

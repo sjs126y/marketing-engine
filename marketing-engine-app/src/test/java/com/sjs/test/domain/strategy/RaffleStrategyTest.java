@@ -1,4 +1,4 @@
-package com.sjs.test.domain;
+package com.sjs.test.domain.strategy;
 
 import com.alibaba.fastjson.JSON;
 import com.sjs.domain.strategy.model.entity.RaffleAwardEntity;

@@ -8,6 +8,9 @@ public class Constants {
     public final static String UNDERLINE = "_";
 
     public static class RedisKey {
+        public static String ACTIVITY_KEY = "marketing_engine_activity_key_";
+        public static String ACTIVITY_SKU_KEY = "marketing_engine_activity_sku_key_";
+        public static String ACTIVITY_COUNT_KEY = "marketing_engine_activity_count_key_";
         public static String STRATEGY_KEY = "marketing_engine_strategy_key_";
         public static String STRATEGY_AWARD_KEY = "marketing_engine_strategy_award_key_";
         public static String STRATEGY_AWARD_LIST_KEY = "marketing_engine_strategy_award_key_";
