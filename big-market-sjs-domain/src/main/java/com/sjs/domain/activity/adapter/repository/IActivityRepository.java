@@ -1,5 +1,6 @@
 package com.sjs.domain.activity.adapter.repository;
 
+import com.sjs.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.sjs.domain.activity.model.entity.ActivityCountEntity;
 import com.sjs.domain.activity.model.entity.ActivityEntity;
 import com.sjs.domain.activity.model.entity.ActivitySkuEntity;
@@ -27,4 +28,9 @@ public interface IActivityRepository {
      */
     ActivityEntity queryActivityByActivityId(Long activityId);
 
+    /**
+     * 保存订单
+     * @param createOrderAggregate
+     */
+    void doSaveOrder(CreateOrderAggregate createOrderAggregate);
 }

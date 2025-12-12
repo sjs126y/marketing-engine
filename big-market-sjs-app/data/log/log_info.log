@@ -22,3 +22,293 @@
 25-12-12.16:04:16.463 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
 25-12-12.16:04:16.529 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 6.688 seconds (JVM running for 7.988)
 25-12-12.16:04:23.002 [main            ] INFO  RaffleOrderTest        - 测试结果：{}
+25-12-12.17:50:15.355 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 84340 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.17:50:15.356 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.17:50:16.407 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.17:50:16.410 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.17:50:16.448 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 21 ms. Found 0 Redis repository interfaces.
+25-12-12.17:50:17.406 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.17:50:17.883 [redisson-netty-2-5] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:50:17.897 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:50:20.114 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.17:50:20.174 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 5.279 seconds (JVM running for 5.99)
+25-12-12.17:50:20.356 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=700091009111)
+25-12-12.17:50:20.451 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.17:50:20.451 [main            ] INFO  ActivitySkuStockActionChain - 活动sku库存校验
+25-12-12.17:50:20.461 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.17:50:20.730 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.17:50:20.814 [main            ] ERROR ActivityRepository     - 写入订单记录，唯一索引冲突 userId: xiaofuge activityId: 100301 sku: 9011
+org.springframework.dao.DuplicateKeyException: 
+### Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '700091009111' for key 'raffle_activity_order_001.uq_out_business_no'
+### The error may exist in file [C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app\target\classes\mybatis\mapper\raffle_activity_order_mapper.xml]
+### The error may involve com.sjs.infrastructure.dao.IRaffleActivityOrderDao.insert-Inline
+### The error occurred while setting parameters
+### SQL: insert into raffle_activity_order_001         (user_id, sku, activity_id, activity_name, strategy_id, order_id, order_time, state, out_business_no, total_count, day_count, month_count,          create_time, update_time)         values             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,              now(), now())
+### Cause: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '700091009111' for key 'raffle_activity_order_001.uq_out_business_no'
+; Duplicate entry '700091009111' for key 'raffle_activity_order_001.uq_out_business_no'; nested exception is java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '700091009111' for key 'raffle_activity_order_001.uq_out_business_no'
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:247)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:70)
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441)
+	at com.sun.proxy.$Proxy109.insert(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.insert(SqlSessionTemplate.java:272)
+	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:62)
+	at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:152)
+	at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:85)
+	at com.sun.proxy.$Proxy121.insert(Unknown Source)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:344)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:198)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:220)
+	at com.sun.proxy.$Proxy122.insert(Unknown Source)
+	at com.sjs.infrastructure.adapter.repository.ActivityRepository.lambda$doSaveOrder$0(ActivityRepository.java:145)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at com.sjs.infrastructure.adapter.repository.ActivityRepository.doSaveOrder(ActivityRepository.java:142)
+	at com.sjs.infrastructure.adapter.repository.ActivityRepository$$FastClassBySpringCGLIB$$2df6fc12.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)
+	at com.sjs.infrastructure.adapter.repository.ActivityRepository$$EnhancerBySpringCGLIB$$724a8444.doSaveOrder(<generated>)
+	at com.sjs.domain.activity.service.RaffleActivityService.doSaveOrder(RaffleActivityService.java:52)
+	at com.sjs.domain.activity.service.AbstractRaffleActivity.createSkuRechargeOrder(AbstractRaffleActivity.java:54)
+	at com.sjs.test.domain.activity.RaffleOrderTest.test_createSkuRechargeOrder(RaffleOrderTest.java:33)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestExecutionCallbacks.evaluate(RunBeforeTestExecutionCallbacks.java:74)
+	at org.springframework.test.context.junit4.statements.RunAfterTestExecutionCallbacks.evaluate(RunAfterTestExecutionCallbacks.java:84)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks.evaluate(RunBeforeTestMethodCallbacks.java:75)
+	at org.springframework.test.context.junit4.statements.RunAfterTestMethodCallbacks.evaluate(RunAfterTestMethodCallbacks.java:86)
+	at org.springframework.test.context.junit4.statements.SpringRepeat.evaluate(SpringRepeat.java:84)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:251)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:97)
+	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)
+	at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:70)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:190)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:69)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater$1.execute(IdeaTestRunner.java:38)
+	at com.intellij.rt.execution.junit.TestsRepeater.repeat(TestsRepeater.java:11)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)
+	at com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:231)
+	at com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:55)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '700091009111' for key 'raffle_activity_order_001.uq_out_business_no'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:370)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java)
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.update(PreparedStatementHandler.java:47)
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.update(RoutingStatementHandler.java:74)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:63)
+	at com.sun.proxy.$Proxy181.update(Unknown Source)
+	at org.apache.ibatis.executor.SimpleExecutor.doUpdate(SimpleExecutor.java:50)
+	at org.apache.ibatis.executor.BaseExecutor.update(BaseExecutor.java:117)
+	at org.apache.ibatis.executor.CachingExecutor.update(CachingExecutor.java:76)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.update(DefaultSqlSession.java:197)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.insert(DefaultSqlSession.java:184)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
+	... 66 common frames omitted
+25-12-12.17:51:03.589 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 82796 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.17:51:03.590 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.17:51:04.386 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.17:51:04.388 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.17:51:04.422 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 21 ms. Found 0 Redis repository interfaces.
+25-12-12.17:51:05.358 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.17:51:05.812 [redisson-netty-2-4] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:51:05.824 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:51:07.845 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.17:51:07.903 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 4.694 seconds (JVM running for 5.434)
+25-12-12.17:51:08.068 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=7000910091121)
+25-12-12.17:51:08.141 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.17:51:08.141 [main            ] INFO  ActivitySkuStockActionChain - 活动sku库存校验
+25-12-12.17:51:08.147 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.17:51:08.417 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.17:51:08.475 [main            ] INFO  RaffleOrderTest        - 测试结果：562203076719
+25-12-12.17:51:17.597 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 84396 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.17:51:17.598 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.17:51:18.393 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.17:51:18.396 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.17:51:18.440 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 0 Redis repository interfaces.
+25-12-12.17:51:19.385 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.17:51:19.860 [redisson-netty-2-5] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:51:19.870 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:51:22.016 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.17:51:22.085 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 4.885 seconds (JVM running for 5.605)
+25-12-12.17:51:22.266 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=7000910091121)
+25-12-12.17:51:22.335 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.17:51:22.335 [main            ] INFO  ActivitySkuStockActionChain - 活动sku库存校验
+25-12-12.17:51:22.341 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.17:51:22.575 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.17:51:22.648 [main            ] ERROR ActivityRepository     - 写入订单记录，唯一索引冲突 userId: xiaofuge activityId: 100301 sku: 9011
+org.springframework.dao.DuplicateKeyException: 
+### Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '7000910091121' for key 'raffle_activity_order_001.uq_out_business_no'
+### The error may exist in file [C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app\target\classes\mybatis\mapper\raffle_activity_order_mapper.xml]
+### The error may involve com.sjs.infrastructure.dao.IRaffleActivityOrderDao.insert-Inline
+### The error occurred while setting parameters
+### SQL: insert into raffle_activity_order_001         (user_id, sku, activity_id, activity_name, strategy_id, order_id, order_time, state, out_business_no, total_count, day_count, month_count,          create_time, update_time)         values             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,              now(), now())
+### Cause: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '7000910091121' for key 'raffle_activity_order_001.uq_out_business_no'
+; Duplicate entry '7000910091121' for key 'raffle_activity_order_001.uq_out_business_no'; nested exception is java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '7000910091121' for key 'raffle_activity_order_001.uq_out_business_no'
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:247)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:70)
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441)
+	at com.sun.proxy.$Proxy109.insert(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.insert(SqlSessionTemplate.java:272)
+	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:62)
+	at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:152)
+	at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:85)
+	at com.sun.proxy.$Proxy121.insert(Unknown Source)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:344)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:198)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:220)
+	at com.sun.proxy.$Proxy122.insert(Unknown Source)
+	at com.sjs.infrastructure.adapter.repository.ActivityRepository.lambda$doSaveOrder$0(ActivityRepository.java:145)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at com.sjs.infrastructure.adapter.repository.ActivityRepository.doSaveOrder(ActivityRepository.java:142)
+	at com.sjs.infrastructure.adapter.repository.ActivityRepository$$FastClassBySpringCGLIB$$2df6fc12.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)
+	at com.sjs.infrastructure.adapter.repository.ActivityRepository$$EnhancerBySpringCGLIB$$b75b4b78.doSaveOrder(<generated>)
+	at com.sjs.domain.activity.service.RaffleActivityService.doSaveOrder(RaffleActivityService.java:52)
+	at com.sjs.domain.activity.service.AbstractRaffleActivity.createSkuRechargeOrder(AbstractRaffleActivity.java:54)
+	at com.sjs.test.domain.activity.RaffleOrderTest.test_createSkuRechargeOrder(RaffleOrderTest.java:33)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestExecutionCallbacks.evaluate(RunBeforeTestExecutionCallbacks.java:74)
+	at org.springframework.test.context.junit4.statements.RunAfterTestExecutionCallbacks.evaluate(RunAfterTestExecutionCallbacks.java:84)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks.evaluate(RunBeforeTestMethodCallbacks.java:75)
+	at org.springframework.test.context.junit4.statements.RunAfterTestMethodCallbacks.evaluate(RunAfterTestMethodCallbacks.java:86)
+	at org.springframework.test.context.junit4.statements.SpringRepeat.evaluate(SpringRepeat.java:84)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:251)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:97)
+	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)
+	at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:70)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:190)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:69)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater$1.execute(IdeaTestRunner.java:38)
+	at com.intellij.rt.execution.junit.TestsRepeater.repeat(TestsRepeater.java:11)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)
+	at com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:231)
+	at com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:55)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '7000910091121' for key 'raffle_activity_order_001.uq_out_business_no'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:370)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java)
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.update(PreparedStatementHandler.java:47)
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.update(RoutingStatementHandler.java:74)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:63)
+	at com.sun.proxy.$Proxy181.update(Unknown Source)
+	at org.apache.ibatis.executor.SimpleExecutor.doUpdate(SimpleExecutor.java:50)
+	at org.apache.ibatis.executor.BaseExecutor.update(BaseExecutor.java:117)
+	at org.apache.ibatis.executor.CachingExecutor.update(CachingExecutor.java:76)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.update(DefaultSqlSession.java:197)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.insert(DefaultSqlSession.java:184)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
+	... 66 common frames omitted
+25-12-12.17:51:46.092 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 72372 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.17:51:46.093 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.17:51:47.385 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.17:51:47.390 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.17:51:47.465 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 52 ms. Found 0 Redis repository interfaces.
+25-12-12.17:51:48.857 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.17:51:49.606 [redisson-netty-2-4] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:51:49.630 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:51:52.731 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.17:51:52.831 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 7.301 seconds (JVM running for 8.384)
+25-12-12.17:51:53.061 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=70009100911213)
+25-12-12.17:51:53.178 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.17:51:53.178 [main            ] INFO  ActivitySkuStockActionChain - 活动sku库存校验
+25-12-12.17:51:53.186 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.17:51:53.533 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.17:51:53.591 [main            ] INFO  RaffleOrderTest        - 测试结果：443343899263
+25-12-12.17:52:13.772 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 82988 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.17:52:13.774 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.17:52:14.556 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.17:52:14.560 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.17:52:14.595 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 22 ms. Found 0 Redis repository interfaces.
+25-12-12.17:52:15.507 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.17:52:16.001 [redisson-netty-2-5] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:52:16.011 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.17:52:17.984 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.17:52:18.037 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 4.685 seconds (JVM running for 5.41)
+25-12-12.17:52:18.189 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=sjs, sku=9011, outBusinessNo=70009100911213)
+25-12-12.17:52:18.288 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.17:52:18.288 [main            ] INFO  ActivitySkuStockActionChain - 活动sku库存校验
+25-12-12.17:52:18.294 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.17:52:18.581 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.17:52:18.637 [main            ] INFO  RaffleOrderTest        - 测试结果：788689605807

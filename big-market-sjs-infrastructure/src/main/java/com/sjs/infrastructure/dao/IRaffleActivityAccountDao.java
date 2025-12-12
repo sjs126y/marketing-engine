@@ -1,5 +1,6 @@
 package com.sjs.infrastructure.dao;
 
+import com.sjs.infrastructure.dao.po.RaffleActivityAccount;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,4 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface IRaffleActivityAccountDao {
+    int updateAccountQuota(RaffleActivityAccount raffleActivityAccount);
+
+    void insert(RaffleActivityAccount raffleActivityAccount);
 }
