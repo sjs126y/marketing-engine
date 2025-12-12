@@ -3,6 +3,7 @@ package com.sjs.domain.activity.service;
 import com.sjs.domain.activity.adapter.repository.IActivityRepository;
 import com.sjs.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.sjs.domain.activity.model.entity.*;
+import com.sjs.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.sjs.domain.activity.model.valobj.OrderStateVO;
 import com.sjs.domain.activity.service.rule.factory.DefaultActivityChainFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import java.util.Date;
 
 @Slf4j
 @Service
-public class RaffleActivityService extends AbstractRaffleActivity{
+public class RaffleActivityService extends AbstractRaffleActivity implements ISkuStock{
 
     public RaffleActivityService(IActivityRepository repository, DefaultActivityChainFactory defaultActivityChainFactory) {
         super(repository, defaultActivityChainFactory);
@@ -50,5 +51,25 @@ public class RaffleActivityService extends AbstractRaffleActivity{
     @Override
     protected void doSaveOrder(CreateOrderAggregate createOrderAggregate) {
         repository.doSaveOrder(createOrderAggregate);
+    }
+
+    @Override
+    public ActivitySkuStockKeyVO takeQueueValue() throws InterruptedException {
+        return repository.takeQueueValue();
+    }
+
+    @Override
+    public void clearQueueValue() {
+        repository.clearQueue();
+    }
+
+    @Override
+    public void updateActivitySkuStock(Long sku) {
+        repository.updateActivitySkuStockCount(sku);
+    }
+
+    @Override
+    public void clearActivitySkuStock(Long sku) {
+        repository.clearActivitySkuStockCount(sku);
     }
 }

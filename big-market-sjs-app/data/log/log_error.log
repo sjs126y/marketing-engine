@@ -336,3 +336,44 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '7
 	at java.lang.reflect.Method.invoke(Method.java:498)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
 	... 66 common frames omitted
+25-12-12.21:25:22.767 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.771 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.773 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.777 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.780 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.782 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.785 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.788 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.790 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.793 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.795 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.798 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.800 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.805 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.807 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.813 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.816 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.818 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.823 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.826 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:26:50.077 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.080 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.083 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.086 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.089 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.092 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.095 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.098 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.101 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.104 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.107 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.110 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.115 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.118 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.120 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.123 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.125 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.128 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.131 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.134 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:40:25.507 [main            ] WARN  RaffleOrderTest        - 活动库存不足

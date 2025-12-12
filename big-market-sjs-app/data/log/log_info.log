@@ -312,3 +312,715 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '7
 25-12-12.17:52:18.294 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
 25-12-12.17:52:18.581 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
 25-12-12.17:52:18.637 [main            ] INFO  RaffleOrderTest        - 测试结果：788689605807
+25-12-12.21:25:15.729 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 146376 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.21:25:15.729 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.21:25:17.541 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.21:25:17.544 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.21:25:17.590 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 30 ms. Found 0 Redis repository interfaces.
+25-12-12.21:25:18.652 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.21:25:19.175 [redisson-netty-2-5] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:25:19.189 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:25:21.989 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.21:25:22.064 [main            ] INFO  CachingConnectionFactory - Attempting to connect to: [127.0.0.1:5672]
+25-12-12.21:25:22.151 [main            ] INFO  CachingConnectionFactory - Created new connection: rabbitConnectionFactory#6a7a1a0d:0/SimpleConnection@4c000cc4 [delegate=amqp://admin@127.0.0.1:5672/, localPort= 51080]
+25-12-12.21:25:22.238 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 6.922 seconds (JVM running for 7.781)
+25-12-12.21:25:22.450 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.21:25:22.655 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.21:25:22.754 [main            ] INFO  RaffleOrderTest        - 装配活动：true
+25-12-12.21:25:22.756 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=893864082449)
+25-12-12.21:25:22.766 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.767 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.767 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=388412491405)
+25-12-12.21:25:22.771 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.771 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.771 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=713889461470)
+25-12-12.21:25:22.773 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.773 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.774 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=044908537565)
+25-12-12.21:25:22.777 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.777 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.777 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=377126021477)
+25-12-12.21:25:22.780 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.780 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.780 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=679846369941)
+25-12-12.21:25:22.782 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.782 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.783 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=154849771987)
+25-12-12.21:25:22.785 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.785 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.785 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=517777041028)
+25-12-12.21:25:22.788 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.788 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.788 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=902099302154)
+25-12-12.21:25:22.790 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.790 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.790 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=114515576367)
+25-12-12.21:25:22.793 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.793 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.793 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=417645308179)
+25-12-12.21:25:22.795 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.795 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.795 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=769714616135)
+25-12-12.21:25:22.798 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.798 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.798 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=063349680715)
+25-12-12.21:25:22.800 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.800 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.801 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=373928204922)
+25-12-12.21:25:22.804 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.805 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.805 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=908131393783)
+25-12-12.21:25:22.807 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.807 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.807 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=848438939001)
+25-12-12.21:25:22.813 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.813 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.813 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=941847295736)
+25-12-12.21:25:22.815 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.816 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.816 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=126277564935)
+25-12-12.21:25:22.818 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.818 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.818 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=241663644966)
+25-12-12.21:25:22.823 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.823 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:22.823 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=049268553598)
+25-12-12.21:25:22.826 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:25:22.826 [main            ] WARN  RaffleOrderTest        - 活动未开启（非open状态）
+25-12-12.21:25:25.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:25:30.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:25:30.014 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:25:35.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:25:40.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:25:45.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:25:50.008 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:25:55.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:26:00.008 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:26:00.009 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:26:05.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:26:09.669 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Waiting for workers to finish.
+25-12-12.21:26:10.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:26:10.637 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Successfully waited for workers to finish.
+25-12-12.21:26:10.640 [SpringApplicationShutdownHook] INFO  SimpleMessageListenerContainer - Shutdown ignored - container is already stopped
+25-12-12.21:26:44.138 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 144316 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.21:26:44.139 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.21:26:45.056 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.21:26:45.059 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.21:26:45.091 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 21 ms. Found 0 Redis repository interfaces.
+25-12-12.21:26:46.115 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.21:26:46.610 [redisson-netty-2-4] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:26:46.620 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:26:49.330 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.21:26:49.401 [main            ] INFO  CachingConnectionFactory - Attempting to connect to: [127.0.0.1:5672]
+25-12-12.21:26:49.496 [main            ] INFO  CachingConnectionFactory - Created new connection: rabbitConnectionFactory#4f235e8e:0/SimpleConnection@56a09a5c [delegate=amqp://admin@127.0.0.1:5672/, localPort= 50648]
+25-12-12.21:26:49.565 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 5.846 seconds (JVM running for 6.614)
+25-12-12.21:26:49.764 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.21:26:49.971 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.21:26:50.006 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:26:50.061 [main            ] INFO  RaffleOrderTest        - 装配活动：true
+25-12-12.21:26:50.065 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=559396904209)
+25-12-12.21:26:50.076 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.077 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.077 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=457008723912)
+25-12-12.21:26:50.080 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.080 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.080 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=519326240512)
+25-12-12.21:26:50.083 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.083 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.083 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=238838011786)
+25-12-12.21:26:50.086 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.086 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.086 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=676030404208)
+25-12-12.21:26:50.089 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.089 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.089 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=326349350794)
+25-12-12.21:26:50.092 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.092 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.092 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=432965837914)
+25-12-12.21:26:50.095 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.095 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.095 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=542729278617)
+25-12-12.21:26:50.098 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.098 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.098 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=664487765397)
+25-12-12.21:26:50.101 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.101 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.101 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=486404633030)
+25-12-12.21:26:50.104 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.104 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.104 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=659926087010)
+25-12-12.21:26:50.107 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.107 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.107 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=859307143317)
+25-12-12.21:26:50.110 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.110 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.110 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=987891932236)
+25-12-12.21:26:50.113 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.115 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.115 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=062637710225)
+25-12-12.21:26:50.118 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.118 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.118 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=775905934097)
+25-12-12.21:26:50.120 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.120 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.120 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=592705872701)
+25-12-12.21:26:50.123 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.123 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.123 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=975600417791)
+25-12-12.21:26:50.125 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.125 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.125 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=846559288659)
+25-12-12.21:26:50.128 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.128 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.128 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=144759178113)
+25-12-12.21:26:50.131 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.131 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:50.131 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=817623753677)
+25-12-12.21:26:50.134 [main            ] INFO  ActivityBaseActionChain - 抽奖活动基础信息校验
+25-12-12.21:26:50.134 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:26:55.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:27:00.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:27:00.012 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:27:03.044 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Waiting for workers to finish.
+25-12-12.21:27:03.667 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Successfully waited for workers to finish.
+25-12-12.21:27:03.670 [SpringApplicationShutdownHook] INFO  SimpleMessageListenerContainer - Shutdown ignored - container is already stopped
+25-12-12.21:30:35.957 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 146176 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.21:30:35.958 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.21:30:36.895 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.21:30:36.898 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.21:30:36.932 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 22 ms. Found 0 Redis repository interfaces.
+25-12-12.21:30:37.962 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.21:30:38.457 [redisson-netty-2-4] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:30:38.467 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:30:41.089 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.21:30:41.172 [main            ] INFO  CachingConnectionFactory - Attempting to connect to: [127.0.0.1:5672]
+25-12-12.21:30:41.248 [main            ] INFO  CachingConnectionFactory - Created new connection: rabbitConnectionFactory#4f235e8e:0/SimpleConnection@56a09a5c [delegate=amqp://admin@127.0.0.1:5672/, localPort= 54673]
+25-12-12.21:30:41.317 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 5.741 seconds (JVM running for 6.549)
+25-12-12.21:30:41.506 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.21:30:41.737 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.21:30:41.845 [main            ] INFO  RaffleOrderTest        - 装配活动：true
+25-12-12.21:30:41.847 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=848252192752)
+25-12-12.21:30:41.859 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:41.859 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:41.862 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:41.891 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.21:30:41.905 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.21:30:41.978 [main            ] INFO  RaffleOrderTest        - 测试结果：685522598318
+25-12-12.21:30:41.978 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=984997915313)
+25-12-12.21:30:41.982 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:41.982 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:41.985 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.003 [main            ] INFO  RaffleOrderTest        - 测试结果：750353193427
+25-12-12.21:30:42.003 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=890863191463)
+25-12-12.21:30:42.006 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.006 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.009 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.029 [main            ] INFO  RaffleOrderTest        - 测试结果：619442125612
+25-12-12.21:30:42.029 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=770248481122)
+25-12-12.21:30:42.033 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.033 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.035 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.063 [main            ] INFO  RaffleOrderTest        - 测试结果：472031494835
+25-12-12.21:30:42.063 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=479667219897)
+25-12-12.21:30:42.066 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.066 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.069 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.084 [main            ] INFO  RaffleOrderTest        - 测试结果：178635848939
+25-12-12.21:30:42.084 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=350509727583)
+25-12-12.21:30:42.087 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.087 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.089 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.105 [main            ] INFO  RaffleOrderTest        - 测试结果：969179421298
+25-12-12.21:30:42.105 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=462808024421)
+25-12-12.21:30:42.108 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.108 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.110 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.128 [main            ] INFO  RaffleOrderTest        - 测试结果：341754634968
+25-12-12.21:30:42.128 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=954811071763)
+25-12-12.21:30:42.131 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.134 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.135 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.151 [main            ] INFO  RaffleOrderTest        - 测试结果：537679819697
+25-12-12.21:30:42.151 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=390473883764)
+25-12-12.21:30:42.154 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.154 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.156 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.171 [main            ] INFO  RaffleOrderTest        - 测试结果：347755538478
+25-12-12.21:30:42.171 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=043894666110)
+25-12-12.21:30:42.173 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.173 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.175 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.191 [main            ] INFO  RaffleOrderTest        - 测试结果：648435745825
+25-12-12.21:30:42.191 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=756480537818)
+25-12-12.21:30:42.196 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.196 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.198 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.217 [main            ] INFO  RaffleOrderTest        - 测试结果：449010839893
+25-12-12.21:30:42.217 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=097297867737)
+25-12-12.21:30:42.221 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.221 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.223 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.245 [main            ] INFO  RaffleOrderTest        - 测试结果：155711323049
+25-12-12.21:30:42.246 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=761327286654)
+25-12-12.21:30:42.250 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.250 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.254 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.273 [main            ] INFO  RaffleOrderTest        - 测试结果：325888569830
+25-12-12.21:30:42.273 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=835184286113)
+25-12-12.21:30:42.276 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.276 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.279 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.299 [main            ] INFO  RaffleOrderTest        - 测试结果：809793964497
+25-12-12.21:30:42.299 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=258978669756)
+25-12-12.21:30:42.303 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.303 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.305 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.332 [main            ] INFO  RaffleOrderTest        - 测试结果：699353976709
+25-12-12.21:30:42.332 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=949485984227)
+25-12-12.21:30:42.337 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.337 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.338 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.361 [main            ] INFO  RaffleOrderTest        - 测试结果：535321393706
+25-12-12.21:30:42.361 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=678618333541)
+25-12-12.21:30:42.367 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.367 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.368 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.388 [main            ] INFO  RaffleOrderTest        - 测试结果：647027229134
+25-12-12.21:30:42.388 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=578535960632)
+25-12-12.21:30:42.391 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.391 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.392 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.409 [main            ] INFO  RaffleOrderTest        - 测试结果：526040077568
+25-12-12.21:30:42.409 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=975538696568)
+25-12-12.21:30:42.411 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.412 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.413 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.430 [main            ] INFO  RaffleOrderTest        - 测试结果：325653791369
+25-12-12.21:30:42.430 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=796851024775)
+25-12-12.21:30:42.433 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:30:42.433 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:30:42.572 [main            ] INFO  EventPublisher         - 发送MQ消息 topic:activity_sku_stock_zero message:{"data":9011,"id":"41792104161","timestamp":1765546242434}
+25-12-12.21:30:42.574 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:30:42.587 [main            ] INFO  RaffleOrderTest        - 测试结果：290151503829
+25-12-12.21:30:45.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:30:45.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:30:50.000 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:30:50.003 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:30:55.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:30:55.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:00.008 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:31:00.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:00.017 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:05.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:05.006 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:10.001 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:10.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:15.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:15.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:20.000 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:20.002 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:25.005 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:25.006 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:30.013 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:31:30.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:30.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:35.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:35.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:40.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:40.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:45.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:45.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:50.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:50.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:31:55.001 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:31:55.001 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:32:00.013 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:32:00.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:00.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:32:05.000 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:05.002 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:32:10.008 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:10.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:32:15.006 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:15.007 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:32:20.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:20.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:32:25.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:30.001 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:32:30.002 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:35.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:40.003 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:45.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:50.002 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:32:55.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:00.004 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:33:00.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:05.008 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:10.003 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:15.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:20.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:25.003 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:30.001 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:30.003 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:33:35.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:40.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:45.007 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:50.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:33:55.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:00.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:00.011 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:34:05.002 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:10.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:15.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:20.007 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:25.002 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:30.007 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:34:30.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:35.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:40.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:45.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:50.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:34:55.008 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:00.007 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:35:00.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:05.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:10.003 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:15.007 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:20.002 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:25.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:30.012 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:35:30.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:35.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:40.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:45.001 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:50.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:35:55.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:00.010 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:36:00.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:05.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:10.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:15.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:20.005 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:25.007 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:30.006 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:36:30.007 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:35.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:40.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:45.005 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:50.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:36:55.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:00.008 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:00.010 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:37:05.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:10.005 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:15.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:20.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:25.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:30.015 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:37:30.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:35.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:40.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:45.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:50.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:37:55.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:00.001 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:00.003 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:38:05.005 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:10.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:15.003 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:20.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:25.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:30.005 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:38:30.007 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:35.006 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:40.007 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:45.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:50.006 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:38:55.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:00.014 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:39:00.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:05.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:10.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:15.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:20.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:25.008 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:30.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:30.012 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:39:35.001 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:40.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:45.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:50.010 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:54.796 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Waiting for workers to finish.
+25-12-12.21:39:55.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:39:55.257 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Successfully waited for workers to finish.
+25-12-12.21:39:55.260 [SpringApplicationShutdownHook] INFO  SimpleMessageListenerContainer - Shutdown ignored - container is already stopped
+25-12-12.21:40:00.623 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 148300 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.21:40:00.624 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.21:40:01.631 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.21:40:01.636 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.21:40:01.678 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 25 ms. Found 0 Redis repository interfaces.
+25-12-12.21:40:03.205 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.21:40:03.927 [redisson-netty-2-4] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:40:03.939 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:40:07.416 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.21:40:07.513 [main            ] INFO  CachingConnectionFactory - Attempting to connect to: [127.0.0.1:5672]
+25-12-12.21:40:07.599 [main            ] INFO  CachingConnectionFactory - Created new connection: rabbitConnectionFactory#43588265:0/SimpleConnection@54f25b42 [delegate=amqp://admin@127.0.0.1:5672/, localPort= 59248]
+25-12-12.21:40:07.710 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 7.621 seconds (JVM running for 8.773)
+25-12-12.21:40:08.204 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.21:40:08.630 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.21:40:08.904 [main            ] INFO  RaffleOrderTest        - 装配活动：true
+25-12-12.21:40:08.910 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=609129032822)
+25-12-12.21:40:08.943 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:08.944 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:08.946 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.038 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.21:40:09.051 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.21:40:09.082 [main            ] INFO  RaffleOrderTest        - 测试结果：824139984355
+25-12-12.21:40:09.082 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=775606849909)
+25-12-12.21:40:09.085 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.085 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.087 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.104 [main            ] INFO  RaffleOrderTest        - 测试结果：330772969611
+25-12-12.21:40:09.104 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=967245803442)
+25-12-12.21:40:09.108 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.108 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.110 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.127 [main            ] INFO  RaffleOrderTest        - 测试结果：873484650399
+25-12-12.21:40:09.127 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=336991553002)
+25-12-12.21:40:09.131 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.131 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.133 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.147 [main            ] INFO  RaffleOrderTest        - 测试结果：256840828237
+25-12-12.21:40:09.148 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=158668199828)
+25-12-12.21:40:09.151 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.151 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.153 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.171 [main            ] INFO  RaffleOrderTest        - 测试结果：957286236748
+25-12-12.21:40:09.171 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=450271411072)
+25-12-12.21:40:09.175 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.175 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.179 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.199 [main            ] INFO  RaffleOrderTest        - 测试结果：493079834494
+25-12-12.21:40:09.199 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=763698001944)
+25-12-12.21:40:09.203 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.203 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.205 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.225 [main            ] INFO  RaffleOrderTest        - 测试结果：624795522818
+25-12-12.21:40:09.227 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=272405994436)
+25-12-12.21:40:09.231 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.231 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.233 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.275 [main            ] INFO  RaffleOrderTest        - 测试结果：526669091285
+25-12-12.21:40:09.275 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=255035592207)
+25-12-12.21:40:09.278 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.278 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.280 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.304 [main            ] INFO  RaffleOrderTest        - 测试结果：639611748316
+25-12-12.21:40:09.304 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=387106394859)
+25-12-12.21:40:09.308 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.309 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.312 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.334 [main            ] INFO  RaffleOrderTest        - 测试结果：805497191175
+25-12-12.21:40:09.335 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=623834000005)
+25-12-12.21:40:09.340 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.340 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.343 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.366 [main            ] INFO  RaffleOrderTest        - 测试结果：632701460117
+25-12-12.21:40:09.367 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=253322472156)
+25-12-12.21:40:09.372 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.372 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.376 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.398 [main            ] INFO  RaffleOrderTest        - 测试结果：009884435326
+25-12-12.21:40:09.398 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=233694692906)
+25-12-12.21:40:09.401 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.401 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.403 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.422 [main            ] INFO  RaffleOrderTest        - 测试结果：614036821007
+25-12-12.21:40:09.422 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=994320228971)
+25-12-12.21:40:09.426 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.426 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.428 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.448 [main            ] INFO  RaffleOrderTest        - 测试结果：138639108668
+25-12-12.21:40:09.448 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=953861094935)
+25-12-12.21:40:09.450 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.451 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.452 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.472 [main            ] INFO  RaffleOrderTest        - 测试结果：250716476685
+25-12-12.21:40:09.472 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=641152494173)
+25-12-12.21:40:09.475 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.476 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.477 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.493 [main            ] INFO  RaffleOrderTest        - 测试结果：488813640032
+25-12-12.21:40:09.493 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=565451142568)
+25-12-12.21:40:09.497 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.497 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.499 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.516 [main            ] INFO  RaffleOrderTest        - 测试结果：592018040520
+25-12-12.21:40:09.516 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=083674215564)
+25-12-12.21:40:09.520 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.520 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.522 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.540 [main            ] INFO  RaffleOrderTest        - 测试结果：234966392558
+25-12-12.21:40:09.540 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=986899221313)
+25-12-12.21:40:09.543 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.543 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:09.545 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:40:09.564 [main            ] INFO  RaffleOrderTest        - 测试结果：125134437671
+25-12-12.21:40:09.564 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=922713596810)
+25-12-12.21:40:09.568 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:40:09.568 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:40:23.496 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:40:24.276 [main            ] INFO  EventPublisher         - 发送MQ消息 topic:activity_sku_stock_zero message:{"data":9011,"id":"53013168073","timestamp":1765546823504}
+25-12-12.21:40:25.504 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:40:25.506 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:40:25.507 [main            ] WARN  RaffleOrderTest        - 活动库存不足
+25-12-12.21:40:30.006 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:40:30.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:40:30.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:40:35.009 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:40:35.011 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:40:40.012 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:40:40.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:40:45.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:40:45.017 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:40:50.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:40:50.016 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:40:55.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:40:55.014 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:41:00.011 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:41:00.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:41:00.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:41:04.787 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Waiting for workers to finish.
+25-12-12.21:41:04.959 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Successfully waited for workers to finish.
+25-12-12.21:41:04.962 [SpringApplicationShutdownHook] INFO  SimpleMessageListenerContainer - Shutdown ignored - container is already stopped
+25-12-12.21:44:13.254 [main            ] INFO  RaffleOrderTest        - Starting RaffleOrderTest using Java 1.8.0_462 on DESKTOP-7ANQTN2 with PID 151956 (started by MR in C:\Users\MR\Desktop\big-market\big-market-sjs\big-market-sjs-app)
+25-12-12.21:44:13.258 [main            ] INFO  RaffleOrderTest        - The following 1 profile is active: "dev"
+25-12-12.21:44:14.323 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-12.21:44:14.327 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-12.21:44:14.362 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 21 ms. Found 0 Redis repository interfaces.
+25-12-12.21:44:15.907 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-12.21:44:16.641 [redisson-netty-2-4] INFO  MasterPubSubConnectionPool - 1 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:44:16.660 [redisson-netty-2-13] INFO  MasterConnectionPool   - 5 connections initialized for 127.0.0.1/127.0.0.1:16379
+25-12-12.21:44:20.267 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-12.21:44:20.373 [main            ] INFO  CachingConnectionFactory - Attempting to connect to: [127.0.0.1:5672]
+25-12-12.21:44:20.463 [main            ] INFO  CachingConnectionFactory - Created new connection: rabbitConnectionFactory#589dfa6f:0/SimpleConnection@2633d09c [delegate=amqp://admin@127.0.0.1:5672/, localPort= 64685]
+25-12-12.21:44:20.593 [main            ] INFO  RaffleOrderTest        - Started RaffleOrderTest in 7.873 seconds (JVM running for 9.012)
+25-12-12.21:44:21.024 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.21:44:21.442 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.21:44:21.710 [main            ] INFO  RaffleOrderTest        - 装配活动：true
+25-12-12.21:44:21.717 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=789378305723)
+25-12-12.21:44:21.755 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:21.755 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:21.757 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:21.837 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Starting...
+25-12-12.21:44:21.855 [main            ] INFO  HikariDataSource       - Retail_HikariCP - Start completed.
+25-12-12.21:44:21.883 [main            ] INFO  RaffleOrderTest        - 测试结果：274660296465
+25-12-12.21:44:21.883 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=045444109970)
+25-12-12.21:44:21.886 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:21.886 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:21.888 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:21.906 [main            ] INFO  RaffleOrderTest        - 测试结果：607062079005
+25-12-12.21:44:21.906 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=651514953833)
+25-12-12.21:44:21.909 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:21.909 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:21.910 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:21.930 [main            ] INFO  RaffleOrderTest        - 测试结果：164292727868
+25-12-12.21:44:21.930 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=641892995233)
+25-12-12.21:44:21.934 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:21.934 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:21.937 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:21.954 [main            ] INFO  RaffleOrderTest        - 测试结果：159309921540
+25-12-12.21:44:21.954 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=582448719347)
+25-12-12.21:44:21.956 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:21.956 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:21.959 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:21.974 [main            ] INFO  RaffleOrderTest        - 测试结果：757866146520
+25-12-12.21:44:21.975 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=870754737387)
+25-12-12.21:44:21.977 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:21.978 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:21.979 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:21.995 [main            ] INFO  RaffleOrderTest        - 测试结果：266789270486
+25-12-12.21:44:21.996 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=067983300011)
+25-12-12.21:44:22.000 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.000 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.002 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.019 [main            ] INFO  RaffleOrderTest        - 测试结果：414323957301
+25-12-12.21:44:22.019 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=766027264341)
+25-12-12.21:44:22.021 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.024 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.026 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.042 [main            ] INFO  RaffleOrderTest        - 测试结果：583392657074
+25-12-12.21:44:22.042 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=707242984588)
+25-12-12.21:44:22.044 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.044 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.047 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.060 [main            ] INFO  RaffleOrderTest        - 测试结果：346719760406
+25-12-12.21:44:22.061 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=384458493978)
+25-12-12.21:44:22.063 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.063 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.065 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.080 [main            ] INFO  RaffleOrderTest        - 测试结果：283262863682
+25-12-12.21:44:22.080 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=727670365144)
+25-12-12.21:44:22.083 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.083 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.084 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.101 [main            ] INFO  RaffleOrderTest        - 测试结果：837412102470
+25-12-12.21:44:22.101 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=531914676119)
+25-12-12.21:44:22.103 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.104 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.106 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.123 [main            ] INFO  RaffleOrderTest        - 测试结果：532492383197
+25-12-12.21:44:22.123 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=477326270703)
+25-12-12.21:44:22.127 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.127 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.129 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.149 [main            ] INFO  RaffleOrderTest        - 测试结果：749926591583
+25-12-12.21:44:22.149 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=678626910398)
+25-12-12.21:44:22.153 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.154 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.155 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.178 [main            ] INFO  RaffleOrderTest        - 测试结果：461439705922
+25-12-12.21:44:22.178 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=307884625856)
+25-12-12.21:44:22.181 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.181 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.183 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.201 [main            ] INFO  RaffleOrderTest        - 测试结果：596051994547
+25-12-12.21:44:22.202 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=110958250615)
+25-12-12.21:44:22.207 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.208 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.211 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.231 [main            ] INFO  RaffleOrderTest        - 测试结果：788748101268
+25-12-12.21:44:22.233 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=311647281526)
+25-12-12.21:44:22.236 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.236 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.238 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.255 [main            ] INFO  RaffleOrderTest        - 测试结果：118152823162
+25-12-12.21:44:22.255 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=252780244112)
+25-12-12.21:44:22.258 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.258 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.259 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.273 [main            ] INFO  RaffleOrderTest        - 测试结果：266173682523
+25-12-12.21:44:22.273 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=824546228840)
+25-12-12.21:44:22.275 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.275 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.277 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.292 [main            ] INFO  RaffleOrderTest        - 测试结果：430278665541
+25-12-12.21:44:22.292 [main            ] INFO  AbstractRaffleActivity - 创建SKU充值订单, skuRechargeEntity : SkuRechargeEntity(userId=xiaofuge, sku=9011, outBusinessNo=481116163830)
+25-12-12.21:44:22.295 [main            ] INFO  ActivityBaseActionChain - 活动责任链-基础信息【有效期、状态、库存(sku)】校验开始。sku:9011 activityId:100301
+25-12-12.21:44:22.295 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:9011 activityId:100301
+25-12-12.21:44:22.562 [main            ] INFO  EventPublisher         - 发送MQ消息 topic:activity_sku_stock_zero message:{"data":9011,"id":"64801290876","timestamp":1765547062298}
+25-12-12.21:44:22.563 [main            ] INFO  ActivitySkuStockActionChain - 活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:9011 activityId:100301
+25-12-12.21:44:22.577 [main            ] INFO  RaffleOrderTest        - 测试结果：181075912465
+25-12-12.21:44:22.587 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] INFO  ActivitySkuStockZeroCustomer - 监听活动sku库存消耗为0消息，开始消费 topic: activity_sku_stock_zero message: {"data":9011,"id":"64801290876","timestamp":1765547062298}
+25-12-12.21:44:25.001 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:44:25.003 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:44:30.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:44:30.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:44:30.017 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-12.21:44:35.003 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:44:35.004 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:44:40.013 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存【延迟队列获取，降低对数据库的更新频次，不要产生竞争】
+25-12-12.21:44:40.015 [scheduling-1    ] INFO  UpdateActivitySkuStockJob - 定时任务，更新活动sku库存 sku:9011 activityId:100301
+25-12-12.21:44:43.830 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Waiting for workers to finish.
+25-12-12.21:44:43.864 [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] INFO  SimpleMessageListenerContainer - Successfully waited for workers to finish.
+25-12-12.21:44:43.866 [SpringApplicationShutdownHook] INFO  SimpleMessageListenerContainer - Shutdown ignored - container is already stopped
