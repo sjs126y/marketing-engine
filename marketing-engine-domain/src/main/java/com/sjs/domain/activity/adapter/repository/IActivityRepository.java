@@ -4,6 +4,9 @@ import com.sjs.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.sjs.domain.activity.model.entity.ActivityCountEntity;
 import com.sjs.domain.activity.model.entity.ActivityEntity;
 import com.sjs.domain.activity.model.entity.ActivitySkuEntity;
+import com.sjs.domain.activity.model.valobj.ActivitySkuStockKeyVO;
+
+import java.util.Date;
 
 public interface IActivityRepository {
 
@@ -33,4 +36,18 @@ public interface IActivityRepository {
      * @param createOrderAggregate
      */
     void doSaveOrder(CreateOrderAggregate createOrderAggregate);
+
+    void cacheActivitySkuStockCount(String cacheKey, Integer stockCount);
+
+    boolean subtractionActivitySkuStock(Long sku, Date endDateTime);
+
+    void activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO activitySkuStockKeyVO);
+
+    ActivitySkuStockKeyVO takeQueueValue();
+
+    void clearQueue();
+
+    void updateActivitySkuStockCount(Long sku);
+
+    void clearActivitySkuStockCount(Long sku);
 }
