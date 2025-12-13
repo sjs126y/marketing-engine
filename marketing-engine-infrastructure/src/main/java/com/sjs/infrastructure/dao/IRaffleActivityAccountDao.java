@@ -1,5 +1,6 @@
 package com.sjs.infrastructure.dao;
 
+import cn.bugstack.middleware.db.router.annotation.DBRouter;
 import com.sjs.infrastructure.dao.po.RaffleActivityAccount;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,4 +14,12 @@ public interface IRaffleActivityAccountDao {
     int updateAccountQuota(RaffleActivityAccount raffleActivityAccount);
 
     void insert(RaffleActivityAccount raffleActivityAccount);
+    @DBRouter
+    RaffleActivityAccount queryActivityAccountByUserId(RaffleActivityAccount raffleActivityAccountReq);
+
+    int updateActivityAccountSubtractionQuota(RaffleActivityAccount build);
+
+    void updateActivityAccountMonthSurplusImageQuota(RaffleActivityAccount raffleActivityAccountReq);
+
+    void updateActivityAccountDaySurplusImageQuota(RaffleActivityAccount build);
 }
