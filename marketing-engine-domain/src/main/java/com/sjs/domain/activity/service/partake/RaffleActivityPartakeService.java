@@ -37,7 +37,7 @@ public class RaffleActivityPartakeService extends AbstractRaffleActivityPartake{
         String day = dateFormatDay.format(currentDate);
 
         //2.填充日，月账户实体
-        ActivityAccountMonthEntity activityAccountMonthEntity = repository.queryActivityAccountMonthByUserId(userId, activityId);
+        ActivityAccountMonthEntity activityAccountMonthEntity = repository.queryActivityAccountMonthByUserId(userId, activityId, month);
         if (null != activityAccountMonthEntity && activityAccountMonthEntity.getMonthCountSurplus() <= 0) {
             throw new AppException(ResponseCode.ACCOUNT_MONTH_QUOTA_ERROR.getCode(), ResponseCode.ACCOUNT_MONTH_QUOTA_ERROR.getInfo());
         }
