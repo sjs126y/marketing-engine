@@ -1,4 +1,4 @@
-package com.sjs.domain.activity.service.rule.impl;
+package com.sjs.domain.activity.service.quota.rule.impl;
 
 import com.sjs.domain.activity.adapter.repository.IActivityRepository;
 import com.sjs.domain.activity.model.entity.ActivityCountEntity;
@@ -6,7 +6,7 @@ import com.sjs.domain.activity.model.entity.ActivityEntity;
 import com.sjs.domain.activity.model.entity.ActivitySkuEntity;
 import com.sjs.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.sjs.domain.activity.service.armory.IActivityDispatch;
-import com.sjs.domain.activity.service.rule.AbstractActionChain;
+import com.sjs.domain.activity.service.quota.rule.AbstractActionChain;
 import com.sjs.types.enums.ResponseCode;
 import com.sjs.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;

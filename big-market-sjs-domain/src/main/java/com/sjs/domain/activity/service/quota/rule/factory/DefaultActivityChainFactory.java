@@ -1,9 +1,8 @@
-package com.sjs.domain.activity.service.rule.factory;
+package com.sjs.domain.activity.service.quota.rule.factory;
 
-import com.sjs.domain.activity.service.rule.IActionChain;
+import com.sjs.domain.activity.service.quota.rule.IActionChain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

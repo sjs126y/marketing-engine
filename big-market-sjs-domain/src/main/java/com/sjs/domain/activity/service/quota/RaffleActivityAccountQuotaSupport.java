@@ -1,18 +1,18 @@
-package com.sjs.domain.activity.service;
+package com.sjs.domain.activity.service.quota;
 
 import com.sjs.domain.activity.adapter.repository.IActivityRepository;
 import com.sjs.domain.activity.model.entity.ActivityCountEntity;
 import com.sjs.domain.activity.model.entity.ActivityEntity;
 import com.sjs.domain.activity.model.entity.ActivitySkuEntity;
-import com.sjs.domain.activity.service.rule.factory.DefaultActivityChainFactory;
+import com.sjs.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 
-public class AbstractRaffleSupport {
+public class RaffleActivityAccountQuotaSupport {
 
     protected IActivityRepository repository;
 
     protected DefaultActivityChainFactory defaultActivityChainFactory;
 
-    public AbstractRaffleSupport(IActivityRepository repository, DefaultActivityChainFactory defaultActivityChainFactory) {
+    public RaffleActivityAccountQuotaSupport(IActivityRepository repository, DefaultActivityChainFactory defaultActivityChainFactory) {
         this.repository = repository;
         this.defaultActivityChainFactory = defaultActivityChainFactory;
     }

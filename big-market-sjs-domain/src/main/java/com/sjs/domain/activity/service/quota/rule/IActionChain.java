@@ -1,4 +1,4 @@
-package com.sjs.domain.activity.service.rule;
+package com.sjs.domain.activity.service.quota.rule;
 
 import com.sjs.domain.activity.model.entity.ActivityCountEntity;
 import com.sjs.domain.activity.model.entity.ActivityEntity;
