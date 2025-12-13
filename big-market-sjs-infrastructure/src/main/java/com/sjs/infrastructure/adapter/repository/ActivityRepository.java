@@ -264,10 +264,11 @@ public class ActivityRepository implements IActivityRepository {
     }
 
     @Override
-    public ActivityAccountMonthEntity queryActivityAccountMonthByUserId(String userId, Long activityId) {
+    public ActivityAccountMonthEntity queryActivityAccountMonthByUserId(String userId, Long activityId, String month) {
         RaffleActivityAccountMonth raffleActivityAccountMonthReq = new RaffleActivityAccountMonth();
         raffleActivityAccountMonthReq.setUserId(userId);
         raffleActivityAccountMonthReq.setActivityId(activityId);
+        raffleActivityAccountMonthReq.setMonth(month);
 
         RaffleActivityAccountMonth raffleActivityAccountMonthRes = raffleActivityAccountMonthDao.queryActivityAccountMonthByUserId(raffleActivityAccountMonthReq);
         if (null == raffleActivityAccountMonthRes) return null;
