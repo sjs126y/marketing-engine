@@ -377,7 +377,7 @@ public class ActivityRepository implements IActivityRepository {
                     }
 
                     // 3. 创建或更新日账户，true - 存在则更新，false - 不存在则插入
-                    if (createPartakeOrderAggregate.isExistAccountDay()) {
+                    if (isExistAccountDay) {
                         int updateDayCount = raffleActivityAccountDayDao.updateActivityAccountDaySubtractionQuota(RaffleActivityAccountDay.builder()
                                 .userId(userId)
                                 .activityId(activityId)
