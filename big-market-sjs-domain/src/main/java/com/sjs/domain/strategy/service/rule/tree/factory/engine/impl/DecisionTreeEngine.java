@@ -9,6 +9,7 @@ import com.sjs.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 import com.sjs.domain.strategy.service.rule.tree.factory.engine.IDecisionTreeEngine;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
     }
 
     @Override
-    public DefaultTreeFactory.StrategyAwardVO process(String userId, Long strategyId, Integer awardId) {
+    public DefaultTreeFactory.StrategyAwardVO process(String userId, Long strategyId, Integer awardId, Date date) {
         DefaultTreeFactory.StrategyAwardVO strategyAwardVO = null;
 
         //获得基础信息
@@ -41,7 +42,7 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
             //获取规则值
             String ruleValue = ruleTreeNodeVO.getRuleValue();
 
-            DefaultTreeFactory.TreeActionEntity treeActionEntity = logicTreeNode.logic(userId, strategyId, awardId, ruleValue);
+            DefaultTreeFactory.TreeActionEntity treeActionEntity = logicTreeNode.logic(userId, strategyId, awardId, ruleValue, date);
             RuleLogicCheckTypeVO ruleLogicCheckType = treeActionEntity.getRuleLogicCheckType();
             strategyAwardVO = treeActionEntity.getStrategyAwardVO();
 
