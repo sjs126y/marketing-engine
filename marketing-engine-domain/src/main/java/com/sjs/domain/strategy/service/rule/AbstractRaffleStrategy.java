@@ -13,6 +13,8 @@ import com.sjs.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
+
 @Slf4j
 public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
 
@@ -48,7 +50,7 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
         }
 
         //3.执行抽奖策略树
-        DefaultTreeFactory.StrategyAwardVO treeStrategyAwardVO = raffleLogicTree(userId, strategyId, chainStrategyAwardVO.getAwardId());
+        DefaultTreeFactory.StrategyAwardVO treeStrategyAwardVO = raffleLogicTree(userId, strategyId, chainStrategyAwardVO.getAwardId(), raffleFactorEntity.getEndDateTime());
         log.info("执行抽奖策略树 treeStrategyAwardVO:{}", treeStrategyAwardVO);
 
         //4.返回抽奖结果
@@ -67,6 +69,6 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
 
     protected abstract DefaultChainFactory.StrategyAwardVO raffleLogicChain(String userId, Long strategyId);
 
-    protected abstract DefaultTreeFactory.StrategyAwardVO raffleLogicTree(String userId, Long strategyId, Integer awardId);
+    protected abstract DefaultTreeFactory.StrategyAwardVO raffleLogicTree(String userId, Long strategyId, Integer awardId, Date endDateTime);
 
 }

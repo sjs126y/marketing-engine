@@ -86,6 +86,7 @@ public class RaffleActivityController implements IRaffleActivityService {
             RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(RaffleFactorEntity.builder()
                     .userId(userId)
                     .strategyId(userRaffleOrderEntity.getStrategyId())
+                    .endDateTime(userRaffleOrderEntity.getEndDateTime())
                     .build());
             log.info("活动抽奖，执行抽奖 userId:{} activityId:{} strategyId:{}", requestDTO.getUserId(), requestDTO.getActivityId(), userRaffleOrderEntity.getStrategyId());
 

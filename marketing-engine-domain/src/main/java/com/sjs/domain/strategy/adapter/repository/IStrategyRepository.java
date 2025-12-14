@@ -8,6 +8,7 @@ import com.sjs.domain.strategy.model.valobj.RuleTreeVO;
 import com.sjs.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.sjs.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,8 @@ public interface IStrategyRepository {
 
     Boolean subtractionAwardStock(String cacheKey);
 
+    Boolean subtractionAwardStock(String cacheKey, Date date);
+
     /**
      * 写入奖品库存消费队列
      *
@@ -64,4 +67,6 @@ public interface IStrategyRepository {
     Long queryStrategyIdByActivityId(Long activityId);
 
     Integer queryTodayUserRaffleCount(String userId, Long strategyId);
+
+    Map<String, Integer> queryAwardRuleLockCount(String[] treeIds);
 }

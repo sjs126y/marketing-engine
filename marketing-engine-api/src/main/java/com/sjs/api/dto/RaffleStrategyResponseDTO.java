@@ -21,4 +21,5 @@ public class RaffleStrategyResponseDTO {
     // 排序编号【策略奖品配置的奖品顺序编号】
     private Integer awardIndex;
 
+
 }
