@@ -17,6 +17,14 @@
         where user_id = #{userId} and activity_id = #{activityId} and month = #{month} and month_count_surplus > 0
     </update>
 
+    <update id="addAccountQuota" parameterType="com.sjs.infrastructure.dao.po.RaffleActivityAccountMonth">
+        update raffle_activity_account_month
+        set month_count = month_count + #{monthCount},
+            month_count_surplus = month_count_surplus + #{monthCountSurplus},
+            update_time = now()
+        where user_id = #{userId} and activity_id = #{activityId} and month = #{month}
+    </update>
+
     <insert id="insertActivityAccountMonth" parameterType="com.sjs.infrastructure.dao.po.RaffleActivityAccountMonth">
         insert into raffle_activity_account_month(
             user_id, activity_id, month, month_count, month_count_surplus, create_time, update_time)

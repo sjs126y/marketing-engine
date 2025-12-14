@@ -3,7 +3,7 @@ package com.sjs.test.trigger;
 import com.alibaba.fastjson.JSON;
 import com.sjs.api.dto.ActivityDrawRequestDTO;
 import com.sjs.api.dto.ActivityDrawResponseDTO;
-import com.sjs.api.response.IRaffleActivityService;
+import com.sjs.api.IRaffleActivityService;
 import com.sjs.api.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -40,6 +40,12 @@ public class RaffleActivityControllerTest {
         Response<ActivityDrawResponseDTO> response = raffleActivityService.draw(request);
 
         log.info("请求参数：{}", JSON.toJSONString(request));
+        log.info("测试结果：{}", JSON.toJSONString(response));
+    }
+
+    @Test
+    public void test_calendarSignRebate(){
+        Response<Boolean> response = raffleActivityService.calendarSignRebate("xiaofuge");
         log.info("测试结果：{}", JSON.toJSONString(response));
     }
 

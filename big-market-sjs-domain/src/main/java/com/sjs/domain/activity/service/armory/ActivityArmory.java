@@ -18,7 +18,7 @@ public class ActivityArmory implements IActivityArmory, IActivityDispatch{
     private IActivityRepository repository;
 
     @Override
-    public boolean assembleActivity(Long activityId) {
+    public boolean assembleActivityByActivityId(Long activityId) {
         //获得sku
         List<ActivitySkuEntity> activitySkuEntities = repository.queryActivitySkuListByActivityId(activityId);
         for (ActivitySkuEntity activitySkuEntity : activitySkuEntities) {

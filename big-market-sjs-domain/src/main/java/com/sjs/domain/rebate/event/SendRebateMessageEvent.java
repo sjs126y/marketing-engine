@@ -28,7 +28,7 @@ public class SendRebateMessageEvent extends BaseEvent<SendRebateMessageEvent.Reb
 
     @Override
     public String topic() {
-        return "";
+        return topic;
     }
 
     @Data
