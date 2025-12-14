@@ -376,7 +376,7 @@ public class ActivityRepository implements IActivityRepository {
                         raffleActivityAccountDao.updateActivityAccountMonthSurplusImageQuota(RaffleActivityAccount.builder()
                                 .userId(userId)
                                 .activityId(activityId)
-                                .monthCountSurplus(activityAccountEntity.getMonthCount())
+                                .monthCountSurplus(activityAccountEntity.getMonthCountSurplus())
                                 .build());
                     }
 
@@ -405,7 +405,7 @@ public class ActivityRepository implements IActivityRepository {
                         raffleActivityAccountDao.updateActivityAccountDaySurplusImageQuota(RaffleActivityAccount.builder()
                                 .userId(userId)
                                 .activityId(activityId)
-                                .dayCountSurplus(activityAccountEntity.getDayCount())
+                                .dayCountSurplus(activityAccountEntity.getDayCountSurplus())
                                 .build());
                     }
 

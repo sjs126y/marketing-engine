@@ -31,3 +31,50 @@
 25-12-15.00:15:28.527 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
 25-12-15.00:15:59.544 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
 25-12-15.00:16:28.825 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:09:25.990 [main            ] INFO  Application            - Starting Application v1.0-SNAPSHOT using Java 1.8.0_472 on 505600f2be31 with PID 1 (/big-market-sjs-app.jar started by root in /)
+25-12-15.03:09:25.993 [main            ] INFO  Application            - The following 1 profile is active: "dev"
+25-12-15.03:09:26.917 [main            ] INFO  RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+25-12-15.03:09:26.922 [main            ] INFO  RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+25-12-15.03:09:26.964 [main            ] INFO  RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 13 ms. Found 0 Redis repository interfaces.
+25-12-15.03:09:27.810 [main            ] INFO  TomcatWebServer        - Tomcat initialized with port(s): 8092 (http)
+25-12-15.03:09:27.820 [main            ] INFO  Http11NioProtocol      - Initializing ProtocolHandler ["http-nio-8092"]
+25-12-15.03:09:27.821 [main            ] INFO  StandardService        - Starting service [Tomcat]
+25-12-15.03:09:27.822 [main            ] INFO  StandardEngine         - Starting Servlet engine: [Apache Tomcat/9.0.75]
+25-12-15.03:09:27.897 [main            ] INFO  [/]                    - Initializing Spring embedded WebApplicationContext
+25-12-15.03:09:27.897 [main            ] INFO  ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1850 ms
+25-12-15.03:09:28.279 [main            ] INFO  Version                - Redisson 3.23.4
+25-12-15.03:09:28.698 [redisson-netty-2-5] INFO  MasterPubSubConnectionPool - 1 connections initialized for redis/172.18.0.4:6379
+25-12-15.03:09:28.746 [redisson-netty-2-14] INFO  MasterConnectionPool   - 5 connections initialized for redis/172.18.0.4:6379
+25-12-15.03:09:29.790 [main            ] INFO  EndpointLinksResolver  - Exposing 1 endpoint(s) beneath base path '/actuator'
+25-12-15.03:09:29.816 [main            ] INFO  Http11NioProtocol      - Starting ProtocolHandler ["http-nio-8092"]
+25-12-15.03:09:29.839 [main            ] INFO  TomcatWebServer        - Tomcat started on port(s): 8092 (http) with context path ''
+25-12-15.03:09:29.856 [main            ] INFO  Application            - Started Application in 4.794 seconds (JVM running for 5.615)
+25-12-15.03:09:30.001 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:09:59.852 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:10:29.512 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:10:59.546 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:11:29.544 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:11:59.623 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:12:29.456 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:12:59.514 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:13:29.524 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:13:59.511 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:14:29.513 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:14:59.533 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:15:29.485 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:15:59.352 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:16:29.460 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:16:59.398 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:17:29.534 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:17:59.384 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:18:29.396 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:18:59.290 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:19:29.298 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:19:59.228 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:20:29.309 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:20:59.267 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:21:29.252 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:21:59.292 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:22:29.105 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:22:59.022 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
+25-12-15.03:23:28.623 [scheduling-1    ] INFO  UpdateAwardStockJob    - 更新奖品库存任务开始
