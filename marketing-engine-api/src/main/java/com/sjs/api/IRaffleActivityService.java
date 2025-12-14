@@ -1,7 +1,8 @@
-package com.sjs.api.response;
+package com.sjs.api;
 
 import com.sjs.api.dto.ActivityDrawRequestDTO;
 import com.sjs.api.dto.ActivityDrawResponseDTO;
+import com.sjs.api.response.Response;
 
 public interface IRaffleActivityService {
 
@@ -18,5 +19,12 @@ public interface IRaffleActivityService {
      * @return
      */
     Response<ActivityDrawResponseDTO> draw(ActivityDrawRequestDTO requestDTO);
+
+    /**
+     * 签到返利
+     * @param userId
+     * @return
+     */
+    Response<Boolean> calendarSignRebate(String userId);
 
 }

@@ -156,6 +156,22 @@ public class ActivityRepository implements IActivityRepository {
             raffleActivityAccount.setMonthCount(createQuotaOrderAggregate.getMonthCount());
             raffleActivityAccount.setMonthCountSurplus(createQuotaOrderAggregate.getMonthCount());
 
+            // 账户对象 - 月
+            RaffleActivityAccountMonth raffleActivityAccountMonth = new RaffleActivityAccountMonth();
+            raffleActivityAccountMonth.setUserId(createQuotaOrderAggregate.getUserId());
+            raffleActivityAccountMonth.setActivityId(createQuotaOrderAggregate.getActivityId());
+            raffleActivityAccountMonth.setMonth(raffleActivityAccountMonth.currentMonth());
+            raffleActivityAccountMonth.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            raffleActivityAccountMonth.setMonthCountSurplus(createQuotaOrderAggregate.getMonthCount());
+
+            // 账户对象 - 日
+            RaffleActivityAccountDay raffleActivityAccountDay = new RaffleActivityAccountDay();
+            raffleActivityAccountDay.setUserId(createQuotaOrderAggregate.getUserId());
+            raffleActivityAccountDay.setActivityId(createQuotaOrderAggregate.getActivityId());
+            raffleActivityAccountDay.setDay(raffleActivityAccountDay.currentDay());
+            raffleActivityAccountDay.setDayCount(createQuotaOrderAggregate.getDayCount());
+            raffleActivityAccountDay.setDayCountSurplus(createQuotaOrderAggregate.getDayCount());
+
             dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
             //保持数据库一致性
             transactionTemplate.execute(status -> {
@@ -168,6 +184,11 @@ public class ActivityRepository implements IActivityRepository {
                     if (0 == count) {
                         raffleActivityAccountDao.insert(raffleActivityAccount);
                     }
+                    // 4. 更新账户 - 月
+                    raffleActivityAccountMonthDao.addAccountQuota(raffleActivityAccountMonth);
+                    // 5. 更新账户 - 日
+                    raffleActivityAccountDayDao.addAccountQuota(raffleActivityAccountDay);
+
                     return 1;
                 } catch (DuplicateKeyException e) {
                     //保持索引唯一
