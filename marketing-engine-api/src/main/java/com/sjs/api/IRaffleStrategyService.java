@@ -2,13 +2,13 @@ package com.sjs.api;
 
 import com.sjs.api.dto.RaffleAwardListRequestDTO;
 import com.sjs.api.dto.RaffleAwardListResponseDTO;
-import com.sjs.api.dto.RaffleRequestDTO;
-import com.sjs.api.dto.RaffleResponseDTO;
+import com.sjs.api.dto.RaffleStrategyRequestDTO;
+import com.sjs.api.dto.RaffleStrategyResponseDTO;
 import com.sjs.api.response.Response;
 
 import java.util.List;
 
-public interface IRaffleService {
+public interface IRaffleStrategyService {
 
     /**
      * 策略预热
@@ -29,6 +29,6 @@ public interface IRaffleService {
      * @param requestDTO
      * @return
      */
-    Response<RaffleResponseDTO> randomRaffle(RaffleRequestDTO requestDTO);
+    Response<RaffleStrategyResponseDTO> randomRaffle(RaffleStrategyRequestDTO requestDTO);
 
 }
