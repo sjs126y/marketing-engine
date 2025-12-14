@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -15,6 +16,21 @@ public class ActivityArmory implements IActivityArmory, IActivityDispatch{
 
     @Resource
     private IActivityRepository repository;
+
+    @Override
+    public boolean assembleActivity(Long activityId) {
+        //获得sku
+        List<ActivitySkuEntity> activitySkuEntities = repository.queryActivitySkuListByActivityId(activityId);
+        for (ActivitySkuEntity activitySkuEntity : activitySkuEntities) {
+            cacheActivitySkuStockCount(activitySkuEntity.getSku(), activitySkuEntity.getStockCount());
+
+            repository.queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
+        }
+
+        repository.queryActivityByActivityId(activityId);
+
+        return true;
+    }
 
     @Override
     public boolean assembleActivitySku(Long sku) {

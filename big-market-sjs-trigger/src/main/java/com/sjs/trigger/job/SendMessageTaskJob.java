@@ -25,7 +25,6 @@ public class SendMessageTaskJob {
     @Scheduled(cron = "0/5 * * * * *")
     public void execute() {
         try {
-            log.info("定时任务，扫描MQ任务表发送消息开始。");
             int dbCount = dbRouter.dbCount();
             for (int i = 1; i < dbCount; i++) {
                 int finalDbIndex = i;

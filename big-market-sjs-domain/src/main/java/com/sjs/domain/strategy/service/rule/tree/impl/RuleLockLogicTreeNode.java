@@ -1,17 +1,20 @@
 package com.sjs.domain.strategy.service.rule.tree.impl;
 
+import com.sjs.domain.strategy.adapter.repository.IStrategyRepository;
 import com.sjs.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.sjs.domain.strategy.service.rule.tree.ILogicTreeNode;
 import com.sjs.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Slf4j
 @Component("rule_lock")
 public class RuleLockLogicTreeNode implements ILogicTreeNode {
 
-    // 用户抽奖次数，后续完成这部分流程开发的时候，从数据库/Redis中读取
-    private Long userRaffleCount = 10L;
+    @Resource
+    private IStrategyRepository repository;
 
     @Override
     public DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId, String ruleValue) {
@@ -24,6 +27,9 @@ public class RuleLockLogicTreeNode implements ILogicTreeNode {
         } catch (Exception e) {
             throw new RuntimeException("规则过滤-次数锁异常 ruleValue: " + ruleValue + " 配置不正确");
         }
+
+        //查询用户抽奖次数
+        Integer userRaffleCount = repository.queryTodayUserRaffleCount(userId, strategyId);
 
         //如果用户次数大于限制
         if(userRaffleCount >= lockRaffleCount){
