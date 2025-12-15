@@ -1,6 +1,7 @@
 package com.sjs.domain.rebate.adapter.repository;
 
 import com.sjs.domain.rebate.model.aggregate.BehaviorRebateAggregate;
+import com.sjs.domain.rebate.model.entity.BehaviorRebateOrderEntity;
 import com.sjs.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.sjs.domain.rebate.model.valobj.DailyBehaviorRebateVO;
 
@@ -12,4 +13,5 @@ public interface IBehaviorRepository {
 
     void saveUserRebateRecord(String userId, List<BehaviorRebateAggregate> behaviorRebateAggregates);
 
+    List<BehaviorRebateOrderEntity> queryOrderByOutBusinessNo(String userId, String outBusinessNo);
 }

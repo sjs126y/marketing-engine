@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -29,6 +30,7 @@ public class BehaviorRebateService implements IBehaviorRebateService {
 
     @Override
     public List<String> createOrder(BehaviorEntity behaviorEntity) {
+        log.info("开始处理用户行为返佣");
         //1.先判断是否有该类型的行为
         List<DailyBehaviorRebateVO> dailyBehaviorRebateVOS = repository.queryDailyBehaviorRebateConfig(behaviorEntity.getBehaviorTypeVO());
         if(null == dailyBehaviorRebateVOS || dailyBehaviorRebateVOS.isEmpty()) return new ArrayList<>();
@@ -47,6 +49,7 @@ public class BehaviorRebateService implements IBehaviorRebateService {
                     .rebateType(dailyBehaviorRebateVO.getRebateType())
                     .rebateConfig(dailyBehaviorRebateVO.getRebateConfig())
                     .bizId(bizId)
+                    .outBusinessNo(behaviorEntity.getOutBusinessNo())
                     .build();
             orderIds.add(behaviorRebateOrderEntity.getOrderId());
 
@@ -82,5 +85,10 @@ public class BehaviorRebateService implements IBehaviorRebateService {
 
         //4.返回结果
         return orderIds;
+    }
+
+    @Override
+    public List<BehaviorRebateOrderEntity> queryOrderByOutBusinessNo(String userId, String outBusinessNo) {
+        return repository.queryOrderByOutBusinessNo(userId, outBusinessNo);
     }
 }
