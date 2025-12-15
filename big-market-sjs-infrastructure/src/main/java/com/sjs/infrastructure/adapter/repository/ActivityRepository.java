@@ -503,16 +503,18 @@ public class ActivityRepository implements IActivityRepository {
         }
 
         // 2. 查询月账户额度
-        RaffleActivityAccountMonth raffleActivityAccountMonth = raffleActivityAccountMonthDao.queryActivityAccountMonthByUserId(RaffleActivityAccountMonth.builder()
-                .activityId(activityId)
-                .userId(userId)
-                .build());
+        RaffleActivityAccountMonth raffleActivityAccountMonthReq = new RaffleActivityAccountMonth();
+        raffleActivityAccountMonthReq.setUserId(userId);
+        raffleActivityAccountMonthReq.setActivityId(activityId);
+        raffleActivityAccountMonthReq.setMonth(raffleActivityAccountMonthReq.currentMonth());
+        RaffleActivityAccountMonth raffleActivityAccountMonth = raffleActivityAccountMonthDao.queryActivityAccountMonthByUserId(raffleActivityAccountMonthReq);
 
         // 3. 查询日账户额度
-        RaffleActivityAccountDay raffleActivityAccountDay = raffleActivityAccountDayDao.queryActivityAccountDayByUserId(RaffleActivityAccountDay.builder()
-                .activityId(activityId)
-                .userId(userId)
-                .build());
+        RaffleActivityAccountDay raffleActivityAccountDayReq = new RaffleActivityAccountDay();
+        raffleActivityAccountDayReq.setUserId(userId);
+        raffleActivityAccountDayReq.setActivityId(activityId);
+        raffleActivityAccountDayReq.setDay(raffleActivityAccountDayReq.currentDay());
+        RaffleActivityAccountDay raffleActivityAccountDay = raffleActivityAccountDayDao.queryActivityAccountDayByUserId(raffleActivityAccountDayReq);
 
         // 组装对象
         ActivityAccountEntity activityAccountEntity = new ActivityAccountEntity();
