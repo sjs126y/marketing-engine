@@ -2,7 +2,7 @@ version: '3.8'
 # 命令执行 docker-compose -f docker-compose-app.yml up -d
 services:
   marketing-engine-app:
-    image: sjs/marketing-engine-app:1.0-SNAPSHOT
+    image: sjs/marketing-engine-app:1.0
     container_name: marketing-engine-app
     restart: always
     ports:
@@ -30,7 +30,7 @@ services:
         max-file: "3"
   marketing-engine-front-app:
     container_name: marketing-engine-front-app
-    image: sjs/marketing-engine-front-app:1.0
+    image: sjs/marketing-engine-front-app:2.0
     restart: always
     networks:
       - my-network
