@@ -1,9 +1,6 @@
 package com.sjs.api;
 
-import com.sjs.api.dto.RaffleAwardListRequestDTO;
-import com.sjs.api.dto.RaffleAwardListResponseDTO;
-import com.sjs.api.dto.RaffleStrategyRequestDTO;
-import com.sjs.api.dto.RaffleStrategyResponseDTO;
+import com.sjs.api.dto.*;
 import com.sjs.api.response.Response;
 
 import java.util.List;
@@ -23,6 +20,9 @@ public interface IRaffleStrategyService {
      * @return
      */
     Response<List<RaffleAwardListResponseDTO>> queryRaffleAwardList(RaffleAwardListRequestDTO requestDTO);
+
+    Response<List<RaffleStrategyRuleWeightResponseDTO>> queryRaffleStrategyRuleWeight(RaffleStrategyRuleWeightRequestDTO request);
+
 
     /**
      * 抽奖
