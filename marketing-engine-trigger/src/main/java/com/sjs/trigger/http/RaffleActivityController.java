@@ -185,7 +185,7 @@ public class RaffleActivityController implements IRaffleActivityService {
 
     @PostMapping("is_calendar_sign_rebate")
     @Override
-    public Response<Boolean> isCalendarSignRebate(@RequestBody String userId) {
+    public Response<Boolean> isCalendarSignRebate(@RequestParam String userId) {
         try {
             log.info("用户行为返利 - 日签奖励查询 userId:{}", userId);
             String outBusinessNo = dateFormatDay.format(new Date());
@@ -207,8 +207,9 @@ public class RaffleActivityController implements IRaffleActivityService {
         }
     }
 
+    @PostMapping("query_user_activity_account")
     @Override
-    public Response<UserActivityAccountResponseDTO> queryUserActivityAccount(UserActivityAccountRequestDTO request) {
+    public Response<UserActivityAccountResponseDTO> queryUserActivityAccount(@RequestBody UserActivityAccountRequestDTO request) {
         try {
             log.info("查询用户活动账户开始 userId:{} activityId:{}", request.getUserId(), request.getActivityId());
             // 1. 参数校验
