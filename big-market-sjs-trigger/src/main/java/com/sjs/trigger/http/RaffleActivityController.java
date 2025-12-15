@@ -142,8 +142,9 @@ public class RaffleActivityController implements IRaffleActivityService {
 
 
 
+    @PostMapping("calendar_sign_rebate")
     @Override
-    public Response<Boolean> calendarSignRebate(String userId) {
+    public Response<Boolean> calendarSignRebate(@RequestParam String userId) {
         try{
             log.info("用户行为返利 - 日签奖励 userId:{}", userId);
 
