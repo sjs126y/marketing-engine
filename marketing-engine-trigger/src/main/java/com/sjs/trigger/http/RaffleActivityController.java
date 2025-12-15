@@ -62,7 +62,7 @@ public class RaffleActivityController implements IRaffleActivityService {
     @GetMapping("armory")
     @Override
     public Response<Boolean> armory(Long activityId) {
-        try{
+        try {
             log.info("活动预热 activityId:{}", activityId);
 
             //1.进行活动预热
@@ -86,13 +86,13 @@ public class RaffleActivityController implements IRaffleActivityService {
     @PostMapping("draw")
     @Override
     public Response<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO requestDTO) {
-        try{
+        try {
             log.info("开始抽奖 activityId:{}", requestDTO.getActivityId());
 
             //1.参数校验
             String userId = requestDTO.getUserId();
             Long activityId = requestDTO.getActivityId();
-            if(null == activityId || StringUtils.isBlank(userId)){
+            if (null == activityId || StringUtils.isBlank(userId)) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
             }
 
@@ -138,8 +138,7 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .code(e.getCode())
                     .info(e.getInfo())
                     .build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("随机抽奖失败 activityId：{}", requestDTO.getActivityId(), e);
             return Response.<ActivityDrawResponseDTO>builder()
                     .code(ResponseCode.UN_ERROR.getCode())
@@ -149,11 +148,10 @@ public class RaffleActivityController implements IRaffleActivityService {
     }
 
 
-
     @PostMapping("calendar_sign_rebate")
     @Override
     public Response<Boolean> calendarSignRebate(@RequestParam String userId) {
-        try{
+        try {
             log.info("用户行为返利 - 日签奖励 userId:{}", userId);
 
             BehaviorEntity behaviorEntity = new BehaviorEntity();
@@ -188,7 +186,7 @@ public class RaffleActivityController implements IRaffleActivityService {
     @PostMapping("is_calendar_sign_rebate")
     @Override
     public Response<Boolean> isCalendarSignRebate(@RequestBody String userId) {
-        try{
+        try {
             log.info("用户行为返利 - 日签奖励查询 userId:{}", userId);
             String outBusinessNo = dateFormatDay.format(new Date());
             List<BehaviorRebateOrderEntity> behaviorRebateOrderEntities = behaviorRebateService.queryOrderByOutBusinessNo(userId, outBusinessNo);
@@ -205,12 +203,13 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .code(ResponseCode.UN_ERROR.getCode())
                     .info(ResponseCode.UN_ERROR.getInfo())
                     .data(false)
-                    .build();        }
+                    .build();
+        }
     }
 
     @Override
     public Response<UserActivityAccountResponseDTO> queryUserActivityAccount(UserActivityAccountRequestDTO request) {
-        try{
+        try {
             log.info("查询用户活动账户开始 userId:{} activityId:{}", request.getUserId(), request.getActivityId());
             // 1. 参数校验
             if (StringUtils.isBlank(request.getUserId()) || null == request.getActivityId()) {
@@ -238,7 +237,8 @@ public class RaffleActivityController implements IRaffleActivityService {
             return Response.<UserActivityAccountResponseDTO>builder()
                     .code(ResponseCode.UN_ERROR.getCode())
                     .info(ResponseCode.UN_ERROR.getInfo())
-                    .build();        }
+                    .build();
+        }
 
     }
 }
