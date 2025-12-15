@@ -187,7 +187,7 @@ public class RaffleActivityController implements IRaffleActivityService {
 
     @PostMapping("is_calendar_sign_rebate")
     @Override
-    public Response<Boolean> isCalendarSignRebate(String userId) {
+    public Response<Boolean> isCalendarSignRebate(@RequestBody String userId) {
         try{
             log.info("用户行为返利 - 日签奖励查询 userId:{}", userId);
             String outBusinessNo = dateFormatDay.format(new Date());
