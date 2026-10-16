@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sjs.infrastructure.dao.IUserBehaviorRebateOrderDao">
+<mapper namespace="com.sjs.marketing.infrastructure.dao.IUserBehaviorRebateOrderDao">
 
-    <resultMap id="dataMap" type="com.sjs.infrastructure.dao.po.UserBehaviorRebateOrder">
+    <resultMap id="dataMap" type="com.sjs.marketing.infrastructure.dao.po.UserBehaviorRebateOrder">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
         <result column="order_id" property="orderId"/>
@@ -16,7 +16,7 @@
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
-    <insert id="insert" parameterType="com.sjs.infrastructure.dao.po.UserBehaviorRebateOrder">
+    <insert id="insert" parameterType="com.sjs.marketing.infrastructure.dao.po.UserBehaviorRebateOrder">
         insert into user_behavior_rebate_order(
             user_id, order_id, behavior_type, rebate_desc, rebate_type, rebate_config, out_business_no, biz_id, create_time, update_time
         ) values(
@@ -24,7 +24,7 @@
                 )
     </insert>
 
-    <select id="queryOrderByOutBusinessNo" parameterType="com.sjs.infrastructure.dao.po.UserBehaviorRebateOrder" resultMap="dataMap">
+    <select id="queryOrderByOutBusinessNo" parameterType="com.sjs.marketing.infrastructure.dao.po.UserBehaviorRebateOrder" resultMap="dataMap">
         select user_id, order_id, behavior_type, rebate_desc, rebate_type, rebate_config, out_business_no, biz_id
         from user_behavior_rebate_order
         where user_id = #{userId} and out_business_no = #{outBusinessNo}

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.sjs</groupId>
+        <groupId>com.sjs.marketing</groupId>
         <artifactId>marketing-engine</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -81,11 +81,11 @@
 
         <!-- 工程模块；启动依赖 trigger->domain, infrastructure-->
         <dependency>
-            <groupId>com.sjs</groupId>
+            <groupId>com.sjs.marketing</groupId>
             <artifactId>marketing-engine-trigger</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sjs</groupId>
+            <groupId>com.sjs.marketing</groupId>
             <artifactId>marketing-engine-infrastructure</artifactId>
         </dependency>
         <dependency>
@@ -145,7 +145,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.sjs.Application</mainClass>
+                    <mainClass>com.sjs.marketing.Application</mainClass>
                     <layout>JAR</layout>
                 </configuration>
             </plugin>

@@ -3,4 +3,4 @@
 docker build -t sjs/marketing-engine-app:1.0 -f ./Dockerfile .
 
 # 兼容 amd、arm 构建镜像
-# docker buildx build --load --platform liunx/amd64,linux/arm64 -t demo_user/marketing-engine-app:1.0 -f ./Dockerfile . --push
+# docker buildx build --load --platform liunx/amd64,linux/arm64 -t marketing-engine/marketing-engine-app:1.0 -f ./Dockerfile . --push

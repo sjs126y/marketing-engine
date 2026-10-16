@@ -1,1 +1,0 @@
-package com.sjs.domain.activity.adapter.port;
