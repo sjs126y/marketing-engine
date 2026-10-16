@@ -1,23 +1,32 @@
 # marketing-engine
 
-一个基于 Java、Spring Boot 和 DDD 分层思想实现的营销抽奖系统学习项目。
+A Java and Spring Boot marketing and raffle system project organized with DDD-style layers.
 
-## 参考来源
+## Project Structure
 
-本项目参考小傅哥《大营销》教程完成，代码和工程结构用于个人学习与作品集整理。
+- `marketing-engine-api`: public service interfaces and DTOs
+- `marketing-engine-app`: Spring Boot application, configuration, resources, and tests
+- `marketing-engine-domain`: domain models and domain services
+- `marketing-engine-trigger`: HTTP controllers, scheduled jobs, and message listeners
+- `marketing-engine-infrastructure`: persistence, MyBatis mappers, Redis, and messaging adapters
+- `marketing-engine-types`: shared exceptions, events, enums, and constants
 
-相关教程：
+The main Java package is `com.sjs.marketing`.
 
-- [小傅哥技术博客](https://bugstack.cn/)
-- [DDD 概念理论](https://bugstack.cn/md/road-map/ddd-guide-01.html)
-- [DDD 建模方法](https://bugstack.cn/md/road-map/ddd-guide-02.html)
-- [DDD 工程模型](https://bugstack.cn/md/road-map/ddd-guide-03.html)
-- [DDD 架构设计](https://bugstack.cn/md/road-map/ddd.html)
-
-## 构建
+## Build
 
 ```bash
 mvn clean test
 ```
 
-项目包含 API、应用、领域、触发器、基础设施和公共类型等 Maven 模块。
+The project targets Java 8. The local build environment should use a compatible JDK and Maven installation.
+
+## Reference
+
+本项目参考小傅哥《大营销》教程完成，代码和工程结构用于个人学习与作品集整理。
+
+参考资料：[bugstack.cn](https://bugstack.cn/)
+
+## License
+
+This repository is maintained as a personal learning and portfolio project.
