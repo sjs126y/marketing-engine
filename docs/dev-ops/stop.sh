@@ -1,1 +1,1 @@
-docker stop big-market-app
+docker stop marketing-engine-app

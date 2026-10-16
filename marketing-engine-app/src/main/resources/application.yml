@@ -1,0 +1,5 @@
+spring:
+  config:
+    name: marketing-engine-app
+  profiles:
+    active: prod

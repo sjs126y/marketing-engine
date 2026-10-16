@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sjs</groupId>
-    <artifactId>big-market-sjs</artifactId>
+    <groupId>com.sjs.marketing</groupId>
+    <artifactId>marketing-engine</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>big-market-sjs-api</module>
-        <module>big-market-sjs-app</module>
-        <module>big-market-sjs-domain</module>
-        <module>big-market-sjs-trigger</module>
-        <module>big-market-sjs-infrastructure</module>
-        <module>big-market-sjs-types</module>
+        <module>marketing-engine-api</module>
+        <module>marketing-engine-app</module>
+        <module>marketing-engine-domain</module>
+        <module>marketing-engine-trigger</module>
+        <module>marketing-engine-infrastructure</module>
+        <module>marketing-engine-types</module>
     </modules>
 
     <repositories>
@@ -37,15 +37,6 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <developers>
-        <developer>
-            <name>xiaofuge</name>
-            <email>184172133@qq.com</email>
-            <organization>fuzhengwei</organization>
-            <organizationUrl>https://github.com/fuzhengwei</organizationUrl>
-        </developer>
-    </developers>
 
     <licenses>
         <license>
@@ -134,28 +125,28 @@
 
             <!-- 工程模块 -->
             <dependency>
-                <groupId>com.sjs</groupId>
-                <artifactId>big-market-sjs-api</artifactId>
+                <groupId>com.sjs.marketing</groupId>
+                <artifactId>marketing-engine-api</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.sjs</groupId>
-                <artifactId>big-market-sjs-domain</artifactId>
+                <groupId>com.sjs.marketing</groupId>
+                <artifactId>marketing-engine-domain</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.sjs</groupId>
-                <artifactId>big-market-sjs-infrastructure</artifactId>
+                <groupId>com.sjs.marketing</groupId>
+                <artifactId>marketing-engine-infrastructure</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.sjs</groupId>
-                <artifactId>big-market-sjs-types</artifactId>
+                <groupId>com.sjs.marketing</groupId>
+                <artifactId>marketing-engine-types</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.sjs</groupId>
-                <artifactId>big-market-sjs-trigger</artifactId>
+                <groupId>com.sjs.marketing</groupId>
+                <artifactId>marketing-engine-trigger</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -201,21 +192,21 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/big-market-sjs-boot -Xloggc:/export/Logs/big-market-sjs-boot/gc-big-market-sjs-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/marketing-engine-boot -Xloggc:/export/Logs/marketing-engine-boot/gc-marketing-engine-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
                 <profileActive>dev</profileActive>
             </properties>
         </profile>
         <profile>
             <id>test</id>
             <properties>
-                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/big-market-sjs-boot -Xloggc:/export/Logs/big-market-sjs-boot/gc-big-market-sjs-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/marketing-engine-boot -Xloggc:/export/Logs/marketing-engine-boot/gc-marketing-engine-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
                 <profileActive>test</profileActive>
             </properties>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
-                <java_jvm>-Xms6G -Xmx6G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=release -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/fq-mall-activity-app -Xloggc:/export/Logs/big-market-sjs-boot/gc-big-market-sjs-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms6G -Xmx6G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=release -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/fq-mall-activity-app -Xloggc:/export/Logs/marketing-engine-boot/gc-marketing-engine-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
                 <profileActive>prod</profileActive>
             </properties>
         </profile>

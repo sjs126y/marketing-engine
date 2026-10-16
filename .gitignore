@@ -38,5 +38,5 @@ build/
 .DS_Store
 /.idea/
 /data/
-/big-market-sjs-app/data/
+/marketing-engine-app/data/
 /docs/dev-ops/log/
