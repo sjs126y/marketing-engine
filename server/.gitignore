@@ -40,3 +40,5 @@ build/
 /data/
 /marketing-engine-app/data/
 /docs/dev-ops/log/
+/docs/dev-ops-marketing-engine/
+*.log
