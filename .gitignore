@@ -1,0 +1,31 @@
+# ---------- Java / Maven ----------
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+*.war
+*.ear
+
+# ---------- Node / Next.js ----------
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# ---------- 日志与运行产物 ----------
+*.log
+logs/
+marketing-engine-app/data/
+data/log/
+
+# ---------- 本地环境配置 ----------
+.env.local
+.env*.local
+
+# ---------- 编辑器与系统 ----------
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
