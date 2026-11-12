@@ -213,6 +213,17 @@ def sign(req: SignRequest) -> dict[str, Any]:
         "POST",
         f"/api/v1/raffle/activity/calendar_sign_rebate?userId={urllib.parse.quote(req.userId)}",
     )
+    # 中台用「返利流水」的唯一键做签到幂等，重复签到会返回 INDEX_DUP(0003)。
+    # 这属于正常路径，上游按「今天已签」处理，不当成失败。
+    if mid_result.get("code") == "0003" or "唯一索引" in str(mid_result.get("info", "")):
+        with db() as conn:
+            ensure_user(conn, req.userId)
+            conn.execute(
+                "insert or ignore into sign_log(user_id, sign_date) values (?,?)",
+                (req.userId, today),
+            )
+        return {"ok": False, "reason": "今天已经签到过了", "credit": 0}
+
     if mid_result.get("code") != "0000":
         return {"ok": False, "reason": f"中台判定不可签到: {mid_result.get('info')}", "credit": 0}
 
