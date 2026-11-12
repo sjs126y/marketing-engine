@@ -1,10 +1,13 @@
 package com.sjs.marketing.infrastructure.adapter.repository;
 import com.sjs.marketing.domain.activity.adapter.repository.IActivityRepository;
-import com.sjs.marketing.domain.activity.event.ActivitySkuStockZeroMessageEvent;
+import com.sjs.marketing.domain.activity.event.ActivitySkuStockMessageEvent;
+import com.sjs.marketing.types.event.BaseEvent;
+import com.sjs.marketing.types.util.JsonUtils;
+import com.sjs.marketing.infrastructure.outbox.OutboxService;
 import com.sjs.marketing.domain.activity.model.aggregate.CreatePartakeOrderAggregate;
 import com.sjs.marketing.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.sjs.marketing.domain.activity.model.entity.*;
-import com.sjs.marketing.domain.activity.model.valobj.ActivitySkuStockKeyVO;
+import com.sjs.marketing.domain.activity.model.valobj.ActivitySkuStockSnapshotVO;
 import com.sjs.marketing.domain.activity.model.valobj.ActivityStateVO;
 import com.sjs.marketing.domain.activity.model.valobj.UserRaffleOrderStateVO;
 import com.sjs.marketing.infrastructure.dao.*;
@@ -15,8 +18,6 @@ import com.sjs.marketing.types.common.Constants;
 import com.sjs.marketing.types.enums.ResponseCode;
 import com.sjs.marketing.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RBlockingQueue;
-import org.redisson.api.RDelayedQueue;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -53,9 +54,9 @@ public class ActivityRepository implements IActivityRepository {
     @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
-    private ActivitySkuStockZeroMessageEvent activitySkuStockZeroMessageEvent;
+    private ActivitySkuStockMessageEvent activitySkuStockMessageEvent;
     @Resource
-    private EventPublisher eventPublisher;
+    private OutboxService outboxService;
 
     @Override
     public ActivitySkuEntity queryActivitySku(Long sku) {
@@ -167,6 +168,17 @@ public class ActivityRepository implements IActivityRepository {
         raffleActivityAccountDay.setDayCount(createQuotaOrderAggregate.getDayCount());
         raffleActivityAccountDay.setDayCountSurplus(createQuotaOrderAggregate.getDayCount());
 
+        // 库存回写消息：与订单/账户同事务写入 outbox，事务外由调度器投递
+        ActivitySkuStockMessageEvent.ActivitySkuStockMessage skuStockMessage =
+                ActivitySkuStockMessageEvent.ActivitySkuStockMessage.builder()
+                        .userId(createQuotaOrderAggregate.getUserId())
+                        .activityId(createQuotaOrderAggregate.getActivityId())
+                        .sku(activityOrderEntity.getSku())
+                        .consumedAfter(createQuotaOrderAggregate.getSkuConsumedAfter())
+                        .build();
+        BaseEvent.EventMessage<ActivitySkuStockMessageEvent.ActivitySkuStockMessage> skuStockEventMessage =
+                activitySkuStockMessageEvent.buildEventMessage(skuStockMessage);
+
         // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
         //保持数据库一致性
         transactionTemplate.execute(status -> {
@@ -183,6 +195,13 @@ public class ActivityRepository implements IActivityRepository {
                 raffleActivityAccountMonthDao.addAccountQuota(raffleActivityAccountMonth);
                 // 5. 更新账户 - 日
                 raffleActivityAccountDayDao.addAccountQuota(raffleActivityAccountDay);
+                // 6. 库存回写消息进 outbox（绝对量，重复消费幂等）
+                if (createQuotaOrderAggregate.getSkuConsumedAfter() != null) {
+                    outboxService.append(createQuotaOrderAggregate.getUserId(),
+                            activitySkuStockMessageEvent.topic(),
+                            skuStockEventMessage.getId(),
+                            JsonUtils.toJson(skuStockEventMessage));
+                }
 
                 return 1;
             } catch (DuplicateKeyException e) {
@@ -202,59 +221,58 @@ public class ActivityRepository implements IActivityRepository {
     }
 
     @Override
-    public boolean subtractionActivitySkuStock(Long sku, Date endDateTime) {
+    public Integer subtractionActivitySkuStock(Long sku, Date endDateTime) {
         String cacheKey = Constants.RedisKey.ACTIVITY_SKU_STOCK_COUNT_KEY + sku;
         long surplus = redisService.decr(cacheKey);
-        //如果库存等于0，发送mq消息更新库存
-        if (surplus == 0) {
-            eventPublisher.publish(activitySkuStockZeroMessageEvent.topic(), activitySkuStockZeroMessageEvent.buildEventMessage(sku));
-        } else if (surplus < 0) {
+        if (surplus < 0) {
+            // 扣成负数说明超卖，计数器归零并拒绝本次请求
             redisService.setAtomicLong(cacheKey, 0);
-            return false;
+            log.error("库存扣减失败，库存不足，sku: {}", sku);
+            return null;
         }
 
-        //根据库存上兜底锁
+        // 用「剩余值」当 token 上兜底锁，避免同一余量被重复扣减
         long expireMillis = endDateTime.getTime() - System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1);
         String lockKey = cacheKey + Constants.UNDERLINE + surplus;
 
         Boolean isLock = redisService.setNx(lockKey, expireMillis, TimeUnit.MILLISECONDS);
         if (!isLock) {
-            log.error("库存扣减失败，库存不足，sku: {}", sku);
+            // 并发下同一余量已被抢占，回补本次扣减并拒绝
+            redisService.incr(cacheKey);
+            log.error("库存扣减失败，余量已被抢占，sku: {} surplus: {}", sku, surplus);
+            return null;
         }
 
-        return isLock;
+        return (int) surplus;
     }
 
     @Override
-    public void activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO activitySkuStockKeyVO) {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY;
-        RBlockingQueue<Object> blockingQueue = redisService.getBlockingQueue(cacheKey);
-        RDelayedQueue<Object> delayedQueue = redisService.getDelayedQueue(blockingQueue);
-        delayedQueue.offer(activitySkuStockKeyVO, 3, TimeUnit.SECONDS);
+    public int updateAppliedConsumed(Long sku, Integer consumedAfter) {
+        return raffleActivitySkuDao.updateAppliedConsumed(sku, consumedAfter);
     }
 
     @Override
-    public ActivitySkuStockKeyVO takeQueueValue() {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY;
-        RBlockingQueue<ActivitySkuStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
-        return blockingQueue.poll();
+    public Integer querySkuSurplusFromRedis(Long sku) {
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_STOCK_COUNT_KEY + sku;
+        if (!redisService.isExists(cacheKey)) {
+            return null;
+        }
+        return (int) redisService.decrBy(cacheKey, 0);
     }
 
     @Override
-    public void clearQueue() {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY;
-        RBlockingQueue<ActivitySkuStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
-        blockingQueue.clear();
-    }
-
-    @Override
-    public void updateActivitySkuStockCount(Long sku) {
-        raffleActivitySkuDao.updateActivitySkuStockCount(sku);
-    }
-
-    @Override
-    public void clearActivitySkuStockCount(Long sku) {
-        raffleActivitySkuDao.clearActivitySkuStockCount(sku);
+    public List<ActivitySkuStockSnapshotVO> querySkuStockSnapshot() {
+        List<RaffleActivitySku> skuList = raffleActivitySkuDao.queryAllSkuStock();
+        List<ActivitySkuStockSnapshotVO> result = new ArrayList<>(skuList.size());
+        for (RaffleActivitySku sku : skuList) {
+            result.add(ActivitySkuStockSnapshotVO.builder()
+                    .sku(sku.getSku())
+                    .stockCount(sku.getStockCount())
+                    .stockCountSurplus(sku.getStockCountSurplus())
+                    .appliedConsumed(sku.getAppliedConsumed())
+                    .build());
+        }
+        return result;
     }
 
     @Override

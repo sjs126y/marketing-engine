@@ -47,4 +47,12 @@ public class CreateQuotaOrderAggregate {
      */
     private ActivityOrderEntity activityOrderEntity;
 
+    /**
+     * 本次扣减后的 SKU 累计已扣数（Redis 口径）。
+     *
+     * <p>落库时作为 outbox 消息的内容，让消费端以绝对量回写库存——
+     * 重复投递或乱序到达都不会把库存算错。</p>
+     */
+    private Integer skuConsumedAfter;
+
 }
