@@ -26,6 +26,14 @@ type DrawResult = {
 
 const GRID_ORDER = [0, 1, 2, 5, 8, 7, 6, 3] // 顺时针 8 格，中心是按钮
 
+/** 把 HTTP 状态翻成人话，避免出现 "Unexpected end of JSON input" 这种提示。 */
+function httpError(status: number, action: string): string {
+  if (status === 401 || status === 403) {
+    return `${action}被拒绝（HTTP ${status}）：抽奖页需要上游换发的 token，请从上游 App 点「去抽奖」进入`
+  }
+  return `${action}失败（HTTP ${status}）`
+}
+
 /** 解析 JWT 的 sub（只解码、不验签；验签在中台做）。 */
 function subOf(token: string): string | null {
   try {
@@ -79,6 +87,7 @@ export default function PlayPage() {
         headers: authHeaders(),
         body: JSON.stringify({ userId: uid, activityId: Number(aid) }),
       })
+      if (!resp.ok) throw new Error(httpError(resp.status, '奖品列表'))
       const data = await resp.json()
       if (data.code !== '0000') throw new Error(data.info || '奖品列表加载失败')
       const list: Award[] = (data.data || []).sort((a: Award, b: Award) => a.sort - b.sort)
@@ -86,7 +95,7 @@ export default function PlayPage() {
       setReady(list.length > 0)
       return list
     },
-    [],
+    [authHeaders],
   )
 
   const loadAccount = useCallback(async (uid: string, aid: string) => {
@@ -95,9 +104,10 @@ export default function PlayPage() {
       headers: authHeaders(),
       body: JSON.stringify({ userId: uid, activityId: Number(aid) }),
     })
+    if (!resp.ok) throw new Error(httpError(resp.status, '账户额度'))
     const data = await resp.json()
     if (data.code === '0000') setAccount(data.data)
-  }, [])
+  }, [authHeaders])
 
   useEffect(() => {
     if (!userId || !activityId) return
@@ -143,6 +153,7 @@ export default function PlayPage() {
         headers: authHeaders(),
         body: JSON.stringify({ userId, activityId: Number(activityId) }),
       })
+      if (!resp.ok) throw new Error(httpError(resp.status, '抽奖'))
       const data = await resp.json()
 
       // 让动画至少转 1.2 秒，避免闪一下就停
