@@ -38,6 +38,7 @@
         <maven.compiler.release>21</maven.compiler.release>
         <lombok.version>1.18.34</lombok.version>
         <redisson.version>3.52.0</redisson.version>
+        <shardingsphere.version>5.5.3</shardingsphere.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -98,11 +99,6 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.15</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.bugstack.middleware</groupId>
-                <artifactId>db-router-spring-boot-starter</artifactId>
-                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>org.jeasy</groupId>

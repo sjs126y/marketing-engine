@@ -1,8 +1,6 @@
 package com.sjs.marketing.infrastructure.adapter.repository;
 
 import com.sjs.marketing.types.util.JsonUtils;
-
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.sjs.marketing.domain.rebate.adapter.repository.IBehaviorRepository;
 import com.sjs.marketing.domain.rebate.model.aggregate.BehaviorRebateAggregate;
 import com.sjs.marketing.domain.rebate.model.entity.BehaviorRebateOrderEntity;
@@ -39,8 +37,6 @@ public class BehaviorRepository implements IBehaviorRepository {
     @Resource
     private ITaskDao taskDao;
     @Resource
-    private IDBRouterStrategy dbRouter;
-    @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
     private EventPublisher eventPublisher;
@@ -63,7 +59,7 @@ public class BehaviorRepository implements IBehaviorRepository {
     @Override
     public void saveUserRebateRecord(String userId, List<BehaviorRebateAggregate> behaviorRebateAggregates) {
         try {
-            dbRouter.doRouter(userId);
+            // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
             transactionTemplate.execute(status -> {
                 try {
                     for (BehaviorRebateAggregate behaviorRebateAggregate : behaviorRebateAggregates) {
@@ -102,7 +98,7 @@ public class BehaviorRepository implements IBehaviorRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
+            // 无需手动清理路由上下文
         }
 
         //发送MQ消息

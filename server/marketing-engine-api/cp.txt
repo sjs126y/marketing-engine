@@ -1,0 +1,1 @@
+D:\Develop\apache-maven-3.9.4-bin\apache-maven-3.9.4\maven_repo\org\projectlombok\lombok\1.18.34\lombok-1.18.34.jar;D:\Develop\apache-maven-3.9.4-bin\apache-maven-3.9.4\maven_repo\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar

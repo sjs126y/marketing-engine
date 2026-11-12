@@ -1,6 +1,4 @@
 package com.sjs.marketing.infrastructure.adapter.repository;
-
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.sjs.marketing.domain.activity.adapter.repository.IActivityRepository;
 import com.sjs.marketing.domain.activity.event.ActivitySkuStockZeroMessageEvent;
 import com.sjs.marketing.domain.activity.model.aggregate.CreatePartakeOrderAggregate;
@@ -54,8 +52,6 @@ public class ActivityRepository implements IActivityRepository {
     private IUserRaffleOrderDao userRaffleOrderDao;
     @Resource
     private TransactionTemplate transactionTemplate;
-    @Resource
-    private IDBRouterStrategy dbRouter;
     @Resource
     private ActivitySkuStockZeroMessageEvent activitySkuStockZeroMessageEvent;
     @Resource
@@ -172,7 +168,7 @@ public class ActivityRepository implements IActivityRepository {
             raffleActivityAccountDay.setDayCount(createQuotaOrderAggregate.getDayCount());
             raffleActivityAccountDay.setDayCountSurplus(createQuotaOrderAggregate.getDayCount());
 
-            dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
+            // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
             //保持数据库一致性
             transactionTemplate.execute(status -> {
                 try {
@@ -198,7 +194,7 @@ public class ActivityRepository implements IActivityRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
+            // 无需手动清理路由上下文
         }
 
     }
@@ -357,7 +353,7 @@ public class ActivityRepository implements IActivityRepository {
             ActivityAccountMonthEntity activityAccountMonthEntity = createPartakeOrderAggregate.getActivityAccountMonthEntity();
             boolean isExistAccountDay = createPartakeOrderAggregate.isExistAccountDay();
             ActivityAccountDayEntity activityAccountDayEntity = createPartakeOrderAggregate.getActivityAccountDayEntity();
-            dbRouter.doRouter(userId);
+            // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
             transactionTemplate.execute(status -> {
                 try {
                     //1.先更新订单用户账户库存信息
@@ -449,7 +445,7 @@ public class ActivityRepository implements IActivityRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
+            // 无需手动清理路由上下文
         }
     }
 

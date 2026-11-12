@@ -1,8 +1,6 @@
 package com.sjs.marketing.infrastructure.adapter.repository;
 
 import com.sjs.marketing.types.util.JsonUtils;
-
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.sjs.marketing.domain.award.adapter.repository.IAwardRepository;
 import com.sjs.marketing.domain.award.model.aggregate.UserAwardRecordAggregate;
 import com.sjs.marketing.domain.award.model.entity.TaskEntity;
@@ -33,8 +31,6 @@ public class AwardRepository implements IAwardRepository {
     private IUserAwardRecordDao userAwardRecordDao;
     @Resource
     private IUserRaffleOrderDao userRaffleOrderDao;
-    @Resource
-    private IDBRouterStrategy dbRouter;
     @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
@@ -70,7 +66,7 @@ public class AwardRepository implements IAwardRepository {
         userRaffleOrder.setOrderId(userAwardRecordEntity.getOrderId());
 
         try {
-            dbRouter.doRouter(userId);
+            // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
             transactionTemplate.execute(status -> {
                 try {
                     //先插入中奖流水记录
@@ -94,7 +90,7 @@ public class AwardRepository implements IAwardRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
+            // 无需手动清理路由上下文
         }
 
         //发送mq消息

@@ -89,10 +89,6 @@
             <artifactId>redisson</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.bugstack.middleware</groupId>
-            <artifactId>db-router-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jeasy</groupId>
             <artifactId>easy-random-core</artifactId>
             <version>4.3.0</version>
@@ -101,6 +97,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>shardingsphere-jdbc</artifactId>
+            <version>${shardingsphere.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>shardingsphere-sharding-core</artifactId>
+            <version>${shardingsphere.version}</version>
         </dependency>
     </dependencies>
 
