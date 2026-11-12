@@ -31,7 +31,7 @@
 cd "C:\Users\MR\Desktop\Java Learn Project Summary\upstream-ai-app"
 
 # 首次：创建虚拟环境并安装依赖（已创建可跳过）
-D:\Develop\python\python.exe -m venv .venv
+python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -i https://mirrors.aliyun.com/pypi/simple/ fastapi uvicorn
 
 # 启动（默认 9000 端口）
