@@ -1,7 +1,8 @@
 package com.sjs.marketing.infrastructure.adapter.repository;
 
+import com.sjs.marketing.types.util.JsonUtils;
+
 import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
-import com.alibaba.fastjson.JSON;
 import com.sjs.marketing.domain.award.adapter.repository.IAwardRepository;
 import com.sjs.marketing.domain.award.model.aggregate.UserAwardRecordAggregate;
 import com.sjs.marketing.domain.award.model.entity.TaskEntity;
@@ -61,7 +62,7 @@ public class AwardRepository implements IAwardRepository {
         task.setUserId(taskEntity.getUserId());
         task.setTopic(taskEntity.getTopic());
         task.setMessageId(taskEntity.getMessageId());
-        task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
+        task.setMessage(JsonUtils.toJson(taskEntity.getMessage()));
         task.setState(taskEntity.getState().getCode());
 
         UserRaffleOrder userRaffleOrder = new UserRaffleOrder();

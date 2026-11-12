@@ -1,6 +1,7 @@
 package com.sjs.marketing.test.trigger;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.api.IRaffleStrategyService;
 import com.sjs.marketing.api.dto.RaffleAwardListRequestDTO;
 import com.sjs.marketing.api.dto.RaffleAwardListResponseDTO;
@@ -36,8 +37,8 @@ public class RaffleStrategyControllerTest {
         request.setActivityId(100301L);
         Response<List<RaffleAwardListResponseDTO>> response = raffleStrategyService.queryRaffleAwardList(request);
 
-        log.info("请求参数：{}", JSON.toJSONString(request));
-        log.info("测试结果：{}", JSON.toJSONString(response));
+        log.info("请求参数：{}", JsonUtils.toJson(request));
+        log.info("测试结果：{}", JsonUtils.toJson(response));
     }
 
     @Test
@@ -47,8 +48,8 @@ public class RaffleStrategyControllerTest {
         request.setActivityId(100301L);
 
         Response<List<RaffleStrategyRuleWeightResponseDTO>> response = raffleStrategyService.queryRaffleStrategyRuleWeight(request);
-        log.info("请求参数：{}", JSON.toJSONString(request));
-        log.info("测试结果：{}", JSON.toJSONString(response));
+        log.info("请求参数：{}", JsonUtils.toJson(request));
+        log.info("测试结果：{}", JsonUtils.toJson(response));
     }
 
 }

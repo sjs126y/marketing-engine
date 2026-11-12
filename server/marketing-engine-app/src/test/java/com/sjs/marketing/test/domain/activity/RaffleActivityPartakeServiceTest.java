@@ -1,6 +1,7 @@
 package com.sjs.marketing.test.domain.activity;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.domain.activity.model.entity.PartakeRaffleActivityEntity;
 import com.sjs.marketing.domain.activity.model.entity.UserRaffleOrderEntity;
 import com.sjs.marketing.domain.activity.service.IRaffleActivityPartakeService;
@@ -33,8 +34,8 @@ public class RaffleActivityPartakeServiceTest {
         partakeRaffleActivityEntity.setActivityId(100301L);
         // 调用接口
         UserRaffleOrderEntity userRaffleOrder = raffleActivityPartakeService.createOrder(partakeRaffleActivityEntity);
-        log.info("请求参数：{}", JSON.toJSONString(partakeRaffleActivityEntity));
-        log.info("测试结果：{}", JSON.toJSONString(userRaffleOrder));
+        log.info("请求参数：{}", JsonUtils.toJson(partakeRaffleActivityEntity));
+        log.info("测试结果：{}", JsonUtils.toJson(userRaffleOrder));
     }
 
 }

@@ -1,7 +1,8 @@
 package com.sjs.marketing.trigger.listener;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.TypeReference;
+import com.sjs.marketing.types.util.JsonUtils;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.sjs.marketing.domain.activity.service.IRaffleActivitySkuStockSerivce;
 import com.sjs.marketing.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +28,7 @@ public class ActivitySkuStockZeroCustomer {
         try{
             log.info("监听活动sku库存消耗为0消息，开始消费 topic: {} message: {}", topic, message);
             // 转换对象
-            BaseEvent.EventMessage<Long> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<Long>>() {
-            }.getType());
+            BaseEvent.EventMessage<Long> eventMessage = JsonUtils.parse(message, new TypeReference<BaseEvent.EventMessage<Long>>() {});
             Long sku = eventMessage.getData();
             //清空数据库库存
             skuStock.clearActivitySkuStock(sku);

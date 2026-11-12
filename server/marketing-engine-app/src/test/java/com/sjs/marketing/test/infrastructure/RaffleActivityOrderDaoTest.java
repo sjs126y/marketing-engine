@@ -1,6 +1,7 @@
 package com.sjs.marketing.test.infrastructure;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.infrastructure.dao.IRaffleActivityOrderDao;
 import com.sjs.marketing.infrastructure.dao.po.RaffleActivityOrder;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,7 @@ public class RaffleActivityOrderDaoTest {
     public void test_queryRaffleActivityOrderByUserId() {
         String userId = "demo-user";
         List<RaffleActivityOrder> raffleActivityOrders = raffleActivityOrderDao.queryRaffleActivityOrderByUserId(userId);
-        log.info("测试结果：{}", JSON.toJSONString(raffleActivityOrders));
+        log.info("测试结果：{}", JsonUtils.toJson(raffleActivityOrders));
     }
 
 }

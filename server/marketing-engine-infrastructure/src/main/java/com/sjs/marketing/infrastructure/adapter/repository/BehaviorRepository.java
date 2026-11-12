@@ -1,7 +1,8 @@
 package com.sjs.marketing.infrastructure.adapter.repository;
 
+import com.sjs.marketing.types.util.JsonUtils;
+
 import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
-import com.alibaba.fastjson.JSON;
 import com.sjs.marketing.domain.rebate.adapter.repository.IBehaviorRepository;
 import com.sjs.marketing.domain.rebate.model.aggregate.BehaviorRebateAggregate;
 import com.sjs.marketing.domain.rebate.model.entity.BehaviorRebateOrderEntity;
@@ -86,7 +87,7 @@ public class BehaviorRepository implements IBehaviorRepository {
                         task.setUserId(taskEntity.getUserId());
                         task.setTopic(taskEntity.getTopic());
                         task.setMessageId(taskEntity.getMessageId());
-                        task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
+                        task.setMessage(JsonUtils.toJson(taskEntity.getMessage()));
                         task.setState(taskEntity.getState().getCode());
                         taskDao.insert(task);
                     }

@@ -1,6 +1,7 @@
 package com.sjs.marketing.test.domain.rebate;
 
-import com.alibaba.fastjson2.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.domain.activity.service.armory.IActivityArmory;
 import com.sjs.marketing.domain.rebate.model.entity.BehaviorEntity;
 import com.sjs.marketing.domain.rebate.model.valobj.BehaviorTypeVO;
@@ -46,8 +47,8 @@ public class BehaviorRebateServiceTest {
         behaviorEntity.setOutBusinessNo("2024043168");
 
         List<String> orderIds = behaviorRebateService.createOrder(behaviorEntity);
-        log.info("请求参数：{}", JSON.toJSONString(behaviorEntity));
-        log.info("测试结果：{}", JSON.toJSONString(orderIds));
+        log.info("请求参数：{}", JsonUtils.toJson(behaviorEntity));
+        log.info("测试结果：{}", JsonUtils.toJson(orderIds));
 
         new CountDownLatch(1).await();
     }
