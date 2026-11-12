@@ -48,10 +48,10 @@
 
 ### P2 库存一致性 → tag `v0.3.0`
 
-- [ ] 库存扣减走 outbox，`applied_consumed` 绝对值 + 单调保护
-- [ ] 事务失败 `INCR` 回补
-- [ ] 对账任务（Redis 已扣 vs DB 已扣）
-- [ ] 删除 Redisson 延迟队列与 `UpdateActivitySkuStockJob`
+- [x] 库存扣减走 outbox，`applied_consumed` 绝对值 + 单调保护
+- [x] 事务失败 `INCR` 回补
+- [x] 对账任务（Redis 已扣 vs DB 已扣）
+- [x] 删除 Redisson 延迟队列与 `UpdateActivitySkuStockJob`
 
 **验收**：`kill` 消费进程后一个对账周期内收敛；500 并发下 `stock_count - surplus == 成功订单数`。
 
