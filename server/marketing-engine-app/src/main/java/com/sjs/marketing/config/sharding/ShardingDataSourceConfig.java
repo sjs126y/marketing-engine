@@ -50,7 +50,9 @@ public class ShardingDataSourceConfig {
             "award",
             "rule_tree",
             "rule_tree_node",
-            "rule_tree_node_line");
+            "rule_tree_node_line",
+            // 日常行为返利配置：签到等行为触发返利时查询
+            "daily_behavior_rebate");
 
     /** 分库 + 分表：订单类，每个库 4 张 */
     private static final List<String> SHARDED_TABLES = List.of(

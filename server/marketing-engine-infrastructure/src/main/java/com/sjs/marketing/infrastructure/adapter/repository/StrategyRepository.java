@@ -12,7 +12,6 @@ import com.sjs.marketing.types.enums.ResponseCode;
 import com.sjs.marketing.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBlockingQueue;
-import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -264,8 +263,9 @@ public class StrategyRepository implements IStrategyRepository {
     public void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO) {
         String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUERY_KEY;
         RBlockingQueue<Object> blockingQueue = redisService.getBlockingQueue(cacheKey);
-        RDelayedQueue<Object> delayedQueue = redisService.getDelayedQueue(blockingQueue);
-        delayedQueue.offer(strategyAwardStockKeyVO, 5, TimeUnit.SECONDS);
+        // 直接入队即可：落库按「总量 - 已扣数」绝对量回写，重复消费与乱序都幂等，
+        // 不再需要延迟投递（Redisson 的 RDelayedQueue 也已标记废弃）。
+        blockingQueue.offer(strategyAwardStockKeyVO);
     }
 
     @Override
