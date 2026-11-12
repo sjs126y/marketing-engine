@@ -1,45 +1,43 @@
-# 命令执行 docker-compose -f docker-compose-environment.yml up -d
+# 启动基础环境：docker compose -f docker-compose-environment.yml up -d
+# 需要 phpMyAdmin / Redis 可视化管理时追加 --profile tools
 version: '3.9'
+
 services:
   mysql:
     image: mysql:8.0.32
     container_name: mysql
-    command: --default-authentication-plugin=mysql_native_password
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
     restart: always
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: 123456
     networks:
       - my-network
-    depends_on:
-      - mysql-job-dbdata
     ports:
       - "13306:3306"
     volumes:
+      # 建库建表脚本：仅在数据卷为空时执行一次
       - ./mysql/sql:/docker-entrypoint-initdb.d
+      # 具名卷持久化：容器删除重建后数据仍在（原来的 volumes_from 在 compose v3 无效）
+      - mysql-data:/var/lib/mysql
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p123456" ]
       interval: 5s
       timeout: 10s
-      retries: 10
-      start_period: 15s
-    volumes_from:
-      - mysql-job-dbdata
+      retries: 20
+      start_period: 30s
 
-  # 自动加载数据
-  mysql-job-dbdata:
-    image: alpine:3.18.2
-    container_name: mysql-job-dbdata
-    volumes:
-      - /var/lib/mysql
-
-  # phpmyadmin https://hub.docker.com/_/phpmyadmin
+  # phpMyAdmin: http://localhost:8899  账号 root / 123456
   phpmyadmin:
     image: phpmyadmin:5.2.1
     container_name: phpmyadmin
     hostname: phpmyadmin
+    profiles: [ "tools" ]
     ports:
-      - 8899:80
+      - "8899:80"
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306
@@ -58,9 +56,10 @@ services:
     hostname: redis
     privileged: true
     ports:
-      - 16379:6379
+      - "16379:6379"
     volumes:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - redis-data:/data
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       - my-network
@@ -70,15 +69,15 @@ services:
       timeout: 5s
       retries: 3
 
-  # RedisAdmin https://github.com/joeferner/redis-commander
-  # 账密 admin/admin
+  # RedisAdmin: http://localhost:8081  账号 admin / admin
   redis-admin:
     image: spryker/redis-commander:0.8.0
     container_name: redis-admin
     hostname: redis-commander
     restart: always
+    profiles: [ "tools" ]
     ports:
-      - 8081:8081
+      - "8081:8081"
     environment:
       - REDIS_HOSTS=local:redis:6379
       - HTTP_USER=admin
@@ -92,9 +91,7 @@ services:
       redis:
         condition: service_healthy
 
-  # rabbitmq
-  # 账密 admin/admin
-  # rabbitmq-plugins enable rabbitmq_management
+  # rabbitmq: http://localhost:15672  账号 admin / admin
   rabbitmq:
     image: rabbitmq:3.12.9
     container_name: rabbitmq
@@ -110,7 +107,13 @@ services:
     command: rabbitmq-server
     volumes:
       - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - rabbitmq-data:/var/lib/rabbitmq
 
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:
+  rabbitmq-data:
