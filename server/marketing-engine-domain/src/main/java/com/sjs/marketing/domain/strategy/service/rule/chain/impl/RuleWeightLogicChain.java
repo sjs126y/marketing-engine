@@ -5,14 +5,13 @@ import com.sjs.marketing.domain.strategy.model.entity.RuleActionEntity;
 import com.sjs.marketing.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.sjs.marketing.domain.strategy.service.armory.IStrategyDispatch;
 import com.sjs.marketing.domain.strategy.service.rule.chain.AbstractLogicChain;
+import com.sjs.marketing.domain.strategy.service.rule.chain.RuleWeightSelector;
 import com.sjs.marketing.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
 import com.sjs.marketing.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,20 +39,14 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
             return next().logic(userId, strategyId);
         }
 
-        //转换key值，并排序
-        ArrayList<Long> analyticalSortedKeys = new ArrayList<>(analyticalValueGroup.keySet());
-        Collections.sort(analyticalSortedKeys);
-
+        // 查询用户累计消耗，选出命中的档位（语义见 RuleWeightSelector）
         Integer userScore = repository.queryActivityAccountTotalUseCount(userId, strategyId);
-        //获取最小权重
-        Long nextValue = analyticalSortedKeys.stream()
-                .filter(key -> userScore >= key)
-                .findFirst()
-                .orElse(null);
+        String tierToken = RuleWeightSelector.select(analyticalValueGroup, userScore == null ? 0 : userScore);
 
-        if(nextValue != null){
-            Integer awardId = strategyDispatch.getRandomAwardId(strategyId, analyticalValueGroup.get(nextValue));
-            log.info("权重抽奖-权重范围 userId:{} strategyId:{} ruleModel:{} awardId:{}", userId, strategyId, ruleModel(), awardId);
+        if (tierToken != null) {
+            Integer awardId = strategyDispatch.getRandomAwardId(strategyId, tierToken);
+            log.info("权重抽奖-权重范围 userId:{} strategyId:{} ruleModel:{} tier:{} awardId:{}",
+                    userId, strategyId, ruleModel(), tierToken, awardId);
             return DefaultChainFactory.StrategyAwardVO.builder()
                     .awardId(awardId)
                     .logicModel(ruleModel())

@@ -122,13 +122,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.6</version>
                 <configuration>
-                    <skipTests>true</skipTests>
-                    <testFailureIgnore>false</testFailureIgnore>
+                    <!--
+                      默认只跑不依赖中间件的纯单测（**/unit/*Test.java）。
+                      集成测试需要 MySQL/Redis/RabbitMQ，用 -P integration 显式开启：
+                        mvn test -P integration
+                    -->
                     <includes>
-                        <include>**/*Test.java</include>
+                        <include>**/unit/*Test.java</include>
                     </includes>
+                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
             <plugin>

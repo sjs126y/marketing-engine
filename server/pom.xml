@@ -145,7 +145,29 @@
             </plugin>
         </plugins>
     </build>
-    <!-- profiles 已移除：原 dev/test/prod 仅存放未使用的 java_jvm 属性，且含 JDK8 已废弃参数 -->
 
+    <profiles>
+        <!--
+          集成测试档案：需要本地 MySQL / Redis / RabbitMQ。
+            mvn test -P integration
+          默认构建只跑 **/unit/*Test.java，保证 CI 无需中间件即可通过。
+        -->
+        <profile>
+            <id>integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build & unit test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Compile
+        working-directory: server
+        run: mvn -B -DskipTests compile
+
+      # 默认只跑不依赖中间件的纯单测（**/unit/*Test.java）：
+      # 概率表装配、权重选档、决策树走线、JSON 序列化、配置校验器。
+      # 需要 MySQL/Redis/RabbitMQ 的集成测试用 `mvn test -P integration` 本地执行。
+      - name: Unit tests
+        working-directory: server
+        run: mvn -B test
+
+      - name: Package
+        working-directory: server
+        run: mvn -B -DskipTests package
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: server/**/target/surefire-reports/*.txt
+          if-no-files-found: ignore
