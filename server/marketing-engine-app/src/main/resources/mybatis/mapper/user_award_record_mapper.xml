@@ -30,4 +30,12 @@
         limit #{limit}
     </select>
 
+    <update id="updateAwardState">
+        update user_award_record
+        set award_state = #{state}
+        where user_id = #{userId}
+          and order_id = #{orderId}
+          and award_state = 'create'
+    </update>
+
 </mapper>

@@ -24,6 +24,10 @@ public class OutboxMessage {
     private String messageId;
     /** 消息体（JSON） */
     private String payload;
+    /** 投递方式：MQ / HTTP */
+    private String deliveryType;
+    /** HTTP 投递目标地址（MQ 投递时为空） */
+    private String target;
     /** 状态：pending/sending/sent/consumed/dead */
     private String state;
     /** 已重试次数 */

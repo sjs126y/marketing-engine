@@ -22,6 +22,9 @@ public interface IOutboxDao {
 
     int insert(OutboxMessage message);
 
+    /** 按投递类型统计，用于看板展示 MQ/HTTP 各自的积压 */
+    int countByDeliveryType(@Param("deliveryType") String deliveryType, @Param("state") String state);
+
     /**
      * 取一批到期的待投递消息（不带锁，靠 claim 条件更新抢占，避免长事务持锁）。
      */

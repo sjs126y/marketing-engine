@@ -64,6 +64,8 @@ public class SecurityConfig {
             http.authorizeHttpRequests(auth -> auth
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                             .requestMatchers("/api/v1/auth/**", "/console/auth/**").permitAll()
+                            // 健康检查与指标给运维/探活用，不要求登录
+                            .requestMatchers("/actuator/**").permitAll()
                             .requestMatchers("/open/**").hasRole("UPSTREAM")
                             .requestMatchers("/console/**").hasAnyRole("OPERATOR", "ADMIN")
                             .anyRequest().authenticated())

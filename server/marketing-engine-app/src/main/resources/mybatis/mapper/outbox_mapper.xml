@@ -8,6 +8,8 @@
         <result column="topic" property="topic"/>
         <result column="message_id" property="messageId"/>
         <result column="payload" property="payload"/>
+        <result column="delivery_type" property="deliveryType"/>
+        <result column="target" property="target"/>
         <result column="state" property="state"/>
         <result column="retry_count" property="retryCount"/>
         <result column="next_retry_at" property="nextRetryAt"/>
@@ -19,14 +21,18 @@
 
     <insert id="insert" parameterType="com.sjs.marketing.infrastructure.dao.po.OutboxMessage">
         insert into outbox(
-            user_id, topic, message_id, payload, state, retry_count, next_retry_at, created_at, updated_at
+            user_id, topic, message_id, payload, delivery_type, target,
+            state, retry_count, next_retry_at, created_at, updated_at
         ) values (
-            #{userId}, #{topic}, #{messageId}, #{payload}, #{state}, 0, now(), now(), now()
+            #{userId}, #{topic}, #{messageId}, #{payload},
+            #{deliveryType, jdbcType=VARCHAR}, #{target, jdbcType=VARCHAR},
+            #{state}, 0, now(), now(), now()
         )
     </insert>
 
     <select id="queryPendingBatch" resultMap="dataMap">
-        select id, user_id, topic, message_id, payload, state, retry_count, next_retry_at, sent_at
+        select id, user_id, topic, message_id, payload, delivery_type, target,
+               state, retry_count, next_retry_at, sent_at
         from outbox
         where state = 'pending' and next_retry_at &lt;= now()
         order by id
@@ -84,6 +90,10 @@
 
     <select id="countByState" resultType="int">
         select count(*) from outbox where state = #{state}
+    </select>
+
+    <select id="countByDeliveryType" resultType="int">
+        select count(*) from outbox where delivery_type = #{deliveryType} and state = #{state}
     </select>
 
 </mapper>

@@ -18,4 +18,10 @@
         limit 10
     </select>
 
+    <select id="queryAwardDefine" resultMap="dataMap">
+        select id, award_id, award_key, award_config, award_desc
+        from award
+        where award_id = #{awardId}
+    </select>
+
 </mapper>

@@ -28,6 +28,13 @@ app:
       username: ${DB_USERNAME:root}
       password: ${DB_PASSWORD:123456}
 
+  # 发奖回调：中台把「用户中了什么」推给上游业务系统
+  callback:
+    enabled: true
+    url: ${CALLBACK_URL:http://127.0.0.1:9000/webhook/award}
+    secret: ${CALLBACK_SECRET:upstream-callback-secret}
+    timeout-ms: 5000
+
   # 本地消息表（outbox）调度参数
   outbox:
     batch-size: 200            # 单次扫描条数

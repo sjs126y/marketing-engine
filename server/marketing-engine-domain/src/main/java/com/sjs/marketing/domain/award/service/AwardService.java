@@ -6,6 +6,7 @@ import com.sjs.marketing.domain.award.model.aggregate.UserAwardRecordAggregate;
 import com.sjs.marketing.domain.award.model.entity.TaskEntity;
 import com.sjs.marketing.domain.award.model.entity.UserAwardRecordEntity;
 import com.sjs.marketing.domain.award.model.valobj.TaskStateVO;
+import com.sjs.marketing.domain.award.model.valobj.AwardDefineVO;
 import com.sjs.marketing.domain.award.model.valobj.UserAwardRecordVO;
 import com.sjs.marketing.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -55,5 +56,15 @@ public class AwardService implements IAwardService {
     @Override
     public List<UserAwardRecordVO> queryRecentAwards(int limit) {
         return repository.queryRecentAwards(limit);
+    }
+
+    @Override
+    public AwardDefineVO queryAwardDefine(Integer awardId) {
+        return repository.queryAwardDefine(awardId);
+    }
+
+    @Override
+    public void markDelivered(String userId, String orderId) {
+        repository.updateAwardState(userId, orderId, "complete");
     }
 }

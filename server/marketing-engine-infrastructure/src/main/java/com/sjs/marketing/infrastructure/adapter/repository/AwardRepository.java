@@ -4,9 +4,14 @@ import com.sjs.marketing.domain.award.adapter.repository.IAwardRepository;
 import com.sjs.marketing.domain.award.model.aggregate.UserAwardRecordAggregate;
 import com.sjs.marketing.domain.award.model.entity.TaskEntity;
 import com.sjs.marketing.domain.award.model.entity.UserAwardRecordEntity;
+import com.sjs.marketing.domain.award.event.AwardCallbackMessage;
+import com.sjs.marketing.domain.award.model.valobj.AwardDefineVO;
+import com.sjs.marketing.domain.award.model.valobj.AwardDeliveryTypeVO;
 import com.sjs.marketing.domain.award.model.valobj.UserAwardRecordVO;
+import com.sjs.marketing.infrastructure.dao.IAwardDao;
 import com.sjs.marketing.infrastructure.dao.IUserAwardRecordDao;
 import com.sjs.marketing.infrastructure.dao.IUserRaffleOrderDao;
+import com.sjs.marketing.infrastructure.dao.po.Award;
 import com.sjs.marketing.infrastructure.dao.po.UserAwardRecord;
 import com.sjs.marketing.infrastructure.dao.po.UserRaffleOrder;
 import com.sjs.marketing.infrastructure.outbox.OutboxService;
@@ -17,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.UUID;
 
 import jakarta.annotation.Resource;
 import java.util.ArrayList;
@@ -42,6 +49,8 @@ public class AwardRepository implements IAwardRepository {
     private TransactionTemplate transactionTemplate;
     @Resource
     private OutboxService outboxService;
+    @Resource
+    private IAwardDao awardDao;
 
     @Override
     public void saveUserAwardRecord(UserAwardRecordAggregate userAwardRecordAggregate) {
@@ -67,6 +76,26 @@ public class AwardRepository implements IAwardRepository {
 
         String payload = JsonUtils.toJson(taskEntity.getMessage());
 
+        // 把中奖结果翻译成给上游的交付指令：类型、数量、原文都在这里定
+        AwardDefineVO define = queryAwardDefine(awardId);
+        AwardDeliveryTypeVO deliveryType = AwardDeliveryTypeVO.of(define == null ? null : define.getAwardKey());
+        int amount = AwardDeliveryTypeVO.resolveAmount(define == null ? null : define.getAwardConfig());
+
+        String callbackEventId = UUID.randomUUID().toString().replace("-", "");
+        AwardCallbackMessage callbackMessage = AwardCallbackMessage.builder()
+                .eventId(callbackEventId)
+                .orderId(userAwardRecordEntity.getOrderId())
+                .userId(userId)
+                .activityId(activityId)
+                .awardId(awardId)
+                .awardTitle(userAwardRecordEntity.getAwardTitle())
+                .prizeType(deliveryType.getCode())
+                .amount(amount)
+                .config(define == null ? null : define.getAwardConfig())
+                .awardKey(define == null ? null : define.getAwardKey())
+                .build();
+        String callbackPayload = JsonUtils.toJson(callbackMessage);
+
         // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
         transactionTemplate.execute(status -> {
             try {
@@ -75,6 +104,10 @@ public class AwardRepository implements IAwardRepository {
 
                 // 2. 发奖消息进 outbox（与业务同事务，保证「业务成功 ⇒ 消息必达」）
                 outboxService.append(userId, taskEntity.getTopic(), taskEntity.getMessageId(), payload);
+
+                // 3. 发奖回调进 outbox：中台不持有资产，把「中了什么」推给上游去入账。
+                //    与业务同事务，回调也不会凭空丢失；HTTP 投递失败由 outbox 重试。
+                outboxService.appendCallback(userId, callbackEventId, callbackPayload);
 
                 // 3. 抽奖单置为已使用，影响行数不为 1 说明已被消费，整笔回滚
                 int updateCount = userRaffleOrderDao.updateUserRaffleOrderStateUsed(userRaffleOrder);
@@ -111,5 +144,24 @@ public class AwardRepository implements IAwardRepository {
                     .build());
         }
         return result;
+    }
+
+    @Override
+    public AwardDefineVO queryAwardDefine(Integer awardId) {
+        Award award = awardDao.queryAwardDefine(awardId);
+        if (award == null) {
+            return null;
+        }
+        return AwardDefineVO.builder()
+                .awardId(award.getAwardId())
+                .awardKey(award.getAwardKey())
+                .awardConfig(award.getAwardConfig())
+                .awardDesc(award.getAwardDesc())
+                .build();
+    }
+
+    @Override
+    public void updateAwardState(String userId, String orderId, String state) {
+        userAwardRecordDao.updateAwardState(userId, orderId, state);
     }
 }

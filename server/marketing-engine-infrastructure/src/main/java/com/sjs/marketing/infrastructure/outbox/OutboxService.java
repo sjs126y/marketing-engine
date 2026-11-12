@@ -1,10 +1,11 @@
 package com.sjs.marketing.infrastructure.outbox;
 
+import com.sjs.marketing.domain.award.event.AwardCallbackMessage;
 import com.sjs.marketing.infrastructure.dao.IOutboxDao;
 import com.sjs.marketing.infrastructure.dao.po.OutboxMessage;
-import com.sjs.marketing.domain.outbox.service.IOutboxAckService;
 import com.sjs.marketing.infrastructure.event.EventPublisher;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -18,16 +19,27 @@ import java.util.concurrent.TimeUnit;
  * <p>核心约定：</p>
  * <ul>
  *   <li>业务事务内只做 {@link #append}，保证「业务成功 ⇒ 消息一定入库」；</li>
- *   <li>投递是异步的，先用条件更新把消息抢占成 sending，再发 MQ，避免多实例重复投递；</li>
+ *   <li>投递是异步的，先用条件更新把消息抢占成 sending，再投递，避免多实例重复；</li>
  *   <li>失败按指数退避重试，超过上限进入 dead，等待人工介入；</li>
- *   <li>消费端处理完成后调用 {@link #markConsumed} 回执，形成闭环。</li>
+ *   <li>消费端/回调成功后回执，形成闭环。</li>
+ * </ul>
+ *
+ * <p>两种投递方式：</p>
+ * <ul>
+ *   <li>{@code MQ}：内部事件（发奖、返利、库存回写），投给 RabbitMQ；</li>
+ *   <li>{@code HTTP}：对外回调（发奖结果通知上游），POST 到上游 webhook。</li>
  * </ul>
  *
  * @author marketing-engine contributors
  */
 @Slf4j
 @Service
-public class OutboxService implements IOutboxAckService {
+public class OutboxService implements com.sjs.marketing.domain.outbox.service.IOutboxAckService {
+
+    /** MQ 投递 */
+    public static final String DELIVERY_MQ = "MQ";
+    /** HTTP 回调 */
+    public static final String DELIVERY_HTTP = "HTTP";
 
     @Resource
     private IOutboxDao outboxDao;
@@ -36,17 +48,43 @@ public class OutboxService implements IOutboxAckService {
     private EventPublisher eventPublisher;
 
     @Resource
+    private HttpCallbackPublisher httpCallbackPublisher;
+
+    @Resource
+    private AwardCallbackProperties callbackProperties;
+
+    @Resource
     private OutboxProperties properties;
 
+    @Resource
+    private ApplicationEventPublisher applicationEventPublisher;
+
     /**
-     * 在业务事务内追加一条待投递消息。
+     * 在业务事务内追加一条 MQ 待投递消息。
      */
     public void append(String userId, String topic, String messageId, String payload) {
+        append(userId, topic, messageId, payload, DELIVERY_MQ, null);
+    }
+
+    /**
+     * 在业务事务内追加一条 HTTP 回调消息。
+     *
+     * <p>回调关闭时同样写库（只是不投递），便于开启后补发。</p>
+     */
+    public void appendCallback(String userId, String messageId, String payload) {
+        append(userId, AwardCallbackMessage.TOPIC, messageId, payload,
+                DELIVERY_HTTP, callbackProperties.getUrl());
+    }
+
+    private void append(String userId, String topic, String messageId, String payload,
+                        String deliveryType, String target) {
         OutboxMessage message = new OutboxMessage();
         message.setUserId(userId);
         message.setTopic(topic);
         message.setMessageId(messageId);
         message.setPayload(payload);
+        message.setDeliveryType(deliveryType);
+        message.setTarget(target);
         message.setState(OutboxState.PENDING.getCode());
         outboxDao.insert(message);
     }
@@ -64,13 +102,15 @@ public class OutboxService implements IOutboxAckService {
 
         int sent = 0;
         for (OutboxMessage message : batch) {
-            // 抢占成功才投递，避免多实例重复发送；(userId, messageId) 定位可精确路由到分片
+            if (!callbackProperties.isEnabled() && DELIVERY_HTTP.equals(message.getDeliveryType())) {
+                // 回调未启用：消息留在 pending，开启后会自动补发
+                continue;
+            }
             if (outboxDao.claim(message.getUserId(), message.getMessageId()) != 1) {
                 continue;
             }
-
             try {
-                eventPublisher.publish(message.getTopic(), message.getPayload());
+                deliver(message);
                 outboxDao.markSent(message.getUserId(), message.getMessageId());
                 sent++;
             } catch (Exception e) {
@@ -84,11 +124,29 @@ public class OutboxService implements IOutboxAckService {
         return sent;
     }
 
+    private void deliver(OutboxMessage message) throws Exception {
+        if (DELIVERY_HTTP.equals(message.getDeliveryType())) {
+            String target = message.getTarget() != null ? message.getTarget() : callbackProperties.getUrl();
+            httpCallbackPublisher.publish(target, message.getMessageId(), message.getPayload());
+            // 回调成功：把发奖状态推进到 complete
+            if (AwardCallbackMessage.TOPIC.equals(message.getTopic())) {
+                markDelivered(message.getPayload());
+            }
+            return;
+        }
+        eventPublisher.publish(message.getTopic(), message.getPayload());
+    }
+
+    private void markDelivered(String payload) {
+        AwardCallbackDeliveredEvent event = AwardCallbackDeliveredListener.parse(payload);
+        if (event != null) {
+            // 用事件通知状态推进，避免 OutboxService 反向依赖领域服务形成环依赖
+            applicationEventPublisher.publishEvent(event);
+        }
+    }
+
     /**
      * 消费回执。消费端处理成功后调用，幂等由 message_id 保证。
-     *
-     * @param userId    消息所属用户，用于路由到正确的分片
-     * @param messageId 消息唯一 ID
      */
     @Override
     public void markConsumed(String userId, String messageId) {
@@ -99,6 +157,18 @@ public class OutboxService implements IOutboxAckService {
         if (updated == 0) {
             log.debug("outbox 回执未命中（可能已消费） userId:{} messageId: {}", userId, messageId);
         }
+    }
+
+    @Override
+    public int pendingCount() {
+        return outboxDao.countByState(OutboxState.PENDING.getCode());
+    }
+
+    /**
+     * 按投递方式统计积压，供看板区分「内部 MQ 卡住」还是「上游回调不通」。
+     */
+    public int pendingCount(String deliveryType) {
+        return outboxDao.countByDeliveryType(deliveryType, OutboxState.PENDING.getCode());
     }
 
     /**
@@ -119,14 +189,6 @@ public class OutboxService implements IOutboxAckService {
         }
     }
 
-    /**
-     * 积压量，供监控/健康检查读取。
-     */
-    @Override
-    public int pendingCount() {
-        return outboxDao.countByState(OutboxState.PENDING.getCode());
-    }
-
     private void handleFailure(OutboxMessage message, Exception e) {
         int nextRetryCount = message.getRetryCount() + 1;
         if (nextRetryCount >= properties.getMaxRetry()) {
@@ -141,8 +203,8 @@ public class OutboxService implements IOutboxAckService {
                 properties.getMaxBackoffSeconds());
         Date nextRetryAt = new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(backoffSeconds));
         outboxDao.markRetry(message.getUserId(), message.getMessageId(), nextRetryAt);
-        log.warn("outbox 投递失败，{} 秒后重试（第 {} 次） id:{} topic:{}",
-                backoffSeconds, nextRetryCount, message.getId(), message.getTopic(), e);
+        log.warn("outbox 投递失败，{} 秒后重试（第 {} 次） topic:{} target:{} 原因:{}",
+                backoffSeconds, nextRetryCount, message.getTopic(), message.getTarget(), e.getMessage());
     }
 
 }
