@@ -84,8 +84,14 @@ cd web && npm install && npm run dev
 | 上游 | `POST /open/v1/quota/recharge`、`GET /open/v1/activity/{id}` | API Key + HMAC 签名 |
 | 观测 | `GET /actuator/health`、`/actuator/prometheus` | 无 |
 
-鉴权由 `app.auth.enabled` 控制，**本地演示默认关闭**（前端仍可用 URL 传 `userId` 联调），
-生产必须开启。
+鉴权由 `app.auth.enabled` 控制，**默认开启**：
+
+- **上游做登录**（用户名 + 口令，PBKDF2），抽奖页不再要求用户登录
+- 上游点「去抽奖」时，用 `userId` 换一个中台 **JWT**，跳转 `/play?token=…`
+- 中台侧 `userId` 一律以 token 为准，**改 URL 上的 userId 无效**
+- 运营端需 `admin/admin123` 或 `operator/operator123`；开放接口需 API Key + HMAC 签名
+
+想只做本地演示不登录，把 `app.auth.enabled` 改成 `false`，所有接口放行。
 
 ## 测试
 

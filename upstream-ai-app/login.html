@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>登录 · 对话助手</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:#f8fafc;color:#0f172a;
+    font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;
+  }
+  .wrap{width:100%;max-width:400px;padding:24px}
+  .brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:22px}
+  .logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#2563eb,#7c3aed);
+        display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+  .brand b{font-size:16px}
+  .card{background:#fff;border:1px solid #e8ebef;border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(15,23,42,.06)}
+  .tabs{display:flex;gap:6px;background:#f1f3f6;border-radius:10px;padding:4px;margin-bottom:18px}
+  .tabs button{flex:1;border:0;background:transparent;border-radius:8px;padding:8px;font:inherit;color:#64748b;cursor:pointer}
+  .tabs button.on{background:#fff;color:#0f172a;font-weight:600;box-shadow:0 1px 2px rgba(15,23,42,.08)}
+  label{display:block;font-size:12px;color:#64748b;margin-bottom:6px}
+  input{width:100%;border:1px solid #dfe3e8;border-radius:10px;padding:10px 12px;font:inherit;outline:none;margin-bottom:14px}
+  input:focus{border-color:#a5b4fc;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+  .submit{width:100%;border:0;border-radius:10px;padding:11px;background:#0f172a;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+  .submit:hover{background:#1f2937}
+  .submit:disabled{opacity:.5;cursor:not-allowed}
+  .msg{margin-top:14px;font-size:13px;border-radius:10px;padding:9px 12px}
+  .msg.bad{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+  .msg.good{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+  .foot{margin-top:18px;text-align:center;font-size:12px;color:#94a3b8;line-height:1.7}
+  .foot code{background:#f1f5f9;border-radius:4px;padding:1px 5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><div class="logo">AI</div><b>对话助手</b></div>
+
+  <div class="card">
+    <div class="tabs">
+      <button id="tabLogin" class="on" onclick="switchTab('login')">登录</button>
+      <button id="tabReg" onclick="switchTab('reg')">注册</button>
+    </div>
+
+    <label>用户名</label>
+    <input id="username" autocomplete="username" placeholder="至少 3 个字符" />
+
+    <label>密码</label>
+    <input id="password" type="password" autocomplete="current-password" placeholder="至少 6 位"
+           onkeydown="if(event.key==='Enter')submit()" />
+
+    <div id="nickRow" style="display:none">
+      <label>昵称（可选）</label>
+      <input id="nickname" placeholder="显示名称" />
+    </div>
+
+    <button class="submit" id="submitBtn" onclick="submit()">登录</button>
+    <div id="msg" class="msg" style="display:none"></div>
+  </div>
+
+  <div class="foot">
+    登录只发生在这里。<br/>
+    中台不认识用户名密码，它只认本服务换给它的 token。<br/>
+    <span style="color:#c3cbd6">已有演示账号：<code>demo-user</code> — 需先注册同名账号</span>
+  </div>
+</div>
+
+<script>
+let mode = 'login';
+
+function switchTab(next) {
+  mode = next;
+  document.getElementById('tabLogin').classList.toggle('on', next === 'login');
+  document.getElementById('tabReg').classList.toggle('on', next === 'reg');
+  document.getElementById('nickRow').style.display = next === 'reg' ? 'block' : 'none';
+  document.getElementById('submitBtn').textContent = next === 'reg' ? '注册并登录' : '登录';
+  show(null);
+}
+
+function show(text, good) {
+  const el = document.getElementById('msg');
+  if (!text) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.className = 'msg ' + (good ? 'good' : 'bad');
+  el.textContent = text;
+}
+
+async function submit() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const nickname = document.getElementById('nickname').value.trim();
+  if (!username || !password) { show('用户名和密码都要填'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  try {
+    const path = mode === 'reg' ? '/api/register' : '/api/login';
+    const body = mode === 'reg' ? { username, password, nickname } : { username, password };
+    const resp = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok || !data.ok) throw new Error(data.reason || data.detail || '操作失败');
+    show(mode === 'reg' ? '注册成功，正在进入…' : '登录成功，正在进入…', true);
+    setTimeout(() => { window.location.href = '/'; }, 400);
+  } catch (e) {
+    show(e.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

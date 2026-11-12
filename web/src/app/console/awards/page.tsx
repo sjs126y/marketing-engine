@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { recentAwards } from '@/lib/console-api'
 
-type Record = {
+type AwardRecord = {
   userId: string
   activityId: number
   strategyId: number
@@ -21,7 +21,7 @@ const STATE_STYLE: Record<string, string> = {
 }
 
 export default function AwardRecordsPage() {
-  const [records, setRecords] = useState<Record[]>([])
+  const [records, setRecords] = useState<AwardRecord[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 

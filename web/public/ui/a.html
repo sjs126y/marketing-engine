@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UI 方向 A · 工作台布局</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:#fff;color:#0f172a;font-size:14px}
+  .app{display:flex;height:100vh}
+  /* 左侧栏 */
+  .side{width:260px;flex:0 0 260px;border-right:1px solid #eef0f3;background:#fbfbfc;display:flex;flex-direction:column;padding:14px}
+  .brand{display:flex;align-items:center;gap:9px;padding:4px 6px 14px}
+  .logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+  .brand b{font-size:14px}
+  .new-chat{border:1px solid #e2e5ea;background:#fff;border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;color:#334155}
+  .new-chat:hover{background:#f5f6f8}
+  .section{font-size:11px;color:#94a3b8;margin:16px 6px 6px;letter-spacing:.3px}
+  .conv{padding:8px 10px;border-radius:8px;color:#475569;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .conv:hover{background:#f1f3f6}
+  .conv.active{background:#eef2ff;color:#1e40af;font-weight:500}
+  .spacer{flex:1}
+  /* 额度卡 */
+  .wallet{border:1px solid #e8ebef;border-radius:12px;padding:12px;background:#fff}
+  .wallet .row{display:flex;justify-content:space-between;align-items:baseline}
+  .wallet .k{font-size:11px;color:#94a3b8}
+  .wallet .v{font-size:18px;font-weight:600}
+  .wallet .sign{margin-top:10px;width:100%;border:0;border-radius:8px;padding:8px;background:#111827;color:#fff;font-size:13px;cursor:pointer}
+  .wallet .sign:hover{background:#1f2937}
+  .wallet .link{display:block;text-align:center;margin-top:8px;font-size:12px;color:#2563eb;text-decoration:none}
+  /* 主区 */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0}
+  .topbar{height:52px;border-bottom:1px solid #eef0f3;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+  .model{display:flex;align-items:center;gap:8px;color:#334155}
+  .dot{width:6px;height:6px;border-radius:50%;background:#22c55e}
+  .user{display:flex;align-items:center;gap:8px;color:#64748b;font-size:13px}
+  .avatar{width:26px;height:26px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#475569}
+  /* 消息 */
+  .stream{flex:1;overflow:auto;padding:26px 0}
+  .msg{max-width:760px;margin:0 auto 22px;padding:0 20px;display:flex;gap:12px}
+  .msg .who{flex:0 0 26px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+  .msg.ai .who{background:#eef2ff;color:#3730a3}
+  .msg.me .who{background:#f1f5f9;color:#475569}
+  .bubble{line-height:1.75;padding-top:2px}
+  .bubble p{margin:0 0 10px}
+  .bubble code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .card-eg{border:1px solid #e8ebef;border-radius:10px;padding:12px 14px;background:#fbfbfc;margin-top:6px}
+  /* 输入 */
+  .composer{padding:0 20px 18px}
+  .box{max-width:760px;margin:0 auto;border:1px solid #e2e5ea;border-radius:14px;padding:10px 12px;display:flex;align-items:flex-end;gap:10px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+  .box:focus-within{border-color:#c7d2fe;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+  .box textarea{flex:1;border:0;outline:none;resize:none;font:inherit;color:#0f172a;min-height:24px;max-height:120px}
+  .send{width:30px;height:30px;border-radius:8px;border:0;background:#111827;color:#fff;cursor:pointer;font-size:14px}
+  .hint{max-width:760px;margin:8px auto 0;font-size:11px;color:#94a3b8;text-align:center}
+  /* 抽奖浮层 */
+  .float{position:fixed;right:22px;bottom:22px;background:#111827;color:#fff;border-radius:999px;padding:10px 16px;font-size:13px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- 左侧栏 -->
+  <aside class="side">
+    <div class="brand"><div class="logo">AI</div><b>对话助手</b></div>
+    <div class="new-chat">＋ 新对话</div>
+
+    <div class="section">最近的对话</div>
+    <div class="conv active">帮我写一个营销活动的文案</div>
+    <div class="conv">解释一下什么是本地消息表</div>
+    <div class="conv">把这段 SQL 优化一下</div>
+    <div class="conv">今天开会要说的三个点</div>
+
+    <div class="spacer"></div>
+
+    <div class="wallet">
+      <div class="row"><span class="k">积分</span><span class="v">128</span></div>
+      <div class="row" style="margin-top:6px"><span class="k">对话次数</span><span class="v">5</span></div>
+      <button class="sign">今日签到 +10 积分</button>
+      <a class="link" href="#">去抽奖赢对话次数 ↗</a>
+    </div>
+  </aside>
+
+  <!-- 主区 -->
+  <div class="main">
+    <div class="topbar">
+      <div class="model"><span class="dot"></span> deepseek-chat</div>
+      <div class="user"><span>demo-user</span><div class="avatar">D</div></div>
+    </div>
+
+    <div class="stream">
+      <div class="msg me">
+        <div class="who">我</div>
+        <div class="bubble">帮我写一个营销活动的文案，主题是「签到赢抽奖次数」</div>
+      </div>
+      <div class="msg ai">
+        <div class="who">AI</div>
+        <div class="bubble">
+          <p>当然可以。给你三个方向，按场景选：</p>
+          <p><b>1. 强调「每天都有」</b><br/>「每天签到一次，抽奖机会天天有。连签 3 天，额外加赠 1 次。」</p>
+          <p><b>2. 强调「不费力气」</b><br/>「点一下就能抽，不用凑单、不用分享。」</p>
+          <p><b>3. 强调「奖励具体」</b><br/>「签到得 10 积分，积分可换 5 次对话额度。」</p>
+          <div class="card-eg">本次消耗 <code>1</code> 积分 · 剩余 127</div>
+        </div>
+      </div>
+      <div class="msg me">
+        <div class="who">我</div>
+        <div class="bubble">第二个再口语化一点</div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <div class="box">
+        <textarea rows="1" placeholder="给对话助手发送消息…">第二个再口语化一点</textarea>
+        <button class="send">↑</button>
+      </div>
+      <div class="hint">对话由 AI 助手提供 · 每次对话消耗 1 积分 · 积分不足可去抽奖</div>
+    </div>
+  </div>
+</div>
+<a class="float" href="#">🎁 去抽奖</a>
+</body>
+</html>

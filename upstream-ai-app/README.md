@@ -8,14 +8,21 @@
 中台的价值在于「被别的系统调用」。如果上游只是同一个前端里的一个页面，那跨系统边界就是假的。
 这里用一个 **Python 服务**去调 **Java 中台**，边界是真实存在的——也顺便证明中台不绑语言。
 
+## 登录在这里，抽奖那边不登录
+
+- 注册/登录发生在**本服务**（用户名 + PBKDF2 口令，签名 cookie 会话）
+- 点「去抽奖」时，本服务拿 `userId` 去中台换一个 **JWT**，跳转 `/play?token=…`
+- 中台开启鉴权后，`userId` 以 token 为准——**改 URL 上的 userId 是无效的**
+
 ## 它做了什么
 
 | 动作 | 本服务做什么 | 调中台哪个接口 |
 |---|---|---|
+| 注册/登录 | PBKDF2 校验，签发签名 cookie | 无（中台不认识账号密码） |
 | 签到 | 先问中台能不能签，成功后自己给 10 积分 | `POST /api/v1/raffle/activity/calendar_sign_rebate` |
 | 做任务 | 让中台给用户加抽奖次数 | `POST /open/v1/quota/recharge`（API Key + HMAC 签名） |
 | 对话 | 扣自己的积分（条件更新保证并发安全） | 无 |
-| 抽奖 | 代理调中台，把结果透传给前端 | `POST /api/v1/raffle/activity/draw` |
+| 去抽奖 | 换中台 JWT，跳转中台抽奖页 | `POST /api/v1/auth/login` |
 | 收回调 | 验签 + 幂等 + 把奖品记进本地账户 | 中台回调本服务 `POST /webhook/award` |
 
 ## 启动

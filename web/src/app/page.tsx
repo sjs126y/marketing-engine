@@ -57,8 +57,8 @@ export default function Home() {
           <Card
             tag="② 中台 · 用户端"
             title="抽奖页"
-            desc="用户从上游跳过来抽奖。奖品、概率、库存全部来自中台，页面不做任何计算。"
-            action={{ href: playHref, label: '进入抽奖页' }}
+            desc="用户从上游 App 点「去抽奖」跳过来。奖品、概率、库存全部来自中台，页面不做任何计算。"
+            action={{ href: 'http://127.0.0.1:9000', label: '从上游进入（需登录）', external: true }}
             tone="dark"
           />
           <Card
@@ -83,6 +83,9 @@ export default function Home() {
         </div>
 
         <div className="mt-6 text-xs text-slate-400">
+          抽奖页需要上游换发的 token（<code className="rounded bg-slate-100 px-1">/play?token=…</code>），
+          直接访问 <code className="rounded bg-slate-100 px-1">/play</code> 会被中台拒绝。
+          <br />
           本地默认用户 <code className="rounded bg-slate-100 px-1">{userId}</code>，活动{' '}
           <code className="rounded bg-slate-100 px-1">{activityId}</code>。
           可以在 URL 上带 <code className="rounded bg-slate-100 px-1">?userId=xxx&amp;activityId=yyy</code> 切换。

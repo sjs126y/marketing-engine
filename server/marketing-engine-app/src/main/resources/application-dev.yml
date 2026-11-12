@@ -38,7 +38,9 @@ app:
 
   # 鉴权：三类主体三套凭证。本地演示默认关闭，生产必须开启
   auth:
-    enabled: false
+    # 鉴权默认开启：用户端抽奖需要上游换来的 JWT，运营端需要运营账号，开放接口需要 API Key 签名。
+    # 想只做本地演示、不登录，把它改成 false（所有接口将放行）。
+    enabled: true
     jwt-secret: ${JWT_SECRET:marketing-engine-local-dev-secret-change-me}
     user-token-ttl-seconds: 7200
     operator-token-ttl-seconds: 28800

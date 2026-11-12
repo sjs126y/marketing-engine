@@ -26,9 +26,27 @@ type DrawResult = {
 
 const GRID_ORDER = [0, 1, 2, 5, 8, 7, 6, 3] // 顺时针 8 格，中心是按钮
 
+/** 解析 JWT 的 sub（只解码、不验签；验签在中台做）。 */
+function subOf(token: string): string | null {
+  try {
+    const payload = token.split('.')[1]
+    if (!payload) return null
+    const json = decodeURIComponent(
+      atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(''),
+    )
+    return JSON.parse(json).sub ?? null
+  } catch {
+    return null
+  }
+}
+
 export default function PlayPage() {
   const [userId, setUserId] = useState('')
   const [activityId, setActivityId] = useState('')
+  const [token, setToken] = useState('')
   const [awards, setAwards] = useState<Award[]>([])
   const [account, setAccount] = useState<Account | null>(null)
   const [result, setResult] = useState<DrawResult | null>(null)
@@ -41,15 +59,24 @@ export default function PlayPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    setUserId(params.get('userId') || 'demo-user')
+    const urlToken = params.get('token') || ''
+    setToken(urlToken)
+    // 身份以 token 为准：从 JWT 的 sub 解出 userId，仅用于展示
+    setUserId(subOf(urlToken) || params.get('userId') || 'demo-user')
     setActivityId(params.get('activityId') || '100301')
   }, [])
+
+  const authHeaders = useCallback((): Record<string, string> => {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (token) headers.Authorization = `Bearer ${token}`
+    return headers
+  }, [token])
 
   const loadAwards = useCallback(
     async (uid: string, aid: string) => {
       const resp = await fetch(`${API_HOST}/api/v1/raffle/strategy/query_raffle_award_list`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ userId: uid, activityId: Number(aid) }),
       })
       const data = await resp.json()
@@ -65,7 +92,7 @@ export default function PlayPage() {
   const loadAccount = useCallback(async (uid: string, aid: string) => {
     const resp = await fetch(`${API_HOST}/api/v1/raffle/activity/query_user_activity_account`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({ userId: uid, activityId: Number(aid) }),
     })
     const data = await resp.json()
@@ -84,6 +111,7 @@ export default function PlayPage() {
     try {
       const resp = await fetch(
         `${API_HOST}/api/v1/raffle/activity/armory?activityId=${activityId}`,
+        { headers: authHeaders() },
       )
       const data = await resp.json()
       if (data.code !== '0000') throw new Error(data.info || '预热失败')
@@ -112,7 +140,7 @@ export default function PlayPage() {
     try {
       const resp = await fetch(`${API_HOST}/api/v1/raffle/activity/draw`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ userId, activityId: Number(activityId) }),
       })
       const data = await resp.json()
