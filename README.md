@@ -37,8 +37,8 @@ marketing-engine/
 
 | 层 | 选型 |
 | --- | --- |
-| 后端 | Java 8、Spring Boot 2.7、MyBatis、Maven 多模块 |
-| 存储 | MySQL 8（2 库 4 表分片）、Redis（Redisson） |
+| 后端 | Java 21、Spring Boot 3.5、MyBatis、Maven 多模块、Jackson |
+| 存储 | MySQL 8（ShardingSphere-JDBC 2 库 4 表分片）、Redis（Redisson） |
 | 消息 | RabbitMQ（发奖、返利、库存清零） |
 | 前端 | Next.js 13 App Router、React 18、TypeScript、Tailwind CSS |
 | 部署 | Docker Compose |

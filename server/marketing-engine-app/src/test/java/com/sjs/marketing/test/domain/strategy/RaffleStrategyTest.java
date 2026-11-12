@@ -1,6 +1,7 @@
 package com.sjs.marketing.test.domain.strategy;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.domain.strategy.model.entity.RaffleAwardEntity;
 import com.sjs.marketing.domain.strategy.model.entity.RaffleFactorEntity;
 import com.sjs.marketing.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
@@ -17,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -63,8 +64,8 @@ public class RaffleStrategyTest {
 
             RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);
 
-            log.info("请求参数：{}", JSON.toJSONString(raffleFactorEntity));
-            log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
+            log.info("请求参数：{}", JsonUtils.toJson(raffleFactorEntity));
+            log.info("测试结果：{}", JsonUtils.toJson(raffleAwardEntity));
         }
 
         // 等待 UpdateAwardStockJob 消费队列
@@ -80,8 +81,8 @@ public class RaffleStrategyTest {
 
         RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);
 
-        log.info("请求参数：{}", JSON.toJSONString(raffleFactorEntity));
-        log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
+        log.info("请求参数：{}", JsonUtils.toJson(raffleFactorEntity));
+        log.info("测试结果：{}", JsonUtils.toJson(raffleAwardEntity));
     }
 
     /**
@@ -97,14 +98,14 @@ public class RaffleStrategyTest {
 
         RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);
 
-        log.info("请求参数：{}", JSON.toJSONString(raffleFactorEntity));
-        log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
+        log.info("请求参数：{}", JsonUtils.toJson(raffleFactorEntity));
+        log.info("测试结果：{}", JsonUtils.toJson(raffleAwardEntity));
     }
 
     @Test
     public void test_takeQueueValue() throws InterruptedException {
         StrategyAwardStockKeyVO strategyAwardStockKeyVO = raffleStock.takeQueueValue();
-        log.info("测试结果：{}", JSON.toJSONString(strategyAwardStockKeyVO));
+        log.info("测试结果：{}", JsonUtils.toJson(strategyAwardStockKeyVO));
     }
 
 }

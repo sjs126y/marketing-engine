@@ -1,6 +1,7 @@
 package com.sjs.marketing.trigger.http;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.api.dto.ActivityDrawRequestDTO;
 import com.sjs.marketing.api.dto.ActivityDrawResponseDTO;
 import com.sjs.marketing.api.IRaffleActivityService;
@@ -30,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -160,7 +161,7 @@ public class RaffleActivityController implements IRaffleActivityService {
             behaviorEntity.setOutBusinessNo(dateFormatDay.format(new Date()));
 
             List<String> orderIds = behaviorRebateService.createOrder(behaviorEntity);
-            log.info("日历签到返利完成 userId:{} orderIds: {}", userId, JSON.toJSONString(orderIds));
+            log.info("日历签到返利完成 userId:{} orderIds: {}", userId, JsonUtils.toJson(orderIds));
 
             return Response.<Boolean>builder()
                     .code(ResponseCode.SUCCESS.getCode())
@@ -227,7 +228,7 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .monthCount(activityAccountEntity.getMonthCount())
                     .monthCountSurplus(activityAccountEntity.getMonthCountSurplus())
                     .build();
-            log.info("查询用户活动账户完成 userId:{} activityId:{} dto:{}", request.getUserId(), request.getActivityId(), JSON.toJSONString(userActivityAccountResponseDTO));
+            log.info("查询用户活动账户完成 userId:{} activityId:{} dto:{}", request.getUserId(), request.getActivityId(), JsonUtils.toJson(userActivityAccountResponseDTO));
             return Response.<UserActivityAccountResponseDTO>builder()
                     .code(ResponseCode.SUCCESS.getCode())
                     .info(ResponseCode.SUCCESS.getInfo())

@@ -1,6 +1,7 @@
 package com.sjs.marketing.test.domain.strategy;
 
-import com.alibaba.fastjson2.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.domain.strategy.model.valobj.*;
 import com.sjs.marketing.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 import com.sjs.marketing.domain.strategy.service.rule.tree.factory.engine.IDecisionTreeEngine;
@@ -10,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -98,7 +99,7 @@ public class LogicTreeTest {
         IDecisionTreeEngine treeEngine = defaultTreeFactory.openLogicTree(ruleTreeVO);
 
         DefaultTreeFactory.StrategyAwardVO data = treeEngine.process("demo-user", 100001L, 100, new Date());
-        log.info("测试结果：{}", JSON.toJSONString(data));
+        log.info("测试结果：{}", JsonUtils.toJson(data));
 
     }
 

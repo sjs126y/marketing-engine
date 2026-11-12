@@ -1,6 +1,7 @@
 package com.sjs.marketing.domain.activity.service.partake;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.domain.activity.adapter.repository.IActivityRepository;
 import com.sjs.marketing.domain.activity.model.aggregate.CreatePartakeOrderAggregate;
 import com.sjs.marketing.domain.activity.model.entity.ActivityEntity;
@@ -53,7 +54,7 @@ public abstract class AbstractRaffleActivityPartake implements IRaffleActivityPa
         // 2. 查询未被使用的活动参与订单记录
         UserRaffleOrderEntity userRaffleOrderEntity = repository.queryNoUsedRaffleOrder(partakeRaffleActivityEntity);
         if (null != userRaffleOrderEntity) {
-            log.info("已经存在未完成的活动订单 userId:{} activityId:{} userRaffleOrderEntity:{}", userId, activityId, JSON.toJSONString(userRaffleOrderEntity));
+            log.info("已经存在未完成的活动订单 userId:{} activityId:{} userRaffleOrderEntity:{}", userId, activityId, JsonUtils.toJson(userRaffleOrderEntity));
             return userRaffleOrderEntity;
         }
 

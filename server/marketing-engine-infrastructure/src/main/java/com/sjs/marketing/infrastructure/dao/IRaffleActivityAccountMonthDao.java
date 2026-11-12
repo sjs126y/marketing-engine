@@ -1,6 +1,4 @@
 package com.sjs.marketing.infrastructure.dao;
-
-import cn.bugstack.middleware.db.router.annotation.DBRouter;
 import com.sjs.marketing.infrastructure.dao.po.RaffleActivityAccountMonth;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface IRaffleActivityAccountMonthDao {
-    @DBRouter
     RaffleActivityAccountMonth queryActivityAccountMonthByUserId(RaffleActivityAccountMonth raffleActivityAccountMonthReq);
 
     int updateActivityAccountMonthSubtractionQuota(RaffleActivityAccountMonth build);

@@ -1,6 +1,7 @@
 package com.sjs.marketing.test.trigger;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.api.IRaffleActivityService;
 import com.sjs.marketing.api.dto.ActivityDrawRequestDTO;
 import com.sjs.marketing.api.dto.ActivityDrawResponseDTO;
@@ -13,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * @author marketing-engine contributors
@@ -31,7 +32,7 @@ public class RaffleActivityControllerTest {
     @Test
     public void test_armory() {
         Response<Boolean> response = raffleActivityService.armory(100301L);
-        log.info("测试结果：{}", JSON.toJSONString(response));
+        log.info("测试结果：{}", JsonUtils.toJson(response));
     }
 
     @Test
@@ -42,21 +43,21 @@ public class RaffleActivityControllerTest {
             request.setUserId("demo-user");
             Response<ActivityDrawResponseDTO> response = raffleActivityService.draw(request);
 
-            log.info("请求参数：{}", JSON.toJSONString(request));
-            log.info("测试结果：{}", JSON.toJSONString(response));
+            log.info("请求参数：{}", JsonUtils.toJson(request));
+            log.info("测试结果：{}", JsonUtils.toJson(response));
         }
     }
 
     @Test
     public void test_calendarSignRebate() {
         Response<Boolean> response = raffleActivityService.calendarSignRebate("demo-user3");
-        log.info("测试结果：{}", JSON.toJSONString(response));
+        log.info("测试结果：{}", JsonUtils.toJson(response));
     }
 
     @Test
     public void test_isCalendarSignRebate() {
         Response<Boolean> response = raffleActivityService.isCalendarSignRebate("demo-user3");
-        log.info("测试结果：{}", JSON.toJSONString(response));
+        log.info("测试结果：{}", JsonUtils.toJson(response));
     }
 
     @Test
@@ -68,8 +69,8 @@ public class RaffleActivityControllerTest {
         // 查询数据
         Response<UserActivityAccountResponseDTO> response = raffleActivityService.queryUserActivityAccount(request);
 
-        log.info("请求参数：{}", JSON.toJSONString(request));
-        log.info("测试结果：{}", JSON.toJSONString(response));
+        log.info("请求参数：{}", JsonUtils.toJson(request));
+        log.info("测试结果：{}", JsonUtils.toJson(response));
     }
 
 }

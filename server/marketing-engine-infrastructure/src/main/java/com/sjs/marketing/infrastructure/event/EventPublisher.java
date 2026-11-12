@@ -1,6 +1,7 @@
 package com.sjs.marketing.infrastructure.event;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -21,11 +22,11 @@ public class EventPublisher {
 
     public void publish(String topic, BaseEvent.EventMessage<?> eventMessage) {
         try {
-            String messageJson = JSON.toJSONString(eventMessage);
+            String messageJson = JsonUtils.toJson(eventMessage);
             rabbitTemplate.convertAndSend(topic, messageJson);
             log.info("发送MQ消息 topic:{} message:{}", topic, messageJson);
         } catch (Exception e) {
-            log.error("发送MQ消息失败 topic:{} message:{}", topic, JSON.toJSONString(eventMessage), e);
+            log.error("发送MQ消息失败 topic:{} message:{}", topic, JsonUtils.toJson(eventMessage), e);
             throw e;
         }
     }

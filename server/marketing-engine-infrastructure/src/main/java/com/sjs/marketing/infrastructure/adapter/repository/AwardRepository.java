@@ -1,7 +1,6 @@
 package com.sjs.marketing.infrastructure.adapter.repository;
 
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
 import com.sjs.marketing.domain.award.adapter.repository.IAwardRepository;
 import com.sjs.marketing.domain.award.model.aggregate.UserAwardRecordAggregate;
 import com.sjs.marketing.domain.award.model.entity.TaskEntity;
@@ -20,7 +19,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 @Slf4j
 @Repository
@@ -32,8 +31,6 @@ public class AwardRepository implements IAwardRepository {
     private IUserAwardRecordDao userAwardRecordDao;
     @Resource
     private IUserRaffleOrderDao userRaffleOrderDao;
-    @Resource
-    private IDBRouterStrategy dbRouter;
     @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
@@ -61,40 +58,36 @@ public class AwardRepository implements IAwardRepository {
         task.setUserId(taskEntity.getUserId());
         task.setTopic(taskEntity.getTopic());
         task.setMessageId(taskEntity.getMessageId());
-        task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
+        task.setMessage(JsonUtils.toJson(taskEntity.getMessage()));
         task.setState(taskEntity.getState().getCode());
 
         UserRaffleOrder userRaffleOrder = new UserRaffleOrder();
         userRaffleOrder.setUserId(userAwardRecordEntity.getUserId());
         userRaffleOrder.setOrderId(userAwardRecordEntity.getOrderId());
 
-        try {
-            dbRouter.doRouter(userId);
-            transactionTemplate.execute(status -> {
-                try {
-                    //先插入中奖流水记录
-                    userAwardRecordDao.insert(userAwardRecord);
+        // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
+        transactionTemplate.execute(status -> {
+            try {
+                //先插入中奖流水记录
+                userAwardRecordDao.insert(userAwardRecord);
 
-                    //再插入任务表
-                    taskDao.insert(task);
+                //再插入任务表
+                taskDao.insert(task);
 
-                    //更新抽奖记录
-                    int updateCount = userRaffleOrderDao.updateUserRaffleOrderStateUsed(userRaffleOrder);
-                    if(updateCount != 1){
-                        log.error("更新抽奖记录失败 userId: {} activityId: {}", userId, activityId);
-                        status.setRollbackOnly();
-                        throw new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getInfo());
-                    }
-                    return 1;
-                } catch (DuplicateKeyException e) {
+                //更新抽奖记录
+                int updateCount = userRaffleOrderDao.updateUserRaffleOrderStateUsed(userRaffleOrder);
+                if(updateCount != 1){
+                    log.error("更新抽奖记录失败 userId: {} activityId: {}", userId, activityId);
                     status.setRollbackOnly();
-                    log.error("写入中奖记录，唯一索引冲突 userId: {} activityId: {} awardId: {}", userId, activityId, awardId, e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+                    throw new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getInfo());
                 }
-            });
-        } finally {
-            dbRouter.clear();
-        }
+                return 1;
+            } catch (DuplicateKeyException e) {
+                status.setRollbackOnly();
+                log.error("写入中奖记录，唯一索引冲突 userId: {} activityId: {} awardId: {}", userId, activityId, awardId, e);
+                throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+            }
+        });
 
         //发送mq消息
         try {

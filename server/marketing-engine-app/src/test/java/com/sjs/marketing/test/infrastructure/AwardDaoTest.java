@@ -1,6 +1,7 @@
 package com.sjs.marketing.test.infrastructure;
 
-import com.alibaba.fastjson.JSON;
+import com.sjs.marketing.types.util.JsonUtils;
+
 import com.sjs.marketing.infrastructure.dao.IAwardDao;
 import com.sjs.marketing.infrastructure.dao.po.Award;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class AwardDaoTest {
     @Test
     public void test_queryAwardList() {
         List<Award> awards = awardDao.queryAwardList();
-        log.info("测试结果：{}", JSON.toJSONString(awards));
+        log.info("测试结果：{}", JsonUtils.toJson(awards));
     }
 
 }
