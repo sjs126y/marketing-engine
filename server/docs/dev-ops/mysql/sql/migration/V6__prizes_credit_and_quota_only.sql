@@ -10,6 +10,11 @@
 --   3. 修正 tree_lock_3 的错误连线：ALLOW 边应指向 rule_stock，
 --      否则该奖品永远不会扣库存、也永远发不出去
 --
+--
+-- 重要：执行时必须显式指定字符集，否则中文会以 latin1 写入而变成乱码：
+--   docker exec -i mysql mysql -uroot -p123456 --default-character-set=utf8mb4 marketing_engine < V6__....sql
+-- 不指定时 mysql 客户端可能按 latin1 连接，UTF-8 中文会被双重编码（如「积分」→「ç§¯åˆ†」）。
+--
 -- 执行后必须清掉 Redis 里的策略缓存并重新预热，否则抽奖仍走旧概率表。
 
 -- ---------- 1. 奖品定义 ----------

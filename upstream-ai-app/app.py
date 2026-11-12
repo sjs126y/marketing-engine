@@ -344,19 +344,16 @@ def sign(request: Request) -> dict[str, Any]:
         if already:
             return {"ok": False, "reason": "今天已经签到过了", "credit": SIGN_CREDIT}
 
-    mid_result = call_mid(
-        "POST",
-        f"/api/v1/raffle/activity/calendar_sign_rebate?userId={urllib.parse.quote(user_id)}",
-    )
-    # 中台用返利流水唯一键做签到幂等，重复签到返回 INDEX_DUP(0003)，属于正常路径
-    if mid_result.get("code") == "0003" or "唯一索引" in str(mid_result.get("info", "")):
+    # 签到走开放接口（系统对系统，API Key + HMAC 签名），不是 C 端接口
+    mid_result = call_mid("POST", "/open/v1/sign", {"userId": user_id})
+    if mid_result.get("code") != "0000":
+        return {"ok": False, "reason": f"中台判定不可签到: {mid_result.get('info')}", "credit": 0}
+    # 中台按「用户 + 自然日」幂等，重复签到返回 signed=false，属于正常路径
+    if not mid_result.get("signed", False):
         with db() as conn:
             ensure_user(conn, user_id)
             conn.execute("insert or ignore into sign_log(user_id, sign_date) values (?,?)", (user_id, today))
         return {"ok": False, "reason": "今天已经签到过了", "credit": 0}
-
-    if mid_result.get("code") != "0000":
-        return {"ok": False, "reason": f"中台判定不可签到: {mid_result.get('info')}", "credit": 0}
 
     with db() as conn:
         ensure_user(conn, user_id)
