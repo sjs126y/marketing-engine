@@ -36,6 +36,28 @@ app:
     consume-timeout-seconds: 300  # sent 后超时未回执，重新投递（消费端需幂等）
     max-backoff-seconds: 300   # 退避上限
 
+  # 鉴权：三类主体三套凭证。本地演示默认关闭，生产必须开启
+  auth:
+    enabled: false
+    jwt-secret: ${JWT_SECRET:marketing-engine-local-dev-secret-change-me}
+    user-token-ttl-seconds: 7200
+    operator-token-ttl-seconds: 28800
+    timestamp-skew-seconds: 300
+    rate-limit-per-minute: 600
+    operators:
+      admin:
+        # 口令 admin123（BCrypt）
+        password-hash: ${OPERATOR_ADMIN_HASH:$2a$10$dg6vqYdVHQgxjdyHVLer3uejQTtsI/nK3jB62QpMolH42i4LnCio6}
+        role: ADMIN
+      operator:
+        # 口令 operator123（BCrypt）
+        password-hash: ${OPERATOR_HASH:$2a$10$boSb1CAh2dqkUpAZV0nIQeLySiZgPFl7garSSKeMNCQ.4/V/2LdAu}
+        role: OPERATOR
+    api-clients:
+      demo-client:
+        secret: ${OPEN_API_SECRET:demo-secret-please-change}
+        name: 演示接入方
+
 # Spring 配置；rabbitmq
 spring:
   rabbitmq:

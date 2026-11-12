@@ -59,6 +59,8 @@ public class RaffleActivityController implements IRaffleActivityService {
     private final SimpleDateFormat dateFormatDay = new SimpleDateFormat("yyyy-MM-dd");
     @Autowired
     private RaffleActivityAccountQuotaService raffleActivityAccountQuotaService;
+    @Resource
+    private com.sjs.marketing.trigger.auth.CurrentSubject currentSubject;
 
     @GetMapping("armory")
     @Override
@@ -90,8 +92,8 @@ public class RaffleActivityController implements IRaffleActivityService {
         try {
             log.info("开始抽奖 activityId:{}", requestDTO.getActivityId());
 
-            //1.参数校验
-            String userId = requestDTO.getUserId();
+            //1.参数校验；鉴权开启时以 token 中的 userId 为准，忽略请求体自报值
+            String userId = currentSubject.resolveUserId(requestDTO.getUserId());
             Long activityId = requestDTO.getActivityId();
             if (null == activityId || StringUtils.isBlank(userId)) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
@@ -213,12 +215,13 @@ public class RaffleActivityController implements IRaffleActivityService {
     public Response<UserActivityAccountResponseDTO> queryUserActivityAccount(@RequestBody UserActivityAccountRequestDTO request) {
         try {
             log.info("查询用户活动账户开始 userId:{} activityId:{}", request.getUserId(), request.getActivityId());
-            // 1. 参数校验
-            if (StringUtils.isBlank(request.getUserId()) || null == request.getActivityId()) {
+            // 1. 参数校验；鉴权开启时以 token 中的 userId 为准
+            String userId = currentSubject.resolveUserId(request.getUserId());
+            if (StringUtils.isBlank(userId) || null == request.getActivityId()) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
             }
 
-            ActivityAccountEntity activityAccountEntity = raffleActivityAccountQuotaService.queryActivityAccountEntity(request.getActivityId(), request.getUserId());
+            ActivityAccountEntity activityAccountEntity = raffleActivityAccountQuotaService.queryActivityAccountEntity(request.getActivityId(), userId);
 
             UserActivityAccountResponseDTO userActivityAccountResponseDTO = UserActivityAccountResponseDTO.builder()
                     .totalCount(activityAccountEntity.getTotalCount())
