@@ -51,8 +51,10 @@ cd server/docs/dev-ops && docker compose -f docker-compose-environment.yml up -d
 
 # 2. 初始化库表
 #    执行 docs/dev-ops/mysql/sql/ 下三份脚本（marketing_engine / _01 / _02）
+#    再执行升级脚本 docs/dev-ops/mysql/sql/migration/ 下的 V2（outbox）、V3（applied_consumed）
+#    注意：V2 需要在 _01、_02 两个分片库各执行一次
 
-# 3. 启动后端
+# 3. 启动后端（默认 dev profile，读环境变量 DB_USERNAME / DB_PASSWORD）
 cd ../.. && mvn -DskipTests install
 java -jar marketing-engine-app/target/marketing-engine-app.jar
 
@@ -66,14 +68,39 @@ cd web && npm install && npm run dev
 
 1. **概率计算前置到预热期**。按最小概率把奖品展开成整数区间查找表，乱序后写入 Redis Hash，抽奖时一次 `random` 加一次查表，O(1)。乱序是为了避免同一奖品占据连续槽位被人摸出规律。
 2. **拦截与执行分开建模**。抽奖前的校验（黑名单、权重）是线性逐关判断，用责任链；抽奖中后的动作（扣库存、兜底奖品）是按条件走不同分支，用数据库配置的决策树。规则树的节点、连线、参数都在表里，改规则不需要发版。
-3. **库存三段式**。Redis 原子扣减保证不超卖，扣减结果进队列异步落库避免峰值打穿数据库，最后一件卖完发 MQ 清除缓存并触发售罄处理。
-4. **发奖不依赖 MQ 可靠性**。中奖记录与消息任务在同一事务落库（本地消息表），由定时任务扫表补偿投递，消息重投时由业务唯一键兜底幂等。
+3. **库存绝对量回写**。Redis 原子扣减保证不超卖；扣减后的「累计已扣数」与订单在同一事务写进 outbox，消费端按 `库存 = 总量 - 已扣数` 回写，并用 `applied_consumed < consumedAfter` 保证单调——重复投递和乱序到达都幂等。另有对账任务比对 Redis 与数据库的已扣数。
+4. **补偿收敛成一个框架**。发奖、返利、库存三处共用一张 outbox 表：`pending → sending → sent → consumed → dead` 五态，指数退避重试、超时未回执重投、超限进死信。可靠性来自数据库而不是 MQ，MQ 只是加速通道。
+5. **配置错误在发布期被拦住**。规则、树、概率全部数据驱动，配错不会编译失败也不会抛异常。校验器检查概率归一、权重档位非空、树根/边/环/孤立节点、`rule_key` 是否有对应 Bean、有库存的奖品是否挂了 `rule_stock`，不过就不允许发布。
+
+## 接口概览
+
+| 分类 | 路径 | 鉴权 |
+| --- | --- | --- |
+| C 端 | `POST /api/v1/auth/login`、`/api/v1/raffle/activity/**` | 用户 JWT |
+| B 端 | `POST /console/auth/login`、`/console/v1/strategy/{id}/validate`、`/publish`、`/console/v1/dashboard/overview` | 运营 JWT + 角色 |
+| 上游 | `POST /open/v1/quota/recharge`、`GET /open/v1/activity/{id}` | API Key + HMAC 签名 |
+| 观测 | `GET /actuator/health`、`/actuator/prometheus` | 无 |
+
+鉴权由 `app.auth.enabled` 控制，**本地演示默认关闭**（前端仍可用 URL 传 `userId` 联调），
+生产必须开启。
+
+## 测试
+
+```bash
+cd server
+mvn test                  # 只跑不依赖中间件的纯单测（概率装配、权重选档、决策树、JSON、配置校验）
+mvn test -P integration   # 需要本地 MySQL / Redis / RabbitMQ
+```
+
+CI 见 `.github/workflows/ci.yml`；压测脚本与守恒校验 SQL 见 `docs/load-test/`。
 
 ## 范围说明
 
-- 抽奖与返利是完整链路；**奖品实际发放**目前只做消费者落点，未对接具体的发奖渠道。
-- 无用户鉴权体系，前端通过 URL 传 `userId` 便于多账号验证额度与权重差异。
-- 规则树的变更在重新装配后生效，不是运行时热更新。
+- 抽奖与返利是完整链路；**奖品实际发放**目前只做消费者落点与回执闭环，未对接具体的发奖渠道。
+- 运营账号来自配置文件（BCrypt 散列），未做运营后台的用户管理；生产应落库并接 SSO。
+- 开放接口的限流是单机滑动窗口，多实例部署应换成 Redis 令牌桶。
+- 规则树的变更需要走发布流程（校验 → 失效缓存 → 预热），不是运行时热更新。
+- 灰度发布、库存分桶、规则树 `GT/LT` 条件分支尚未实现，见 ROADMAP 的 P6。
 
 ## 模块细节
 
