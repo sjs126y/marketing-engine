@@ -57,9 +57,9 @@
 
 ### P3 三套鉴权 → tag `v0.4.0`
 
-- [ ] C 端用户：登录换 JWT，`userId` 从 token 解析
-- [ ] B 端运营：Spring Security + BCrypt + 角色 + 操作审计
-- [ ] 上游系统：API Key + HMAC 签名 + 时间戳 + 限流
+- [x] C 端用户：登录换 JWT，`userId` 从 token 解析
+- [x] B 端运营：Spring Security + BCrypt + 角色 + 操作审计
+- [x] 上游系统：API Key + HMAC 签名 + 时间戳 + 限流
 
 **验收**：三种身份各自能访问/被拒绝；越权被拦。
 
