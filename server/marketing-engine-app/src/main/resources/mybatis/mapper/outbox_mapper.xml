@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjs.marketing.infrastructure.dao.IOutboxDao">
+
+    <resultMap id="dataMap" type="com.sjs.marketing.infrastructure.dao.po.OutboxMessage">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="topic" property="topic"/>
+        <result column="message_id" property="messageId"/>
+        <result column="payload" property="payload"/>
+        <result column="state" property="state"/>
+        <result column="retry_count" property="retryCount"/>
+        <result column="next_retry_at" property="nextRetryAt"/>
+        <result column="sent_at" property="sentAt"/>
+        <result column="consumed_at" property="consumedAt"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.sjs.marketing.infrastructure.dao.po.OutboxMessage">
+        insert into outbox(
+            user_id, topic, message_id, payload, state, retry_count, next_retry_at, created_at, updated_at
+        ) values (
+            #{userId}, #{topic}, #{messageId}, #{payload}, #{state}, 0, now(), now(), now()
+        )
+    </insert>
+
+    <select id="queryPendingBatch" resultMap="dataMap">
+        select id, user_id, topic, message_id, payload, state, retry_count, next_retry_at, sent_at
+        from outbox
+        where state = 'pending' and next_retry_at &lt;= now()
+        order by id
+        limit #{limit}
+    </select>
+
+    <update id="claim">
+        update outbox
+        set state = 'sending', updated_at = now()
+        where id = #{id} and state = 'pending'
+    </update>
+
+    <update id="markSent">
+        update outbox
+        set state = 'sent', sent_at = now(), updated_at = now()
+        where id = #{id} and state = 'sending'
+    </update>
+
+    <update id="markRetry">
+        update outbox
+        set state = 'pending', retry_count = retry_count + 1, next_retry_at = #{nextRetryAt}, updated_at = now()
+        where id = #{id} and state = 'sending'
+    </update>
+
+    <update id="markDead">
+        update outbox
+        set state = 'dead', updated_at = now()
+        where id = #{id} and state = 'sending'
+    </update>
+
+    <update id="markConsumed">
+        update outbox
+        set state = 'consumed', consumed_at = now(), updated_at = now()
+        where message_id = #{messageId}
+          and user_id = #{userId}
+          and state in ('sent', 'pending')
+    </update>
+
+    <update id="resetStuckSending">
+        update outbox
+        set state = 'pending', updated_at = now()
+        where state = 'sending' and updated_at &lt; #{deadline}
+    </update>
+
+    <update id="resetStaleSent">
+        update outbox
+        set state = 'pending', retry_count = retry_count + 1, updated_at = now()
+        where state = 'sent' and sent_at &lt; #{deadline} and retry_count &lt; #{maxRetry}
+    </update>
+
+    <update id="buryExhaustedSent">
+        update outbox
+        set state = 'dead', updated_at = now()
+        where state = 'sent' and sent_at &lt; #{deadline} and retry_count &gt;= #{maxRetry}
+    </update>
+
+    <select id="countByState" resultType="int">
+        select count(*) from outbox where state = #{state}
+    </select>
+
+</mapper>

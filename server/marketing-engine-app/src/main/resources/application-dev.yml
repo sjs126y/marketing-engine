@@ -28,6 +28,14 @@ app:
       username: ${DB_USERNAME:root}
       password: ${DB_PASSWORD:123456}
 
+  # 本地消息表（outbox）调度参数
+  outbox:
+    batch-size: 200            # 单次扫描条数
+    max-retry: 8               # 超过进入 dead，等待人工处理
+    stuck-seconds: 120         # sending 超时视为进程崩溃，退回 pending
+    consume-timeout-seconds: 300  # sent 后超时未回执，重新投递（消费端需幂等）
+    max-backoff-seconds: 300   # 退避上限
+
 # Spring 配置；rabbitmq
 spring:
   rabbitmq:

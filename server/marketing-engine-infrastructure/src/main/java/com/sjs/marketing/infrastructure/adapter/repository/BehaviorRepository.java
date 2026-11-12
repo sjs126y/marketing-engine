@@ -1,5 +1,6 @@
 package com.sjs.marketing.infrastructure.adapter.repository;
 
+import com.sjs.marketing.infrastructure.outbox.OutboxService;
 import com.sjs.marketing.types.util.JsonUtils;
 import com.sjs.marketing.domain.rebate.adapter.repository.IBehaviorRepository;
 import com.sjs.marketing.domain.rebate.model.aggregate.BehaviorRebateAggregate;
@@ -8,12 +9,9 @@ import com.sjs.marketing.domain.rebate.model.entity.TaskEntity;
 import com.sjs.marketing.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.sjs.marketing.domain.rebate.model.valobj.DailyBehaviorRebateVO;
 import com.sjs.marketing.infrastructure.dao.IDailyBehaviorRebateDao;
-import com.sjs.marketing.infrastructure.dao.ITaskDao;
 import com.sjs.marketing.infrastructure.dao.IUserBehaviorRebateOrderDao;
 import com.sjs.marketing.infrastructure.dao.po.DailyBehaviorRebate;
-import com.sjs.marketing.infrastructure.dao.po.Task;
 import com.sjs.marketing.infrastructure.dao.po.UserBehaviorRebateOrder;
-import com.sjs.marketing.infrastructure.event.EventPublisher;
 import com.sjs.marketing.types.enums.ResponseCode;
 import com.sjs.marketing.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +33,9 @@ public class BehaviorRepository implements IBehaviorRepository {
     @Resource
     private IDailyBehaviorRebateDao dailyBehaviorRebateDao;
     @Resource
-    private ITaskDao taskDao;
+    private OutboxService outboxService;
     @Resource
     private TransactionTemplate transactionTemplate;
-    @Resource
-    private EventPublisher eventPublisher;
 
     @Override
     public List<DailyBehaviorRebateVO> queryDailyBehaviorRebateConfig(BehaviorTypeVO behaviorTypeVO) {
@@ -77,14 +73,9 @@ public class BehaviorRepository implements IBehaviorRepository {
                     userBehaviorRebateOrder.setOutBusinessNo(behaviorRebateOrderEntity.getOutBusinessNo());
                     userBehaviorRebateOrderDao.insert(userBehaviorRebateOrder);
 
-                    //再插入任务
-                    Task task = new Task();
-                    task.setUserId(taskEntity.getUserId());
-                    task.setTopic(taskEntity.getTopic());
-                    task.setMessageId(taskEntity.getMessageId());
-                    task.setMessage(JsonUtils.toJson(taskEntity.getMessage()));
-                    task.setState(taskEntity.getState().getCode());
-                    taskDao.insert(task);
+                    // 发奖/返利消息写入 outbox（与流水同事务，事务外由调度器投递）
+                    outboxService.append(taskEntity.getUserId(), taskEntity.getTopic(),
+                            taskEntity.getMessageId(), JsonUtils.toJson(taskEntity.getMessage()));
                 }
 
                 return 1;
@@ -96,23 +87,6 @@ public class BehaviorRepository implements IBehaviorRepository {
                 throw new AppException(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getInfo(), e);
             }
         });
-
-        //发送MQ消息
-        for (BehaviorRebateAggregate behaviorRebateAggregate : behaviorRebateAggregates) {
-            TaskEntity taskEntity = behaviorRebateAggregate.getTaskEntity();
-            Task task = new Task();
-            task.setUserId(userId);
-            task.setMessageId(taskEntity.getMessageId());
-            try {
-                // 发送消息【在事务外执行，如果失败还有任务补偿】
-                eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
-                // 更新数据库记录，task 任务表
-                taskDao.updateTaskSendMessageCompleted(task);
-            } catch (Exception e) {
-                log.error("写入返利记录，发送MQ消息失败 userId: {} topic: {}", userId, taskEntity.getTopic());
-                taskDao.updateTaskSendMessageFail(task);
-            }
-        }
     }
 
     @Override

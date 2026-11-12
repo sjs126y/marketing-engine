@@ -67,6 +67,9 @@ public class ShardingDataSourceConfig {
             "raffle_activity_account",
             "raffle_activity_account_month",
             "raffle_activity_account_day",
+            // 本地消息表：替代原先的 task 表，统一承接发奖/返利/库存的可靠投递
+            "outbox",
+            // task 表保留历史数据，新链路不再写入
             "task");
 
     @Bean
