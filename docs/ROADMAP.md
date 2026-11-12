@@ -38,11 +38,11 @@
 
 ### P1 统一补偿框架 → tag `v0.2.0`
 
-- [ ] `outbox` 表（pending / sent / consumed / dead 四态）
-- [ ] dispatcher：扫表投递、指数退避、8 次进 dead、积压指标
-- [ ] 消费回执：`sent → consumed`
-- [ ] 反查器：`sent` 超时回查业务表，标记或重投
-- [ ] 接入发奖、返利两条链路；移除裸扫表 job
+- [x] `outbox` 表（pending / sending / sent / consumed / dead 五态）
+- [x] dispatcher：扫表投递、指数退避、8 次进 dead、积压指标
+- [x] 消费回执：`sent → consumed`
+- [x] 反查器：`sent` 超时回查业务表，标记或重投
+- [x] 接入发奖、返利两条链路；移除裸扫表 job
 
 **验收**：停 MQ 抽 100 次后重启可全部恢复；重放 10 次不重复；异常可见退避与 dead。
 
