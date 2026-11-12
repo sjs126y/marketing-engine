@@ -64,14 +64,14 @@ public class OutboxService implements IOutboxAckService {
 
         int sent = 0;
         for (OutboxMessage message : batch) {
-            // 抢占成功才投递，避免多实例重复发送
-            if (outboxDao.claim(message.getId()) != 1) {
+            // 抢占成功才投递，避免多实例重复发送；(userId, messageId) 定位可精确路由到分片
+            if (outboxDao.claim(message.getUserId(), message.getMessageId()) != 1) {
                 continue;
             }
 
             try {
                 eventPublisher.publish(message.getTopic(), message.getPayload());
-                outboxDao.markSent(message.getId());
+                outboxDao.markSent(message.getUserId(), message.getMessageId());
                 sent++;
             } catch (Exception e) {
                 handleFailure(message, e);
@@ -130,7 +130,7 @@ public class OutboxService implements IOutboxAckService {
     private void handleFailure(OutboxMessage message, Exception e) {
         int nextRetryCount = message.getRetryCount() + 1;
         if (nextRetryCount >= properties.getMaxRetry()) {
-            outboxDao.markDead(message.getId());
+            outboxDao.markDead(message.getUserId(), message.getMessageId());
             log.error("outbox 投递失败达到上限，转入 dead id:{} topic:{} messageId:{}",
                     message.getId(), message.getTopic(), message.getMessageId(), e);
             return;
@@ -140,7 +140,7 @@ public class OutboxService implements IOutboxAckService {
                 1L << Math.min(nextRetryCount, 10),
                 properties.getMaxBackoffSeconds());
         Date nextRetryAt = new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(backoffSeconds));
-        outboxDao.markRetry(message.getId(), nextRetryAt);
+        outboxDao.markRetry(message.getUserId(), message.getMessageId(), nextRetryAt);
         log.warn("outbox 投递失败，{} 秒后重试（第 {} 次） id:{} topic:{}",
                 backoffSeconds, nextRetryCount, message.getId(), message.getTopic(), e);
     }

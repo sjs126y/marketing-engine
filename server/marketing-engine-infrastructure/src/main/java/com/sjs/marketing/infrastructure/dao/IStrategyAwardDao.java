@@ -19,7 +19,12 @@ public interface IStrategyAwardDao {
 
     String queryStrategyAwardRuleModels(StrategyAward strategyAwardReq);
 
-    void subtractStrategyAwardStock(Long strategyId, Integer awardId);
+    /**
+     * 以绝对量回写奖品库存：{@code 总量 - 已扣数}，只有更大的已扣数才生效（单调保护）。
+     */
+    int updateAppliedConsumed(@org.apache.ibatis.annotations.Param("strategyId") Long strategyId,
+                              @org.apache.ibatis.annotations.Param("awardId") Integer awardId,
+                              @org.apache.ibatis.annotations.Param("consumedAfter") Integer consumedAfter);
 
     StrategyAward queryStrategyAward(StrategyAward strategyAwardReq);
 }

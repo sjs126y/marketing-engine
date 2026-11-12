@@ -1,5 +1,8 @@
 spring:
-  config:
+  # 这里原本写成了 spring.config.name，它的含义是「配置文件基名」，
+  # 会把 application.yml / application-dev.yml 挤掉，导致所有配置不生效。
+  # 本意是应用名，正确写法是 spring.application.name。
+  application:
     name: marketing-engine-app
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}

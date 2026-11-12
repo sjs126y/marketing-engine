@@ -94,6 +94,35 @@ mvn test -P integration   # 需要本地 MySQL / Redis / RabbitMQ
 
 CI 见 `.github/workflows/ci.yml`；压测脚本与守恒校验 SQL 见 `docs/load-test/`。
 
+## 本地验证结果
+
+以下都是在本地 Docker（MySQL 8 / Redis 6 / RabbitMQ 3.12）跑出来的真实结果，不是估算：
+
+| 项 | 结果 |
+| --- | --- |
+| 应用启动 | `GET /actuator/health` → `{"status":"UP"}` |
+| 策略预热 | `GET /armory?activityId=100301` → 成功，概率表写入 Redis |
+| 抽奖 | `POST /draw` → 返回真实奖品，中奖记录与抽奖单状态正确落库 |
+| ShardingSphere 路由 | 按 `user_id` 正确落到 ds1/ds2 的对应分表 |
+| outbox 投递 | 压测产生 ~300 条消息，全部 `consumed`，无 pending/dead |
+| 压测 | 20 并发 × 300 次，QPS ≈ 53，成功 293 / 失败 7 |
+
+**守恒校验（本次压测）**
+
+| 校验 | 结果 |
+| --- | --- |
+| 充值 20 次 → `applied_consumed` | 20，且 `stock_count - surplus = 20` ✅ |
+| 成功抽奖 293 次 → 中奖记录 | 293 条（按 `user_id like 'load-final%'` 统计）✅ |
+| 每个奖品的 `applied_consumed` | 与 `award_count - surplus` 逐项一致 ✅ |
+| outbox 最终状态 | 全部 `consumed`，无积压 ✅ |
+
+复现：
+
+```bash
+cd docs/load-test
+python load_test.py --users 20 --draws 300 --concurrency 20
+```
+
 ## 范围说明
 
 - 抽奖与返利是完整链路；**奖品实际发放**目前只做消费者落点与回执闭环，未对接具体的发奖渠道。
@@ -101,6 +130,13 @@ CI 见 `.github/workflows/ci.yml`；压测脚本与守恒校验 SQL 见 `docs/lo
 - 开放接口的限流是单机滑动窗口，多实例部署应换成 Redis 令牌桶。
 - 规则树的变更需要走发布流程（校验 → 失效缓存 → 预热），不是运行时热更新。
 - 灰度发布、库存分桶、规则树 `GT/LT` 条件分支尚未实现，见 ROADMAP 的 P6。
+- **同一用户并发抽奖会返回 `0003 唯一索引冲突`**：参与单按「查询未使用单」复用，
+  并发下两个请求拿到同一张单，第二条中奖记录撞 `uq_order_id`。这是有意保留的安全网
+  （宁可失败也不重复发奖），但生产应加 per-user 串行化或把参与单改成显式状态机。
+- 奖品库存的抽奖扣减在 Redis，数据库由 `UpdateAwardStockJob` 异步回写；
+  压测中曾观察到旧实现（每 30 秒一条）严重滞后，现已改为每轮排空，上限 500 条。
+- 种子数据里 `strategy_award` 的 `award_count` 与 `award_count_surplus` 本身不自洽
+  （例如奖品 105 是 100 / 38），所以「已发数量」不能直接当成本次扣减量看。
 
 ## 模块细节
 

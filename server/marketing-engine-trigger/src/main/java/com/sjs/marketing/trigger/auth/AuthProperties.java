@@ -2,7 +2,6 @@ package com.sjs.marketing.trigger.auth;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,7 +22,6 @@ import java.util.Map;
  * @author marketing-engine contributors
  */
 @Data
-@Component
 @ConfigurationProperties(prefix = "app.auth")
 public class AuthProperties {
 

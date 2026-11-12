@@ -7,5 +7,10 @@ public interface IStrategyDispatch {
 
     Integer getRandomAwardId(Long strategyId, String ruleWeightValue);
 
-    Boolean subtractionAwardStock(Long strategyId, Integer awardId, Date date);
+    /**
+     * Redis 原子扣减奖品库存。
+     *
+     * @return 扣减后的剩余库存；{@code null} 表示库存不足
+     */
+    Integer subtractionAwardStock(Long strategyId, Integer awardId, Date date);
 }

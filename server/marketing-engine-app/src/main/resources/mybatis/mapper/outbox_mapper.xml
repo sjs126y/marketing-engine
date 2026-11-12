@@ -33,36 +33,35 @@
         limit #{limit}
     </select>
 
+    <!-- 所有更新都以 (user_id, message_id) 定位：user_id 是分片键，避免无分片键 SQL 被广播到两个库 -->
     <update id="claim">
         update outbox
         set state = 'sending', updated_at = now()
-        where id = #{id} and state = 'pending'
+        where user_id = #{userId} and message_id = #{messageId} and state = 'pending'
     </update>
 
     <update id="markSent">
         update outbox
         set state = 'sent', sent_at = now(), updated_at = now()
-        where id = #{id} and state = 'sending'
+        where user_id = #{userId} and message_id = #{messageId} and state = 'sending'
     </update>
 
     <update id="markRetry">
         update outbox
         set state = 'pending', retry_count = retry_count + 1, next_retry_at = #{nextRetryAt}, updated_at = now()
-        where id = #{id} and state = 'sending'
+        where user_id = #{userId} and message_id = #{messageId} and state = 'sending'
     </update>
 
     <update id="markDead">
         update outbox
         set state = 'dead', updated_at = now()
-        where id = #{id} and state = 'sending'
+        where user_id = #{userId} and message_id = #{messageId} and state = 'sending'
     </update>
 
     <update id="markConsumed">
         update outbox
         set state = 'consumed', consumed_at = now(), updated_at = now()
-        where message_id = #{messageId}
-          and user_id = #{userId}
-          and state in ('sent', 'pending')
+        where user_id = #{userId} and message_id = #{messageId} and state in ('sent', 'pending')
     </update>
 
     <update id="resetStuckSending">

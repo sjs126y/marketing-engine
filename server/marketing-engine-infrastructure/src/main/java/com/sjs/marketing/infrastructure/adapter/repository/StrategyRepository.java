@@ -225,25 +225,24 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
-    public Boolean subtractionAwardStock(String cacheKey) {
+    public Integer subtractionAwardStock(String cacheKey) {
         return subtractionAwardStock(cacheKey, null);
     }
 
     @Override
-    public Boolean subtractionAwardStock(String cacheKey, Date endDateTime) {
-        //开始减库存
+    public Integer subtractionAwardStock(String cacheKey, Date endDateTime) {
+        // 开始减库存
         long surplus = redisService.decr(cacheKey);
-        if(surplus < 0){
+        if (surplus < 0) {
             redisService.setAtomicLong(cacheKey, 0);
             log.error("库存不足 cacheKey:{}", cacheKey);
-            return false;
+            return null;
         }
 
-        //进行兜底上锁
-        String lockKey = cacheKey+ Constants.UNDERLINE + surplus;
+        // 进行兜底上锁，防止同一余量被重复扣减
+        String lockKey = cacheKey + Constants.UNDERLINE + surplus;
 
-        //判断是否有截止时间设置
-        boolean isLock = false;
+        boolean isLock;
         if (null != endDateTime) {
             long expireMillis = endDateTime.getTime() - System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1);
             isLock = redisService.setNx(lockKey, expireMillis, TimeUnit.MILLISECONDS);
@@ -251,11 +250,14 @@ public class StrategyRepository implements IStrategyRepository {
             isLock = redisService.setNx(lockKey);
         }
 
-        if(!isLock){
-            log.error("库存扣减失败 cacheKey:{}", cacheKey);
+        if (!isLock) {
+            // 余量已被抢占，回补本次扣减
+            redisService.incr(cacheKey);
+            log.error("库存扣减失败，余量已被抢占 cacheKey:{} surplus:{}", cacheKey, surplus);
+            return null;
         }
 
-        return isLock;
+        return (int) surplus;
     }
 
     @Override
@@ -274,8 +276,8 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
-    public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
-        strategyAwardDao.subtractStrategyAwardStock(strategyId, awardId);
+    public void updateStrategyAwardStock(Long strategyId, Integer awardId, Integer consumedAfter) {
+        strategyAwardDao.updateAppliedConsumed(strategyId, awardId, consumedAfter);
     }
 
     @Override

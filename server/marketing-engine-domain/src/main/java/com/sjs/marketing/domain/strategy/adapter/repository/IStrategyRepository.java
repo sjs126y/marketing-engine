@@ -39,9 +39,9 @@ public interface IStrategyRepository {
 
     void cacheStrategyAwardCount(String cacheKey, Integer awardCount);
 
-    Boolean subtractionAwardStock(String cacheKey);
+    Integer subtractionAwardStock(String cacheKey);
 
-    Boolean subtractionAwardStock(String cacheKey, Date date);
+    Integer subtractionAwardStock(String cacheKey, Date date);
 
     /**
      * 写入奖品库存消费队列
@@ -58,10 +58,11 @@ public interface IStrategyRepository {
     /**
      * 更新奖品库存消耗
      *
-     * @param strategyId 策略ID
-     * @param awardId 奖品ID
+     * @param strategyId    策略ID
+     * @param awardId       奖品ID
+     * @param consumedAfter 扣减后的累计已扣数（绝对量回写，幂等）
      */
-    void updateStrategyAwardStock(Long strategyId, Integer awardId);
+    void updateStrategyAwardStock(Long strategyId, Integer awardId, Integer consumedAfter);
 
     StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Integer awardId);
 

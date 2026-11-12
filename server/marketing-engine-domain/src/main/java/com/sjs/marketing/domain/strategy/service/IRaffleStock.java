@@ -21,9 +21,10 @@ public interface IRaffleStock {
     /**
      * 更新奖品库存消耗记录
      *
-     * @param strategyId 策略ID
-     * @param awardId    奖品ID
+     * @param strategyId    策略ID
+     * @param awardId       奖品ID
+     * @param consumedAfter 扣减后的累计已扣数（绝对量回写，幂等）
      */
-    void updateStrategyAwardStock(Long strategyId, Integer awardId);
+    void updateStrategyAwardStock(Long strategyId, Integer awardId, Integer consumedAfter);
 
 }

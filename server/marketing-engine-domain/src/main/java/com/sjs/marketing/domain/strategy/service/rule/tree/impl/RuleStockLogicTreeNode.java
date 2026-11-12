@@ -2,6 +2,7 @@ package com.sjs.marketing.domain.strategy.service.rule.tree.impl;
 
 import com.sjs.marketing.domain.strategy.adapter.repository.IStrategyRepository;
 import com.sjs.marketing.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
+import com.sjs.marketing.domain.strategy.model.entity.StrategyAwardEntity;
 import com.sjs.marketing.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 import com.sjs.marketing.domain.strategy.service.armory.IStrategyDispatch;
 import com.sjs.marketing.domain.strategy.service.rule.tree.ILogicTreeNode;
@@ -26,14 +27,19 @@ public class RuleStockLogicTreeNode implements ILogicTreeNode {
         log.info("规则过滤-库存扣减 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
 
         //扣减库存
-        Boolean status = strategyDispatch.subtractionAwardStock(strategyId, awardId, endDateTime);
+        Integer surplus = strategyDispatch.subtractionAwardStock(strategyId, awardId, endDateTime);
 
         //扣减成功，发送消息到队列
-        if(status){
+        if (surplus != null) {
             log.info("规则过滤-库存扣减成功 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
+            // 带上「扣减后的累计已扣数」，落库时按绝对量回写，重复消费安全
+            StrategyAwardEntity awardEntity = repository.queryStrategyAwardEntity(strategyId, awardId);
+            int total = awardEntity == null || awardEntity.getAwardCount() == null ? 0 : awardEntity.getAwardCount();
+
             StrategyAwardStockKeyVO strategyAwardStockKeyVO = StrategyAwardStockKeyVO.builder()
                     .strategyId(strategyId)
                     .awardId(awardId)
+                    .consumedAfter(total - surplus)
                     .build();
             repository.awardStockConsumeSendQueue(strategyAwardStockKeyVO);
 

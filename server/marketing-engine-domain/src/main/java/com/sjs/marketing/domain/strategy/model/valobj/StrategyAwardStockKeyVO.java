@@ -20,5 +20,12 @@ public class StrategyAwardStockKeyVO {
     private Long strategyId;
     // 奖品ID
     private Integer awardId;
+    /**
+     * 扣减后的累计已扣数（Redis 口径）。
+     *
+     * <p>落库时按「总量 - 已扣数」绝对量回写，重复消费与乱序重放都幂等——
+     * 原先按「-1」增量写，队列堆积后重放会把库存扣成负数。</p>
+     */
+    private Integer consumedAfter;
 
 }
