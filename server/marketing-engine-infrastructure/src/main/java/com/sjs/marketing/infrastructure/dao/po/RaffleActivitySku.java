@@ -33,6 +33,10 @@ public class RaffleActivitySku {
      */
     private Integer stockCountSurplus;
     /**
+     * 已写入数据库的累计已扣数（单调递增，用于绝对量回写的幂等保护）
+     */
+    private Integer appliedConsumed;
+    /**
      * 创建时间
      */
     private Date createTime;

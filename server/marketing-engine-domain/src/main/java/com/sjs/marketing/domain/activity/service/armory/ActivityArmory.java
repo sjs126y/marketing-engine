@@ -52,7 +52,7 @@ public class ActivityArmory implements IActivityArmory, IActivityDispatch{
     }
 
     @Override
-    public boolean subtractionActivitySkuStock(Long sku, Date endDateTime) {
+    public Integer subtractionActivitySkuStock(Long sku, Date endDateTime) {
         return repository.subtractionActivitySkuStock(sku, endDateTime);
     }
 }

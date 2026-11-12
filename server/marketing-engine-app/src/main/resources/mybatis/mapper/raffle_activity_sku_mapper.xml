@@ -9,30 +9,38 @@
         <result column="activity_count_id" property="activityCountId"/>
         <result column="stock_count" property="stockCount"/>
         <result column="stock_count_surplus" property="stockCountSurplus"/>
+        <result column="applied_consumed" property="appliedConsumed"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <select id="queryActivitySku" parameterType="java.lang.Long" resultMap="dataMap">
-        select sku, activity_id, activity_count_id, stock_count, stock_count_surplus
+        select sku, activity_id, activity_count_id, stock_count, stock_count_surplus, applied_consumed
         from raffle_activity_sku
         where sku = #{sku}
     </select>
 
-    <update id="updateActivitySkuStockCount" parameterType="java.lang.Long">
+    <!--
+      绝对量回写：库存 = 总量 - 已扣数。
+      applied_consumed < 目标值 才更新，保证同一条消息重复投递、
+      或两条消息乱序到达时，已扣数只单调前进。
+    -->
+    <update id="updateAppliedConsumed">
         update raffle_activity_sku
-        set stock_count_surplus = stock_count_surplus - 1, update_time = now()
-        where sku = #{sku} and stock_count_surplus > 0
-    </update>
-
-    <update id="clearActivitySkuStockCount" parameterType="java.lang.Long">
-        update raffle_activity_sku
-        set stock_count_surplus = 0, update_time = now()
+        set stock_count_surplus = stock_count - #{consumedAfter},
+            applied_consumed = #{consumedAfter},
+            update_time = now()
         where sku = #{sku}
+          and applied_consumed &lt; #{consumedAfter}
     </update>
 
-    <select id="queryActivitySkuListByActivityId" parameterType="java.lang.Long" resultMap="dataMap">
-        select sku, activity_count_id, stock_count, stock_count_surplus
+    <select id="queryAllSkuStock" resultMap="dataMap">
+        select sku, activity_id, activity_count_id, stock_count, stock_count_surplus, applied_consumed
+        from raffle_activity_sku
+    </select>
+
+    <select id="queryActivitySkuListByActivityId" resultMap="dataMap">
+        select sku, activity_count_id, stock_count, stock_count_surplus, applied_consumed
         from raffle_activity_sku
         where activity_id = #{activityId}
     </select>

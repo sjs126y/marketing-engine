@@ -3,9 +3,7 @@ package com.sjs.marketing.domain.activity.service.quota;
 import com.sjs.marketing.domain.activity.adapter.repository.IActivityRepository;
 import com.sjs.marketing.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.sjs.marketing.domain.activity.model.entity.*;
-import com.sjs.marketing.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.sjs.marketing.domain.activity.model.valobj.OrderStateVO;
-import com.sjs.marketing.domain.activity.service.IRaffleActivitySkuStockSerivce;
 import com.sjs.marketing.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -15,7 +13,7 @@ import java.util.Date;
 
 @Slf4j
 @Service
-public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAccountQuota implements IRaffleActivitySkuStockSerivce {
+public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAccountQuota {
 
     public RaffleActivityAccountQuotaService(IActivityRepository repository, DefaultActivityChainFactory defaultActivityChainFactory) {
         super(repository, defaultActivityChainFactory);
@@ -46,6 +44,7 @@ public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAcc
                 .dayCount(activityCountEntity.getDayCount())
                 .monthCount(activityCountEntity.getMonthCount())
                 .activityOrderEntity(activityOrderEntity)
+                .skuConsumedAfter(activitySkuEntity.getConsumedAfter())
                 .build();
     }
 
@@ -54,25 +53,9 @@ public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAcc
         repository.doSaveOrder(createQuotaOrderAggregate);
     }
 
-    @Override
-    public ActivitySkuStockKeyVO takeQueueValue() throws InterruptedException {
-        return repository.takeQueueValue();
-    }
 
-    @Override
-    public void clearQueueValue() {
-        repository.clearQueue();
-    }
 
-    @Override
-    public void updateActivitySkuStock(Long sku) {
-        repository.updateActivitySkuStockCount(sku);
-    }
 
-    @Override
-    public void clearActivitySkuStock(Long sku) {
-        repository.clearActivitySkuStockCount(sku);
-    }
 
     @Override
     public Integer queryRaffleActivityAccountDayPartakeCount(Long activityId, String userId) {

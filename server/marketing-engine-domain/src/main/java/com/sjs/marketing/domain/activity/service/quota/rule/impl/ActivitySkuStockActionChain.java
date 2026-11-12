@@ -1,10 +1,8 @@
 package com.sjs.marketing.domain.activity.service.quota.rule.impl;
 
-import com.sjs.marketing.domain.activity.adapter.repository.IActivityRepository;
 import com.sjs.marketing.domain.activity.model.entity.ActivityCountEntity;
 import com.sjs.marketing.domain.activity.model.entity.ActivityEntity;
 import com.sjs.marketing.domain.activity.model.entity.ActivitySkuEntity;
-import com.sjs.marketing.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.sjs.marketing.domain.activity.service.armory.IActivityDispatch;
 import com.sjs.marketing.domain.activity.service.quota.rule.AbstractActionChain;
 import com.sjs.marketing.types.enums.ResponseCode;
@@ -14,33 +12,38 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.Resource;
 
-
+/**
+ * 活动责任链 - SKU 库存扣减。
+ *
+ * <p>只做 Redis 原子扣减并记录「扣减后的累计已扣数」，
+ * 真正的数据库回写由本地事务里的 outbox 消息异步完成（绝对量 + 单调保护）。</p>
+ *
+ * @author marketing-engine contributors
+ */
 @Slf4j
 @Component("activity_sku_stock_action")
 public class ActivitySkuStockActionChain extends AbstractActionChain {
 
     @Resource
     private IActivityDispatch activityDispatch;
-    @Resource
-    private IActivityRepository repository;
 
     @Override
     public boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
-        log.info("活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
+        Long sku = activitySkuEntity.getSku();
+        log.info("活动责任链-商品库存处理【有效期、状态、库存(sku)】开始。sku:{} activityId:{}", sku, activityEntity.getActivityId());
 
-        boolean status = activityDispatch.subtractionActivitySkuStock(activitySkuEntity.getSku(), activityEntity.getEndDateTime());
-        //扣减库存成功，发送延迟队列消息
-        if(status){
-            log.info("活动责任链-商品库存处理【有效期、状态、库存(sku)】成功。sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
-
-            repository.activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO.builder()
-                    .sku(activitySkuEntity.getSku())
-                    .activityId(activityEntity.getActivityId())
-                    .build());
-
-            return true;
+        Integer surplus = activityDispatch.subtractionActivitySkuStock(sku, activityEntity.getEndDateTime());
+        if (surplus == null) {
+            throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getInfo());
         }
-        //否则扣减库存失败
-        throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getInfo());
+
+        // 把扣减后的累计已扣数留在实体上，供事务内写 outbox 时使用
+        int total = activitySkuEntity.getStockCount() == null ? 0 : activitySkuEntity.getStockCount();
+        activitySkuEntity.setConsumedAfter(total - surplus);
+        activitySkuEntity.setStockCountSurplus(surplus);
+
+        log.info("活动责任链-商品库存处理成功。sku:{} surplus:{} consumedAfter:{}",
+                sku, surplus, activitySkuEntity.getConsumedAfter());
+        return true;
     }
 }

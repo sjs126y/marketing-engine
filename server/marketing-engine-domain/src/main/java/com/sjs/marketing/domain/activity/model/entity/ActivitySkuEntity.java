@@ -26,5 +26,12 @@ public class ActivitySkuEntity {
     private Integer stockCount;
     /** 剩余库存 */
     private Integer stockCountSurplus;
+    /**
+     * 本次扣减后的累计已扣数（Redis 口径）。
+     *
+     * <p>不是业务字段，而是扣减时留在实体上的「快照」：责任链扣完写进来，
+     * 事务落库时据此把库存以绝对量回写，避免增量写法的重复消费问题。</p>
+     */
+    private Integer consumedAfter;
 
 }
