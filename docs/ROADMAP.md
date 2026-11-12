@@ -28,11 +28,11 @@
 
 ### P0 技术栈升级 → tag `v0.1.0`
 
-- [ ] `build(deps)` JDK 21 + Lombok 1.18.34 + compiler 3.13
-- [ ] `refactor(json)` fastjson → Jackson（封装 JsonUtils）
-- [ ] `build(spring)` Spring Boot 2.7 → 3.5，`javax` → `jakarta`（38 处）
-- [ ] `build(sharding)` ShardingSphere 替换 db-router（先单库跑通，再上分片）
-- [ ] `chore(deps)` 清理无用依赖、密码外置、README 更新
+- [x] `build(deps)` JDK 21 + Lombok 1.18.34 + compiler 3.13
+- [x] `refactor(json)` fastjson → Jackson（封装 JsonUtils）
+- [x] `build(spring)` Spring Boot 2.7 → 3.5，`javax` → `jakarta`（38 处）
+- [x] `build(sharding)` ShardingSphere 替换 db-router（先单库跑通，再上分片）
+- [x] `chore(deps)` 清理无用依赖、密码外置、README 更新
 
 **验收**：`mvn clean package` 通过；应用启动；`armory` + `draw` 跑通；SQL 落到正确库表。
 

@@ -39,13 +39,14 @@ Java package: `com.sjs.marketing`
 
 ## Tech Stack
 
-- Java 8
-- Spring Boot 2.7
+- Java 21
+- Spring Boot 3.5
 - Maven multi-module build
 - MyBatis
-- MySQL
+- MySQL 8 + ShardingSphere-JDBC（按 userId 哈希分片）
 - Redis / Redisson
 - RabbitMQ
+- Jackson（替代 fastjson）
 - Lombok
 
 ## Run Locally
