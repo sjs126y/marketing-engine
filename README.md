@@ -106,6 +106,10 @@ CI 见 `.github/workflows/ci.yml`；压测脚本与守恒校验 SQL 见 `docs/lo
 | ShardingSphere 路由 | 按 `user_id` 正确落到 ds1/ds2 的对应分表 |
 | outbox 投递 | 压测产生 ~300 条消息，全部 `consumed`，无 pending/dead |
 | 压测 | 20 并发 × 300 次，QPS ≈ 53，成功 293 / 失败 7 |
+| 用户鉴权 | 无 token → 403；登录取 JWT 后可抽奖 |
+| 越权防护 | token 属于 A、请求体写 B，扣减仍落在 A（userId 以 token 为准） |
+| 运营鉴权 | admin 登录 → `role=ADMIN`，看板可访问；用运营 token 调开放接口 → 401 |
+| 开放接口 | 无 API Key 签名 → 401 |
 
 **守恒校验（本次压测）**
 
