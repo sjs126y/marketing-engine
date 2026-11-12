@@ -65,33 +65,29 @@ public class AwardRepository implements IAwardRepository {
         userRaffleOrder.setUserId(userAwardRecordEntity.getUserId());
         userRaffleOrder.setOrderId(userAwardRecordEntity.getOrderId());
 
-        try {
-            // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
-            transactionTemplate.execute(status -> {
-                try {
-                    //先插入中奖流水记录
-                    userAwardRecordDao.insert(userAwardRecord);
+        // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
+        transactionTemplate.execute(status -> {
+            try {
+                //先插入中奖流水记录
+                userAwardRecordDao.insert(userAwardRecord);
 
-                    //再插入任务表
-                    taskDao.insert(task);
+                //再插入任务表
+                taskDao.insert(task);
 
-                    //更新抽奖记录
-                    int updateCount = userRaffleOrderDao.updateUserRaffleOrderStateUsed(userRaffleOrder);
-                    if(updateCount != 1){
-                        log.error("更新抽奖记录失败 userId: {} activityId: {}", userId, activityId);
-                        status.setRollbackOnly();
-                        throw new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getInfo());
-                    }
-                    return 1;
-                } catch (DuplicateKeyException e) {
+                //更新抽奖记录
+                int updateCount = userRaffleOrderDao.updateUserRaffleOrderStateUsed(userRaffleOrder);
+                if(updateCount != 1){
+                    log.error("更新抽奖记录失败 userId: {} activityId: {}", userId, activityId);
                     status.setRollbackOnly();
-                    log.error("写入中奖记录，唯一索引冲突 userId: {} activityId: {} awardId: {}", userId, activityId, awardId, e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+                    throw new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getInfo());
                 }
-            });
-        } finally {
-            // 无需手动清理路由上下文
-        }
+                return 1;
+            } catch (DuplicateKeyException e) {
+                status.setRollbackOnly();
+                log.error("写入中奖记录，唯一索引冲突 userId: {} activityId: {} awardId: {}", userId, activityId, awardId, e);
+                throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+            }
+        });
 
         //发送mq消息
         try {

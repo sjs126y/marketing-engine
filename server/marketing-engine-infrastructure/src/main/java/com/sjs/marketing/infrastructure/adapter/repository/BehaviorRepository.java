@@ -58,48 +58,44 @@ public class BehaviorRepository implements IBehaviorRepository {
 
     @Override
     public void saveUserRebateRecord(String userId, List<BehaviorRebateAggregate> behaviorRebateAggregates) {
-        try {
-            // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
-            transactionTemplate.execute(status -> {
-                try {
-                    for (BehaviorRebateAggregate behaviorRebateAggregate : behaviorRebateAggregates) {
-                        BehaviorRebateOrderEntity behaviorRebateOrderEntity = behaviorRebateAggregate.getBehaviorRebateOrderEntity();
-                        TaskEntity taskEntity = behaviorRebateAggregate.getTaskEntity();
+        // 分库分表由 ShardingSphere 依据 SQL 中的 user_id 自动路由
+        transactionTemplate.execute(status -> {
+            try {
+                for (BehaviorRebateAggregate behaviorRebateAggregate : behaviorRebateAggregates) {
+                    BehaviorRebateOrderEntity behaviorRebateOrderEntity = behaviorRebateAggregate.getBehaviorRebateOrderEntity();
+                    TaskEntity taskEntity = behaviorRebateAggregate.getTaskEntity();
 
-                        //先插入流水订单
-                        UserBehaviorRebateOrder userBehaviorRebateOrder = new UserBehaviorRebateOrder();
-                        userBehaviorRebateOrder.setUserId(behaviorRebateOrderEntity.getUserId());
-                        userBehaviorRebateOrder.setOrderId(behaviorRebateOrderEntity.getOrderId());
-                        userBehaviorRebateOrder.setBehaviorType(behaviorRebateOrderEntity.getBehaviorType());
-                        userBehaviorRebateOrder.setRebateDesc(behaviorRebateOrderEntity.getRebateDesc());
-                        userBehaviorRebateOrder.setRebateType(behaviorRebateOrderEntity.getRebateType());
-                        userBehaviorRebateOrder.setRebateConfig(behaviorRebateOrderEntity.getRebateConfig());
-                        userBehaviorRebateOrder.setBizId(behaviorRebateOrderEntity.getBizId());
-                        userBehaviorRebateOrder.setOutBusinessNo(behaviorRebateOrderEntity.getOutBusinessNo());
-                        userBehaviorRebateOrderDao.insert(userBehaviorRebateOrder);
+                    //先插入流水订单
+                    UserBehaviorRebateOrder userBehaviorRebateOrder = new UserBehaviorRebateOrder();
+                    userBehaviorRebateOrder.setUserId(behaviorRebateOrderEntity.getUserId());
+                    userBehaviorRebateOrder.setOrderId(behaviorRebateOrderEntity.getOrderId());
+                    userBehaviorRebateOrder.setBehaviorType(behaviorRebateOrderEntity.getBehaviorType());
+                    userBehaviorRebateOrder.setRebateDesc(behaviorRebateOrderEntity.getRebateDesc());
+                    userBehaviorRebateOrder.setRebateType(behaviorRebateOrderEntity.getRebateType());
+                    userBehaviorRebateOrder.setRebateConfig(behaviorRebateOrderEntity.getRebateConfig());
+                    userBehaviorRebateOrder.setBizId(behaviorRebateOrderEntity.getBizId());
+                    userBehaviorRebateOrder.setOutBusinessNo(behaviorRebateOrderEntity.getOutBusinessNo());
+                    userBehaviorRebateOrderDao.insert(userBehaviorRebateOrder);
 
-                        //再插入任务
-                        Task task = new Task();
-                        task.setUserId(taskEntity.getUserId());
-                        task.setTopic(taskEntity.getTopic());
-                        task.setMessageId(taskEntity.getMessageId());
-                        task.setMessage(JsonUtils.toJson(taskEntity.getMessage()));
-                        task.setState(taskEntity.getState().getCode());
-                        taskDao.insert(task);
-                    }
-
-                    return 1;
-                } catch (DuplicateKeyException e) {
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getInfo());
-                } catch (Exception e) {
-                    log.error("写入返利记录失败 e:{} ", e);
-                    status.setRollbackOnly();
-                    throw new AppException(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getInfo(), e);
+                    //再插入任务
+                    Task task = new Task();
+                    task.setUserId(taskEntity.getUserId());
+                    task.setTopic(taskEntity.getTopic());
+                    task.setMessageId(taskEntity.getMessageId());
+                    task.setMessage(JsonUtils.toJson(taskEntity.getMessage()));
+                    task.setState(taskEntity.getState().getCode());
+                    taskDao.insert(task);
                 }
-            });
-        } finally {
-            // 无需手动清理路由上下文
-        }
+
+                return 1;
+            } catch (DuplicateKeyException e) {
+                throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getInfo());
+            } catch (Exception e) {
+                log.error("写入返利记录失败 e:{} ", e);
+                status.setRollbackOnly();
+                throw new AppException(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getInfo(), e);
+            }
+        });
 
         //发送MQ消息
         for (BehaviorRebateAggregate behaviorRebateAggregate : behaviorRebateAggregates) {
