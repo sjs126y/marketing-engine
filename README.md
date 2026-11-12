@@ -16,7 +16,10 @@ marketing-engine/
 │   ├── marketing-engine-infrastructure   仓储实现、MyBatis、Redis、消息
 │   ├── marketing-engine-types            枚举、异常、常量
 │   └── docs/dev-ops                      MySQL / Redis / RabbitMQ 编排脚本
-└── web/                    Next.js 演示前端（转盘、九宫格、签到、额度）
+├── web/                    Next.js 前端
+│   ├── 用户侧演示页        转盘、九宫格、签到、额度
+│   └── console/            运营台（登录、数据看板、策略配置、发奖记录）
+└── upstream-ai-app/        上游业务方演示（Python + FastAPI，模拟 AI 助手）
 ```
 
 ## 抽奖主链路

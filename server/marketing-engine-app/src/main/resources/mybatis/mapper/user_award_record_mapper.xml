@@ -23,4 +23,11 @@
                      #{userId},#{activityId},#{strategyId},#{orderId},#{awardId},#{awardTitle},#{awardTime},#{awardState},now(),now()
                  )
     </insert>
+    <select id="queryRecent" resultMap="dataMap">
+        select user_id, activity_id, strategy_id, order_id, award_id, award_title, award_time, award_state
+        from user_award_record
+        order by award_time desc
+        limit #{limit}
+    </select>
+
 </mapper>

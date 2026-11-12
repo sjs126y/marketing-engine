@@ -6,11 +6,13 @@ import com.sjs.marketing.domain.award.model.aggregate.UserAwardRecordAggregate;
 import com.sjs.marketing.domain.award.model.entity.TaskEntity;
 import com.sjs.marketing.domain.award.model.entity.UserAwardRecordEntity;
 import com.sjs.marketing.domain.award.model.valobj.TaskStateVO;
+import com.sjs.marketing.domain.award.model.valobj.UserAwardRecordVO;
 import com.sjs.marketing.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -48,5 +50,10 @@ public class AwardService implements IAwardService {
 
         // 存储聚合对象 - 一个事务下，用户的中奖记录
         repository.saveUserAwardRecord(userAwardRecordAggregate);
+    }
+
+    @Override
+    public List<UserAwardRecordVO> queryRecentAwards(int limit) {
+        return repository.queryRecentAwards(limit);
     }
 }

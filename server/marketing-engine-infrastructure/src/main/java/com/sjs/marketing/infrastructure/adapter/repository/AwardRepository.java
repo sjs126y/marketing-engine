@@ -4,6 +4,7 @@ import com.sjs.marketing.domain.award.adapter.repository.IAwardRepository;
 import com.sjs.marketing.domain.award.model.aggregate.UserAwardRecordAggregate;
 import com.sjs.marketing.domain.award.model.entity.TaskEntity;
 import com.sjs.marketing.domain.award.model.entity.UserAwardRecordEntity;
+import com.sjs.marketing.domain.award.model.valobj.UserAwardRecordVO;
 import com.sjs.marketing.infrastructure.dao.IUserAwardRecordDao;
 import com.sjs.marketing.infrastructure.dao.IUserRaffleOrderDao;
 import com.sjs.marketing.infrastructure.dao.po.UserAwardRecord;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import jakarta.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 中奖记录仓储。
@@ -89,5 +92,24 @@ public class AwardRepository implements IAwardRepository {
         });
 
         log.info("中奖记录落库并写入 outbox userId: {} activityId: {} awardId: {}", userId, activityId, awardId);
+    }
+
+    @Override
+    public List<UserAwardRecordVO> queryRecentAwards(int limit) {
+        List<UserAwardRecord> records = userAwardRecordDao.queryRecent(limit);
+        List<UserAwardRecordVO> result = new ArrayList<>(records.size());
+        for (UserAwardRecord record : records) {
+            result.add(UserAwardRecordVO.builder()
+                    .userId(record.getUserId())
+                    .activityId(record.getActivityId())
+                    .strategyId(record.getStrategyId())
+                    .orderId(record.getOrderId())
+                    .awardId(record.getAwardId())
+                    .awardTitle(record.getAwardTitle())
+                    .awardTime(record.getAwardTime())
+                    .awardState(record.getAwardState())
+                    .build());
+        }
+        return result;
     }
 }
