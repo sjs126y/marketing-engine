@@ -74,4 +74,13 @@ public interface IStrategyRepository {
     Integer queryActivityAccountTotalUseCount(String userId, Long strategyId);
 
     List<RuleWeightVO> queryAwardRuleWeight(Long strategyId);
+
+    /**
+     * 配置变更后失效相关缓存（策略实体、奖品、规则值、权重、规则树 VO）。
+     *
+     * <p>规则树 VO 只写不失效，改库后不清缓存会导致新配置永远不生效。</p>
+     *
+     * @param strategyId 策略 ID
+     */
+    void evictStrategyConfigCache(Long strategyId);
 }

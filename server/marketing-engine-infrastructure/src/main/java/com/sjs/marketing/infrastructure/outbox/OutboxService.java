@@ -122,6 +122,7 @@ public class OutboxService implements IOutboxAckService {
     /**
      * 积压量，供监控/健康检查读取。
      */
+    @Override
     public int pendingCount() {
         return outboxDao.countByState(OutboxState.PENDING.getCode());
     }

@@ -21,4 +21,9 @@ public interface IOutboxAckService {
      */
     void markConsumed(String userId, String messageId);
 
+    /**
+     * 当前待投递消息数，用于看板与告警。
+     */
+    int pendingCount();
+
 }

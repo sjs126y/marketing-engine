@@ -355,6 +355,30 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
+    public void evictStrategyConfigCache(Long strategyId) {
+        redisService.remove(Constants.RedisKey.STRATEGY_KEY + strategyId);
+        redisService.remove(Constants.RedisKey.STRATEGY_RULE_WEIGHT_KEY + strategyId);
+
+        // 奖品实体与概率表按 strategyId_awardId / strategyId 组织，逐个失效
+        List<StrategyAwardEntity> awards = queryStrategyAwardList(strategyId);
+        for (StrategyAwardEntity award : awards) {
+            redisService.remove(Constants.RedisKey.STRATEGY_AWARD_KEY + strategyId + Constants.UNDERLINE + award.getAwardId());
+        }
+
+        // 规则树 VO：strategy_award.rule_models 指向的每棵树都要失效
+        java.util.Set<String> treeIds = new java.util.HashSet<>();
+        for (StrategyAwardEntity award : awards) {
+            if (award.getRuleModels() != null && !award.getRuleModels().isEmpty()) {
+                treeIds.add(award.getRuleModels());
+            }
+        }
+        for (String treeId : treeIds) {
+            redisService.remove(Constants.RedisKey.RULE_TREE_VO_KEY + treeId);
+        }
+        log.info("已失效策略配置缓存 strategyId: {} 规则树: {}", strategyId, treeIds);
+    }
+
+    @Override
     public List<RuleWeightVO> queryAwardRuleWeight(Long strategyId) {
         // 优先从缓存获取
         String cacheKey = Constants.RedisKey.STRATEGY_RULE_WEIGHT_KEY + strategyId;
