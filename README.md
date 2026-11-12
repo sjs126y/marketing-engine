@@ -20,23 +20,30 @@ marketing-engine/
 │   ├── marketing-engine-types            枚举、异常、常量
 │   └── docs/dev-ops                      MySQL / Redis / RabbitMQ 编排脚本
 ├── web/                    Next.js 前端
-│   ├── 用户侧演示页        转盘、九宫格、签到、额度
-│   └── console/            运营台（登录、数据看板、策略配置、发奖记录）
-└── upstream-ai-app/        上游业务方演示（Python + FastAPI，模拟 AI 助手）
+│   ├── /                   三端入口（说明每个端做什么）
+│   ├── /play               用户活动页（九宫格抽奖，需上游换发的 JWT）
+│   └── /console            运营台（登录、看板、策略配置、发奖记录）
+├── upstream-ai-app/        上游业务方（Python + FastAPI，AI 对话助手）
+├── docs/
+│   ├── scripts/            start-all / stop-all / integration_check
+│   ├── load-test/          压测脚本与守恒校验
+│   └── dev-ops/mysql/sql/  建库脚本与迁移 V2–V6
+└── logs/                   运行日志（gitignore）
 ```
 
-## 抽奖主链路
+## 核心链路
 
 ```
-活动预热 ──► 策略装配：概率表展开为 Redis 区间查找表
+活动预热 ──► 把权重与概率编译成 Redis 查找表（抽奖时 O(1) 定位）
    │
    ▼
-抽奖请求 ──► 责任链（黑名单 / 权重）──► 规则树（库存扣减 / 兜底奖品）
-   │                                          │
-   ▼                                          ▼
-参与订单落库                              中奖记录 + 本地消息表（同事务）
-   │                                          │
-   └──────────────► 定时任务扫表补偿 ──► MQ ──► 发奖消费
+抽奖请求 ──► 前置校验链（黑名单 / 权重档位）──► 决策树（库存扣减 / 兜底）
+   │                                              │
+   ▼                                              ▼
+参与订单落库                                 中奖记录 + outbox（同事务）
+   │                                              │
+   │                            ┌─────────────────┴─────────────────┐
+   └──► 定时扫表补偿 ──► MQ（内部事件）        HTTP 回调（通知上游入账）
 ```
 
 ## 技术栈
@@ -51,25 +58,71 @@ marketing-engine/
 
 ## 快速开始
 
-```bash
-# 1. 起中间件（MySQL / Redis / RabbitMQ）
-cd server/docs/dev-ops && docker compose -f docker-compose-environment.yml up -d
+### 一键启动（推荐）
 
-# 2. 初始化库表
-#    执行 docs/dev-ops/mysql/sql/ 下三份脚本（marketing_engine / _01 / _02）
-#    再执行升级脚本 docs/dev-ops/mysql/sql/migration/ 下的 V2（outbox）、V3（applied_consumed）
-#    注意：V2 需要在 _01、_02 两个分片库各执行一次
-
-# 3. 启动后端（默认 dev profile，读环境变量 DB_USERNAME / DB_PASSWORD）
-cd ../.. && mvn -DskipTests install
-java -jar marketing-engine-app/target/marketing-engine-app.jar
-
-# 4. 启动前端
-cd web && npm install && npm run dev
+```powershell
+git clone https://github.com/sjs126y/marketing-engine.git
+cd marketing-engine
+pwsh -File docs/scripts/start-all.ps1
 ```
 
-访问 `http://localhost:3000/?userId=<用户ID>&activityId=<活动ID>`，先点「策略装配」完成预热，再抽奖。
+脚本按顺序完成：检查 Docker 中间件（缺了会自动 `compose up`）→ 构建 jar（首次）→ 安装前端依赖（首次）
+→ 创建上游 venv（首次）→ 拉起三个服务 → 轮询健康检查 → 打印访问地址。日志写到 `logs/`。
 
+```powershell
+pwsh -File docs/scripts/start-all.ps1 -Restart        # 先停再起
+pwsh -File docs/scripts/start-all.ps1 -Only mid       # 只起中台（mid / web / upstream 可组合）
+pwsh -File docs/scripts/stop-all.ps1                  # 停止三端
+pwsh -File docs/scripts/stop-all.ps1 -Middleware      # 连 Docker 中间件一起停
+```
+
+### 首次初始化数据库
+
+中间件起来后，按顺序执行 `server/docs/dev-ops/mysql/sql/` 下的脚本：
+
+| 脚本 | 目标库 | 说明 |
+| --- | --- | --- |
+| `marketing_engine.sql` | `marketing_engine` | 配置库：活动、策略、奖品、规则树、返利配置 |
+| `marketing_engine_01.sql` | `marketing_engine_01` | 分片库 1 |
+| `marketing_engine_02.sql` | `marketing_engine_02` | 分片库 2 |
+| `migration/V2__outbox.sql` | `_01`、`_02` **各执行一次** | 本地消息表 |
+| `migration/V3__sku_applied_consumed.sql` | `marketing_engine` | SKU 已扣数 |
+| `migration/V4__award_applied_consumed.sql` | `marketing_engine` | 奖品已扣数 |
+| `migration/V5__outbox_http_delivery.sql` | `_01`、`_02` **各执行一次** | outbox 支持 HTTP 回调 |
+
+> `V6`（奖池收敛为积分与对话次数）已合并进种子文件，新建库不需要再执行。
+> 执行任何含中文的 SQL 都要带 `--default-character-set=utf8mb4`，否则中文会双重编码成乱码。
+
+### 访问入口
+
+| 入口 | 地址 | 账号 |
+| --- | --- | --- |
+| 上游 AI 助手 | http://127.0.0.1:9000 | 注册新账号，或 `alice` / `alice123` |
+| 中台首页（三端入口） | http://localhost:3000 | — |
+| 用户活动页 | http://localhost:3000/play?token=… | 从上游点「去抽奖」进入（带 JWT） |
+| 运营台 | http://localhost:3000/console | `admin` / `admin123`（或 `operator` / `operator123`） |
+
+**推荐走法**：上游登录 → 签到（+10 积分）→ 点「去抽奖」→ 抽一次 → 回上游等 8 秒，
+看对话额度到账（中台异步回调写入）。
+
+### 端口
+
+| 端口 | 服务 |
+| --- | --- |
+| 8092 | 营销中台（Java 21 / Spring Boot 3.5） |
+| 3000 | 前端（Next.js） |
+| 9000 | 上游 AI 助手（Python / FastAPI） |
+| 13306 / 16379 / 5672 | MySQL / Redis / RabbitMQ（Docker） |
+
+### 验证
+
+```powershell
+# 24 个纯单测，不依赖任何中间件
+cd server; mvn test
+
+# 28 项跨服务联调：注册→签到→充值→换 token→抽奖→回调入账→运营台→页面可达
+pwsh -File docs/scripts/integration_check.ps1
+```
 ## 设计要点
 
 1. **概率计算前置到预热期**。按最小概率把奖品展开成整数区间查找表，乱序后写入 Redis Hash，抽奖时一次 `random` 加一次查表，O(1)。乱序是为了避免同一奖品占据连续槽位被人摸出规律。
@@ -101,11 +154,12 @@ cd web && npm install && npm run dev
 
 ```bash
 cd server
-mvn test                  # 只跑不依赖中间件的纯单测（概率装配、权重选档、决策树、JSON、配置校验）
+mvn test                  # 默认只跑纯单测，不依赖中间件
 mvn test -P integration   # 需要本地 MySQL / Redis / RabbitMQ
 ```
 
-CI 见 `.github/workflows/ci.yml`；压测脚本与守恒校验 SQL 见 `docs/load-test/`。
+CI 见 `.github/workflows/ci.yml`；跨服务联调见 `docs/scripts/integration_check.ps1`；
+压测与守恒校验 SQL 见 `docs/load-test/`。
 
 ## 本地验证结果
 
