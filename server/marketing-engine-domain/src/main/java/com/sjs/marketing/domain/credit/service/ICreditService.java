@@ -60,6 +60,19 @@ public interface ICreditService {
      */
     int expireDueBetween(Date from, Date to, int limit);
 
+    /**
+     * 按自然日分桶做一轮过期回收（任务与运营接口共用同一条路径）。
+     *
+     * <p>先扫「今天 − lookbackDays 天 ~ 今天」，再对更早的遗留做一次全量兜底，
+     * 所以停机多久都不会有「永久漏回收」。</p>
+     *
+     * @param lookbackDays 回看天数
+     * @param batchSize    单次查询条数
+     * @param maxBatches   本轮最多回收的批次数
+     * @return 本次回收的批次数
+     */
+    int expireByWindow(int lookbackDays, int batchSize, int maxBatches);
+
     /** 余额视图：账户汇总 + 即将过期提示（主站首页要展示） */
     CreditBalanceVO queryBalance(String userId);
 

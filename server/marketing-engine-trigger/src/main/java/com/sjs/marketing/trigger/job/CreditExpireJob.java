@@ -53,18 +53,10 @@ public class CreditExpireJob {
             return;
         }
         long begin = System.currentTimeMillis();
-        int total = 0;
         try {
-            for (CreditExpireWindow.Slot slot : CreditExpireWindow.slots(new Date(), lookbackDays)) {
-                if (total >= maxBatchesPerRun) {
-                    break;
-                }
-                total += drain(slot, maxBatchesPerRun - total);
-            }
-            // 兜底：比回看窗口更早的遗留（长时间停机、手工改数）一次补齐
-            if (total < maxBatchesPerRun) {
-                total += drainAll(maxBatchesPerRun - total);
-            }
+            // 分桶逻辑在领域服务里（CreditService.expireByWindow），任务只负责调度与日志，
+            // 这样运营接口 expire-run 走的也是同一条路径，联调能覆盖到生产用的 SQL
+            int total = creditService.expireByWindow(lookbackDays, batchSize, maxBatchesPerRun);
             if (total > 0) {
                 log.info("权益过期回收完成，本次回收 {} 个批次，耗时 {}ms", total, System.currentTimeMillis() - begin);
             }
@@ -72,35 +64,5 @@ public class CreditExpireJob {
             // 调度线程里抛异常会静默终止后续调度，这里必须兜住
             log.error("权益过期回收任务异常", e);
         }
-    }
-
-    /** 把一段窗口内的到期批次全部回收（一次查不完就继续查，直到查空） */
-    private int drain(CreditExpireWindow.Slot slot, int budget) {
-        if (slot.isEmpty() || budget <= 0) {
-            return 0;
-        }
-        int reclaimed = 0;
-        while (reclaimed < budget) {
-            int take = Math.min(batchSize, budget - reclaimed);
-            int count = creditService.expireDueBetween(slot.from(), slot.to(), take);
-            if (count <= 0) {
-                break;
-            }
-            reclaimed += count;
-        }
-        return reclaimed;
-    }
-
-    /** 兜底扫描：{@code expires_at <= now} 的全部遗留批次 */
-    private int drainAll(int budget) {
-        int reclaimed = 0;
-        while (reclaimed < budget) {
-            int count = creditService.expireDue(Math.min(batchSize, budget - reclaimed));
-            if (count <= 0) {
-                break;
-            }
-            reclaimed += count;
-        }
-        return reclaimed;
     }
 }

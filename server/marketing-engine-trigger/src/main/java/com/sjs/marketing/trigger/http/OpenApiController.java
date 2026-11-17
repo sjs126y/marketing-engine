@@ -301,7 +301,8 @@ public class OpenApiController {
         if (!adminEndpointsEnabled) {
             return ResponseEntity.status(404).body(fail("404", "未开启运营接口"));
         }
-        int expired = creditService.expireDue(200);
+        // 与定时任务同一条路径：分桶扫「今天-2天 ~ 今天」+ 全量兜底
+        int expired = creditService.expireByWindow(2, 200, 2000);
         log.info("手动触发过期回收，本次回收 {} 个批次", expired);
         Map<String, Object> body = ok();
         body.put("expired", expired);

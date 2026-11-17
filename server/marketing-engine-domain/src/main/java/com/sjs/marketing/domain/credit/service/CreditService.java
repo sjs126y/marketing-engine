@@ -152,6 +152,57 @@ public class CreditService implements ICreditService {
     }
 
     @Override
+    public int expireByWindow(int lookbackDays, int batchSize, int maxBatches) {
+        int size = batchSize <= 0 || batchSize > 500 ? 200 : batchSize;
+        int budget = maxBatches <= 0 ? 2000 : maxBatches;
+        int total = 0;
+        for (CreditExpireWindow.Slot slot : CreditExpireWindow.slots(new Date(), lookbackDays)) {
+            if (total >= budget) {
+                break;
+            }
+            total += drain(slot, size, budget - total);
+        }
+        if (total < budget) {
+            // 兜底：比回看窗口更早的遗留（长时间停机、手工改数）一次补齐
+            total += drainAll(size, budget - total);
+        }
+        if (total > 0) {
+            log.info("权益过期回收完成，本次回收 {} 个批次（回看 {} 天）", total, lookbackDays);
+        }
+        return total;
+    }
+
+    /** 把一段窗口内的到期批次全部回收（一次查不完就继续查，直到查空） */
+    private int drain(CreditExpireWindow.Slot slot, int size, int budget) {
+        if (slot.isEmpty() || budget <= 0) {
+            return 0;
+        }
+        int reclaimed = 0;
+        while (reclaimed < budget) {
+            int take = Math.min(size, budget - reclaimed);
+            int count = expireDueBetween(slot.from(), slot.to(), take);
+            if (count <= 0) {
+                break;
+            }
+            reclaimed += count;
+        }
+        return reclaimed;
+    }
+
+    /** 兜底扫描：{@code expires_at <= now} 的全部遗留批次 */
+    private int drainAll(int size, int budget) {
+        int reclaimed = 0;
+        while (reclaimed < budget) {
+            int count = expireDue(Math.min(size, budget - reclaimed));
+            if (count <= 0) {
+                break;
+            }
+            reclaimed += count;
+        }
+        return reclaimed;
+    }
+
+    @Override
     public CreditBalanceVO queryBalance(String userId) {
         if (StringUtils.isBlank(userId)) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "userId 不能为空");
