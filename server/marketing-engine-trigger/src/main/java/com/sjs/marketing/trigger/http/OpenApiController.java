@@ -5,6 +5,9 @@ import com.sjs.marketing.domain.activity.model.entity.ActivityEntity;
 import com.sjs.marketing.domain.activity.model.entity.ActivitySkuEntity;
 import com.sjs.marketing.domain.activity.model.entity.SkuRechargeEntity;
 import com.sjs.marketing.domain.activity.service.IRaffleActivityAccountQuotaService;
+import com.sjs.marketing.domain.credit.model.CreditAccount;
+import com.sjs.marketing.domain.credit.model.CreditLedger;
+import com.sjs.marketing.domain.credit.service.ICreditService;
 import com.sjs.marketing.domain.rebate.model.entity.BehaviorEntity;
 import com.sjs.marketing.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.sjs.marketing.domain.rebate.service.IBehaviorRebateService;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.annotation.Resource;
@@ -50,6 +54,9 @@ public class OpenApiController {
 
     @Resource
     private IBehaviorRebateService behaviorRebateService;
+
+    @Resource
+    private ICreditService creditService;
 
     private static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
@@ -158,6 +165,119 @@ public class OpenApiController {
         return ResponseEntity.ok(body);
     }
 
+    /**
+     * 权益发放：上游把「业务单号 + 数量」换成用户的积分/次数。
+     *
+     * <p>{@code eventId} 是幂等键——同一笔业务重复调用只入账一次，
+     * 重复时返回 {@code granted=false} 而不是报错（上游按成功处理即可）。</p>
+     */
+    @PostMapping("/credit/grant")
+    public ResponseEntity<Map<String, Object>> grant(
+            @RequestAttribute(name = ApiKeyAuthenticationFilter.ATTR_CLIENT, required = false) String client,
+            @RequestBody CreditGrantRequest request) {
+
+        if (request.getUserId() == null || request.getUserId().isBlank()
+                || request.getEventId() == null || request.getEventId().isBlank()
+                || request.getScene() == null || request.getScene().isBlank()
+                || request.getAmount() == null || request.getAmount() <= 0) {
+            return ResponseEntity.badRequest().body(fail("400", "userId / scene / amount / eventId 均为必填且 amount > 0"));
+        }
+
+        try {
+            boolean granted = creditService.grant(request.getUserId(), request.getScene(),
+                    request.getAmount(), request.getEventId(), request.getTtlDays());
+            CreditAccount account = creditService.queryAccount(request.getUserId());
+            log.info("权益发放 client:{} userId:{} scene:{} amount:{} eventId:{} granted:{}",
+                    client, request.getUserId(), request.getScene(), request.getAmount(), request.getEventId(), granted);
+
+            Map<String, Object> body = ok();
+            body.put("userId", request.getUserId());
+            body.put("eventId", request.getEventId());
+            body.put("granted", granted);
+            body.put("balance", account.getBalance());
+            return ResponseEntity.ok(body);
+        } catch (AppException e) {
+            return ResponseEntity.status(400).body(fail(e.getCode(), e.getInfo()));
+        } catch (Exception e) {
+            log.error("权益发放失败 userId:{} eventId:{}", request.getUserId(), request.getEventId(), e);
+            return ResponseEntity.status(500).body(fail("500", e.getMessage()));
+        }
+    }
+
+    /**
+     * 权益消耗：FIFO 扣减（先花掉快过期的批次）。
+     *
+     * <p>{@code bizNo} 是业务幂等号，同一笔业务重复调用只扣一次。</p>
+     */
+    @PostMapping("/credit/consume")
+    public ResponseEntity<Map<String, Object>> consume(
+            @RequestAttribute(name = ApiKeyAuthenticationFilter.ATTR_CLIENT, required = false) String client,
+            @RequestBody CreditConsumeRequest request) {
+
+        if (request.getUserId() == null || request.getUserId().isBlank()
+                || request.getScene() == null || request.getScene().isBlank()
+                || request.getAmount() == null || request.getAmount() <= 0
+                || request.getBizNo() == null || request.getBizNo().isBlank()) {
+            return ResponseEntity.badRequest().body(fail("400", "userId / scene / amount / bizNo 均为必填且 amount > 0"));
+        }
+
+        try {
+            int balance = creditService.consume(request.getUserId(), request.getScene(),
+                    request.getAmount(), request.getBizNo());
+            log.info("权益消耗 client:{} userId:{} scene:{} amount:{} bizNo:{} balance:{}",
+                    client, request.getUserId(), request.getScene(), request.getAmount(), request.getBizNo(), balance);
+
+            Map<String, Object> body = ok();
+            body.put("userId", request.getUserId());
+            body.put("consume", request.getAmount());
+            body.put("balance", balance);
+            return ResponseEntity.ok(body);
+        } catch (AppException e) {
+            // 余额不足是业务状态，用 200 + code 表达，避免上游当成系统故障重试
+            Map<String, Object> body = fail(e.getCode(), e.getInfo());
+            body.put("balance", creditService.queryAccount(request.getUserId()).getBalance());
+            return ResponseEntity.ok(body);
+        } catch (Exception e) {
+            log.error("权益消耗失败 userId:{} bizNo:{}", request.getUserId(), request.getBizNo(), e);
+            return ResponseEntity.status(500).body(fail("500", e.getMessage()));
+        }
+    }
+
+    /**
+     * 查询余额。
+     */
+    @GetMapping("/credit/balance")
+    public ResponseEntity<Map<String, Object>> balance(@RequestParam("userId") String userId) {
+        if (userId == null || userId.isBlank()) {
+            return ResponseEntity.badRequest().body(fail("400", "userId 必填"));
+        }
+        CreditAccount account = creditService.queryAccount(userId);
+        Map<String, Object> body = ok();
+        body.put("userId", userId);
+        body.put("balance", account.getBalance());
+        body.put("frozen", account.getFrozen());
+        body.put("totalGranted", account.getTotalGranted());
+        body.put("totalConsumed", account.getTotalConsumed());
+        body.put("totalExpired", account.getTotalExpired());
+        return ResponseEntity.ok(body);
+    }
+
+    /**
+     * 查询流水（最近的变动）。
+     */
+    @GetMapping("/credit/records")
+    public ResponseEntity<Map<String, Object>> records(@RequestParam("userId") String userId,
+                                                       @RequestParam(value = "limit", required = false) Integer limit) {
+        if (userId == null || userId.isBlank()) {
+            return ResponseEntity.badRequest().body(fail("400", "userId 必填"));
+        }
+        List<CreditLedger> ledgers = creditService.queryLedgers(userId, limit == null ? 50 : limit);
+        Map<String, Object> body = ok();
+        body.put("userId", userId);
+        body.put("records", ledgers);
+        return ResponseEntity.ok(body);
+    }
+
     private Map<String, Object> ok() {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("code", "0000");
@@ -170,6 +290,23 @@ public class OpenApiController {
         body.put("code", code);
         body.put("info", message);
         return body;
+    }
+
+    @lombok.Data
+    public static class CreditGrantRequest {
+        private String userId;
+        private String scene;
+        private Integer amount;
+        private String eventId;
+        private Integer ttlDays;
+    }
+
+    @lombok.Data
+    public static class CreditConsumeRequest {
+        private String userId;
+        private String scene;
+        private Integer amount;
+        private String bizNo;
     }
 
     @lombok.Data

@@ -67,6 +67,10 @@ public class ShardingDataSourceConfig {
             "raffle_activity_account_month",
             "raffle_activity_account_day",
             "outbox",
+            // 权益中心资产表：按 user_id 分库，暂不分表（量级未到，后续可升级）
+            "credit_account",
+            "credit_batch",
+            "credit_ledger",
             // task 表保留历史数据，新链路不再写入
             "task");
 
