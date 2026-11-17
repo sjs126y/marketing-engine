@@ -14,6 +14,29 @@ function Check($name, $cond, $detail) {
 $user = 'u' + (Get-Date -Format 'HHmmss')
 $pwd  = 'test123456'
 
+# ---------- 开放接口签名（权益中心运营接口用） ----------
+# 与 ApiKeyAuthenticationFilter 口径一致：HMAC-SHA256("method`npath`ntimestamp`nbody")
+$script:OpenApiKey = 'demo-client'
+$script:OpenApiSecret = 'demo-secret-please-change'
+
+function Open-Call($Method, $Path, $Body, $Query) {
+    $bodyText = if ($null -eq $Body) { '' } else { ($Body | ConvertTo-Json -Compress -Depth 5) }
+    $ts = [string][int64]([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())
+    $payload = "$Method`n$Path`n$ts`n$bodyText"
+    $hmac = [System.Security.Cryptography.HMACSHA256]::new([Text.Encoding]::UTF8.GetBytes($script:OpenApiSecret))
+    $sig = -join ($hmac.ComputeHash([Text.Encoding]::UTF8.GetBytes($payload)) | ForEach-Object { $_.ToString('x2') })
+    $headers = @{ 'X-Api-Key' = $script:OpenApiKey; 'X-Timestamp' = $ts; 'X-Sign' = $sig }
+    $url = "$MID$Path"
+    if ($Query) {
+        $qs = ($Query.GetEnumerator() | ForEach-Object { "$($_.Key)=$([uri]::EscapeDataString([string]$_.Value))" }) -join '&'
+        $url = "$url`?$qs"
+    }
+    if ($null -eq $Body) { return Invoke-RestMethod $url -Method $Method -Headers $headers }
+    # 传字节而不是字符串，避免 PowerShell 5.1 用 Latin-1 编码导致签名对不上
+    return Invoke-RestMethod $url -Method $Method -Headers $headers -ContentType 'application/json; charset=utf-8' `
+            -Body ([Text.Encoding]::UTF8.GetBytes($bodyText))
+}
+
 Write-Host "`n=== 1. 上游：注册 / 登录 / 会话 ===" -ForegroundColor Cyan
 $s = New-Object Microsoft.PowerShell.Commands.WebRequestSession
 $r = Invoke-RestMethod "$UP/api/register" -Method Post -ContentType 'application/json' `
@@ -97,4 +120,39 @@ foreach ($p in @('/', '/play', '/console', '/console/login', '/console/dashboard
 try { $upSt = (Invoke-WebRequest "$UP/" -MaximumRedirection 0 -TimeoutSec 10).StatusCode } catch { $upSt = $_.Exception.Response.StatusCode.value__ }
 Check '上游首页未登录重定向' ($upSt -eq 302) "HTTP $upSt"
 
+
+Write-Host "`n=== 11. 权益中心：过期回收 / 对账 / 到期提醒 ===" -ForegroundColor Cyan
+$cu = 'c' + (Get-Date -Format 'HHmmss')
+$cs = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+$null = Invoke-RestMethod "$UP/api/register" -Method Post -ContentType 'application/json' `
+        -Body (@{username=$cu;password='test123456';nickname='权益验收'}|ConvertTo-Json) -WebSession $cs
+$me0 = Invoke-RestMethod "$UP/api/me" -WebSession $cs
+Check '注册赠送进入权益中心' ($me0.credit -eq 20) "credit=$($me0.credit)"
+
+$null = Invoke-RestMethod "$UP/api/sign" -Method Post -ContentType 'application/json' -Body '{}' -WebSession $cs
+$sign2 = Invoke-RestMethod "$UP/api/sign" -Method Post -ContentType 'application/json' -Body '{}' -WebSession $cs
+$me1 = Invoke-RestMethod "$UP/api/me" -WebSession $cs
+Check '签到只发一次积分（不双发）' ($me1.credit -eq 30) "credit=$($me1.credit)"
+Check '重复签到被拦' ($sign2.ok -eq $false) $sign2.reason
+
+$exp = Open-Call 'POST' '/open/v1/credit/grant' @{ userId=$cu; scene='task'; amount=5; eventId="expire:$cu"; ttlDays=-1 } $null
+Check '造「立即过期」批次' ($exp.code -eq '0000' -and $exp.granted -eq $true) "balance=$($exp.balance)"
+$run = Open-Call 'POST' '/open/v1/credit/expire-run' $null $null
+Check '过期回收执行' ($run.code -eq '0000' -and $run.expired -ge 1) "回收 $($run.expired) 个批次"
+$bal = Open-Call 'GET' '/open/v1/credit/balance' $null @{ userId=$cu }
+Check '到期后余额减少' ($bal.balance -eq 30) "balance=$($bal.balance)"
+$rec = Open-Call 'GET' '/open/v1/credit/records' $null @{ userId=$cu; limit=10 }
+$expireCount = @($rec.records | Where-Object { $_.type -eq 'expire' }).Count
+Check '出现 expire 流水' ($expireCount -ge 1) "$expireCount 条"
+
+$null = Open-Call 'POST' '/open/v1/credit/grant' @{ userId=$cu; scene='task'; amount=7; eventId="soon:$cu"; ttlDays=1 } $null
+$bal2 = Open-Call 'GET' '/open/v1/credit/balance' $null @{ userId=$cu }
+Check '余额返回即将过期提示' ($bal2.expiringSoon -ge 7) "expiringSoon=$($bal2.expiringSoon) 最近到期=$($bal2.nearestExpireAt)"
+$me2 = Invoke-RestMethod "$UP/api/me" -WebSession $cs
+Check '主站透出到期提醒' ($me2.expiringSoon -ge 7) "expiringSoon=$($me2.expiringSoon)"
+
+$rc = Open-Call 'GET' '/open/v1/credit/reconcile' $null @{ userId=$cu }
+Check '单用户对账一致' ($rc.consistent -eq $true) "账户=$($rc.accountBalance) 批次=$($rc.batchRemaining) 流水=$($rc.ledgerSum)"
+$rall = Open-Call 'POST' '/open/v1/credit/reconcile-run' $null $null
+Check '全量对账无差异' ($rall.code -eq '0000' -and $rall.inconsistent -eq 0) "扫描 $($rall.scanned) 不一致 $($rall.inconsistent)"
 Write-Host ("`n===== 结果：{0} 通过，{1} 失败 =====" -f $pass, $fail) -ForegroundColor $(if ($fail -eq 0) { 'Green' } else { 'Yellow' })

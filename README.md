@@ -3,7 +3,9 @@
 面向 AI 对话产品的用户增长与权益中台：Java 后端服务 + Next.js 前端 + 一个 Python 上游示例，同仓管理。
 
 业务场景——用户在上游 AI 对话应用里签到得积分，对话按 token 消耗积分；积分不足时参与活动赢取对话额度。
-中台只负责「给谁、给什么」的判定与可靠通知，积分与额度这些业务资产留在业务侧。
+中台从「发奖工具」升级成**权益中心**：账户、批次、有效期、FIFO 消耗、到期回收、对账都归它管。
+定位是「主站管用户是谁，权益中心管用户有什么，运营后台管怎么发」——积分这类能自己记账的资产同步入账，
+实物/第三方券这类要外部履约的才走异步回调。对话次数仍在主站（下一步迁移）。
 
 活动类业务的共同难点在于三件事：规则变化频繁（每次改规则不该发版）、流量峰值集中（不能把数据库打穿）、奖励只能发一次（重复发就是资损）。这个项目围绕这三点组织代码。
 
@@ -27,7 +29,7 @@ marketing-engine/
 ├── docs/
 │   ├── scripts/            start-all / stop-all / integration_check
 │   ├── load-test/          压测脚本与守恒校验
-│   └── dev-ops/mysql/sql/  建库脚本与迁移 V2–V6
+│   └── dev-ops/mysql/sql/  建库脚本与迁移 V2–V9（V7 权益三表、V8 对账差异、V9 签到返利收敛）
 └── logs/                   运行日志（gitignore）
 ```
 
@@ -117,10 +119,11 @@ pwsh -File docs/scripts/stop-all.ps1 -Middleware      # 连 Docker 中间件一�
 ### 验证
 
 ```powershell
-# 24 个纯单测，不依赖任何中间件
+# 37 个纯单测，不依赖任何中间件
 cd server; mvn test
 
-# 28 项跨服务联调：注册→签到→充值→换 token→抽奖→回调入账→运营台→页面可达
+# 39 项跨服务联调：注册→签到→充值→换 token→抽奖→回调入账→运营台→页面可达
+#                   →过期回收→对账（一致 + 差异）→到期提醒
 pwsh -File docs/scripts/integration_check.ps1
 ```
 ## 设计要点
@@ -129,7 +132,8 @@ pwsh -File docs/scripts/integration_check.ps1
 2. **拦截与执行分开建模**。抽奖前的校验（黑名单、权重）是线性逐关判断，用责任链；抽奖中后的动作（扣库存、兜底奖品）是按条件走不同分支，用数据库配置的决策树。规则树的节点、连线、参数都在表里，改规则不需要发版。
 3. **库存绝对量回写**。Redis 原子扣减保证不超卖；扣减后的「累计已扣数」与订单在同一事务写进 outbox，消费端按 `库存 = 总量 - 已扣数` 回写，并用 `applied_consumed < consumedAfter` 保证单调——重复投递和乱序到达都幂等。另有对账任务比对 Redis 与数据库的已扣数。
 4. **补偿收敛成一个框架**。发奖、返利、库存三处共用一张 outbox 表：`pending → sending → sent → consumed → dead` 五态，指数退避重试、超时未回执重投、超限进死信。可靠性来自数据库而不是 MQ，MQ 只是加速通道。
-5. **中台不持有业务资产，只做判定与通知**。积分、对话次数留在上游；中台把「用户中了什么」放进同一条 outbox，用 **HTTP 回调**推给上游（带 `X-Event-Id` 幂等键与 HMAC 签名），上游验签入账后中台把 `award_state` 推进到 `complete`。回调失败同样走退避重试与死信。
+5. **按「能不能自己记账」分通道**。积分/次数这类内部资产由权益中心**同步入账**（三张表同按 `user_id` 分片，扣账户+扣批次+写流水在一个本地事务里）；实物、第三方券这类要外部履约的，仍走同一条 outbox + **HTTP 回调**（`X-Event-Id` 幂等键 + HMAC 签名），上游验签入账后把 `award_state` 推进到 `complete`。回调失败同样退避重试直到死信。
+6. **过期按自然日分桶回收，对账只暴露不修正**。`credit_batch.event_id` 管发放幂等、`credit_ledger.biz_no` 管记账幂等；到期回收用 `update ... where state='active'` 条件更新抢到才动钱，多实例不会重复扣。对账每天比对「账户余额 / 未核销批次剩余 / 流水累计」，差异落表 + 告警，自动改数会让 bug 变成「数据被悄悄改过」。
 5. **配置错误在发布期被拦住**。规则、树、概率全部数据驱动，配错不会编译失败也不会抛异常。校验器检查概率归一、权重档位非空、树根/边/环/孤立节点、`rule_key` 是否有对应 Bean、有库存的奖品是否挂了 `rule_stock`，不过就不允许发布。
 
 ## 接口概览
@@ -139,6 +143,8 @@ pwsh -File docs/scripts/integration_check.ps1
 | C 端 | `POST /api/v1/auth/login`、`/api/v1/raffle/activity/**` | 用户 JWT |
 | B 端 | `POST /console/auth/login`、`/console/v1/strategy/{id}/validate`、`/publish`、`/console/v1/dashboard/overview` | 运营 JWT + 角色 |
 | 上游 | `POST /open/v1/quota/recharge`、`GET /open/v1/activity/{id}` | API Key + HMAC 签名 |
+| 权益中心 | `POST /open/v1/credit/{grant,consume}`、`GET /open/v1/credit/{balance,records}` | API Key + HMAC 签名 |
+| 权益运营（开关保护） | `POST /open/v1/credit/{expire-run,reconcile-run}`、`GET /open/v1/credit/{reconcile,diffs}` | API Key + HMAC 签名 |
 | 观测 | `GET /actuator/health`、`/actuator/prometheus` | 无 |
 
 鉴权由 `app.auth.enabled` 控制，**默认开启**：

@@ -1,8 +1,13 @@
 package com.sjs.marketing.domain.credit.service;
 
 import com.sjs.marketing.domain.credit.model.CreditAccount;
+import com.sjs.marketing.domain.credit.model.CreditBalanceVO;
 import com.sjs.marketing.domain.credit.model.CreditLedger;
+import com.sjs.marketing.domain.credit.model.CreditReconcileDiff;
+import com.sjs.marketing.domain.credit.model.CreditReconcileSummary;
+import com.sjs.marketing.domain.credit.model.CreditReconcileVO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,4 +52,31 @@ public interface ICreditService {
      * @return 本次回收的批次数
      */
     int expireDue(int limit);
+
+    /**
+     * 只在 {@code [from, to)} 窗口内做一次过期回收（任务按自然日分桶调用）。
+     *
+     * <p>返回本次回收的批次数；回收动作靠「条件更新抢到才动钱」保证多实例幂等。</p>
+     */
+    int expireDueBetween(Date from, Date to, int limit);
+
+    /** 余额视图：账户汇总 + 即将过期提示（主站首页要展示） */
+    CreditBalanceVO queryBalance(String userId);
+
+    /**
+     * 单用户对账：账户余额 / 未核销批次剩余之和 / 流水累计，三值比对。
+     *
+     * <p>只返回结果，不修数据——发现错误的手段和修正错误的手段必须分开。</p>
+     */
+    CreditReconcileVO reconcile(String userId);
+
+    /**
+     * 全量对账：按 {@code user_id} 游标分页扫账户，不一致的落差异表并告警。
+     *
+     * @param pageSize 每页账户数（<=0 或 >1000 时取默认 200）
+     */
+    CreditReconcileSummary reconcileAll(int pageSize);
+
+    /** 查询对账差异（最近 N 条，userId 为空表示不按用户过滤） */
+    List<CreditReconcileDiff> queryReconcileDiffs(String userId, int limit);
 }

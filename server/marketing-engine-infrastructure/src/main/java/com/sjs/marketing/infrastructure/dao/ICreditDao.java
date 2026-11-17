@@ -3,6 +3,7 @@ package com.sjs.marketing.infrastructure.dao;
 import com.sjs.marketing.infrastructure.dao.po.CreditAccountPO;
 import com.sjs.marketing.infrastructure.dao.po.CreditBatchPO;
 import com.sjs.marketing.infrastructure.dao.po.CreditLedgerPO;
+import com.sjs.marketing.infrastructure.dao.po.CreditReconcileDiffPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -63,8 +64,13 @@ public interface ICreditDao {
     /** 后台任务：取一批账户（不带分片键，广播各分片） */
     List<CreditAccountPO> queryAllAccounts(@Param("limit") int limit);
 
-    /** 未过期批次剩余之和 */
-    Integer sumActiveRemaining(@Param("userId") String userId, @Param("now") Date now);
+    /**
+     * 未核销批次剩余之和。
+     *
+     * <p>只按 {@code state='active'} 过滤，不看是否已到期：到期但尚未被回收的批次，
+     * 其剩余仍在账户余额里，排除掉会让对账报出假差异。</p>
+     */
+    Integer sumActiveRemaining(@Param("userId") String userId);
 
     /** 流水累计（发放 − 消耗 − 过期） */
     Integer sumLedgerDelta(@Param("userId") String userId);
@@ -74,4 +80,18 @@ public interface ICreditDao {
 
     /** 最近一个到期时间 */
     Date queryNearestExpire(@Param("userId") String userId);
+
+    // ---------- 后台任务（分桶扫描 / 全量对账） ----------
+
+    /** 扫描 {@code [from, to)} 内到期的批次，走 idx_state_expire（不带分片键，广播各分片） */
+    List<CreditBatchPO> queryExpireDueBetween(@Param("from") Date from, @Param("to") Date to, @Param("limit") int limit);
+
+    /** 按 user_id 游标分页取账户：id 是各分片自增的，跨库 order by id 会漏账 */
+    List<CreditAccountPO> queryAccountsAfter(@Param("afterUserId") String afterUserId, @Param("limit") int limit);
+
+    int insertReconcileDiff(CreditReconcileDiffPO diff);
+
+    List<CreditReconcileDiffPO> queryReconcileDiffs(@Param("runId") String runId,
+                                                   @Param("userId") String userId,
+                                                   @Param("limit") int limit);
 }

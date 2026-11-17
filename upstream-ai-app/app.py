@@ -241,6 +241,25 @@ def credit_balance(user_id: str) -> int:
     return int(result.get("balance") or 0)
 
 
+def credit_balance_detail(user_id: str) -> dict[str, Any]:
+    """余额 + 即将过期提醒。中台不可达时降级为 0，不阻塞页面渲染。"""
+    fallback = {"credit": 0, "expiringSoon": 0, "nearestExpireAt": None, "expiringWindowDays": 0}
+    try:
+        result = call_mid("GET", "/open/v1/credit/balance", query={"userId": user_id})
+    except HTTPException as e:
+        print(f"[credit] 查询余额失败 user={user_id} detail={e.detail}")
+        return fallback
+    if result.get("code") != "0000":
+        print(f"[credit] 查询余额异常 user={user_id} result={result}")
+        return fallback
+    return {
+        "credit": int(result.get("balance") or 0),
+        "expiringSoon": int(result.get("expiringSoon") or 0),
+        "nearestExpireAt": result.get("nearestExpireAt"),
+        "expiringWindowDays": int(result.get("expiringWindowDays") or 0),
+    }
+
+
 def credit_grant(user_id: str, scene: str, amount: int, event_id: str) -> bool:
     """发放权益。eventId 是幂等键，重复调用不会重复入账。"""
     try:
@@ -317,9 +336,12 @@ def register(req: RegisterRequest) -> JSONResponse:
             (username, hash_password(req.password), req.nickname or username,
              datetime.now().isoformat(timespec="seconds")),
         )
-        # 注册即送 20 积分，方便直接体验对话
+        # 本地 users.credit 只作历史留档，真正的余额在权益中心
         conn.execute("update users set credit = credit + 20 where user_id = ?", (username,))
         add_flow(conn, username, "REGISTER_BONUS", 20, "注册赠送")
+
+    # 注册赠送必须发到权益中心，否则 /api/me 读到的余额是 0（它只认权益中心）
+    credit_grant(username, "register", 20, f"register:{username}")
 
     resp = JSONResponse(content={"ok": True, "userId": username})
     resp.set_cookie("me_session", make_session(username), httponly=True, samesite="lax", max_age=SESSION_TTL)
@@ -368,11 +390,15 @@ def me(request: Request) -> dict[str, Any]:
                 (user_id,),
             ).fetchall()
         ]
+    # 余额与到期提醒都来自权益中心；本地 users.credit 仅作历史留档
+    balance = credit_balance_detail(user_id)
     return {
         "userId": user_id,
         "nickname": user["nickname"] or user_id,
-        # 积分余额以权益中心为准，本地 users.credit 仅作历史留档
-        "credit": credit_balance(user_id),
+        "credit": balance["credit"],
+        "expiringSoon": balance["expiringSoon"],
+        "nearestExpireAt": balance["nearestExpireAt"],
+        "expiringWindowDays": balance["expiringWindowDays"],
         "llmQuota": user["llm_quota"],
         "signedToday": signed,
         "flows": flows,
@@ -381,7 +407,15 @@ def me(request: Request) -> dict[str, Any]:
 
 @app.post("/api/sign")
 def sign(request: Request) -> dict[str, Any]:
-    """签到：先让中台判定，再由上游自己记账。幂等靠 sign_log 唯一键。"""
+    """签到：中台判定 + 发抽奖次数，主站发积分。
+
+    顺序刻意是「先发奖、最后写 sign_log」：sign_log 是「今天签过」的唯一事实，
+    先写再发的话，一旦积分发放失败（中台抖动/网络），当天就再也补不上了。
+    反过来，发放用 eventId=sign:{user}:{day} 幂等，重试不会重复加积分。
+
+    收敛口径（P1-③）：积分的唯一发放出口在主站；中台只负责签到判定与抽奖次数，
+    中台侧的 integral 返利配置已删除，避免同一笔签到一起发 20 积分。
+    """
     user_id = require_user(request)
     today = date.today().isoformat()
 
@@ -390,29 +424,34 @@ def sign(request: Request) -> dict[str, Any]:
         already = conn.execute(
             "select 1 from sign_log where user_id = ? and sign_date = ?", (user_id, today)
         ).fetchone()
-        if already:
-            return {"ok": False, "reason": "今天已经签到过了", "credit": credit_balance(user_id)}
+    if already:
+        # 自愈：昨天/上次可能签到成功但积分没到账，幂等补发一次（eventId 相同不会重复加）
+        credit_grant(user_id, "sign", SIGN_CREDIT, f"sign:{user_id}:{today}")
+        return {"ok": False, "reason": "今天已经签到过了", "credit": credit_balance(user_id)}
 
-    # 签到走开放接口（系统对系统，API Key + HMAC 签名），不是 C 端接口
+    # 1. 中台判定：重复签到返回 signed=false（返利单按「用户+类型+单号」唯一）
+    #    签到走开放接口（系统对系统，API Key + HMAC 签名），不是 C 端接口
     mid_result = call_mid("POST", "/open/v1/sign", {"userId": user_id})
     if mid_result.get("code") != "0000":
-        return {"ok": False, "reason": f"中台判定不可签到: {mid_result.get('info')}", "credit": 0}
-    # 中台按「用户 + 自然日」幂等，重复签到返回 signed=false，属于正常路径
+        return {"ok": False, "reason": f"中台判定不可签到: {mid_result.get('info')}", "credit": credit_balance(user_id)}
     if not mid_result.get("signed", False):
         with db() as conn:
             ensure_user(conn, user_id)
             conn.execute("insert or ignore into sign_log(user_id, sign_date) values (?,?)", (user_id, today))
+        credit_grant(user_id, "sign", SIGN_CREDIT, f"sign:{user_id}:{today}")
         return {"ok": False, "reason": "今天已经签到过了", "credit": credit_balance(user_id)}
 
+    # 2. 主站发积分（幂等键与判定口径一致：用户 + 自然日）
+    credit_grant(user_id, "sign", SIGN_CREDIT, f"sign:{user_id}:{today}")
+
+    # 3. 最后落签到记录：失败可以重试，成功即当日闭环
     with db() as conn:
         ensure_user(conn, user_id)
         try:
             conn.execute("insert into sign_log(user_id, sign_date) values (?,?)", (user_id, today))
         except sqlite3.IntegrityError:
-            return {"ok": False, "reason": "今天已经签到过了", "credit": credit_balance(user_id)}
+            pass  # 并发下另一请求已落库，幂等
         add_flow(conn, user_id, "SIGN", SIGN_CREDIT, f"{today} 签到奖励")
-    # 入账交给权益中心：幂等键用「用户 + 自然日」，与签到判定口径一致
-    credit_grant(user_id, "sign", SIGN_CREDIT, f"sign:{user_id}:{today}")
     return {"ok": True, "credit": credit_balance(user_id), "reason": "签到成功"}
 
 

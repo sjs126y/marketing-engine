@@ -3,6 +3,53 @@
 本项目从「跟教程实现的抽奖系统」重构为「可讲清楚取舍的营销中台」的过程记录。
 每个版本对应一次技术决策，详细背景见 [docs/ROADMAP.md](docs/ROADMAP.md)。
 
+## 权益中心 P1：资产运营（过期 / 对账 / 提醒）
+
+P0 把「资产底座」立起来（账户 + 批次 + 流水、FIFO 消耗、发放幂等），P1 让它跑得住：
+会过期的钱要能自动回收、账要能自己查出错、用户要在过期前知道。
+
+### 过期回收
+
+- `CreditExpireJob` 每小时整点跑，**按自然日分桶**扫「今天-回看天数 ~ 今天」，每段走 `idx_state_expire(state, expires_at)`；
+  回看窗口以外的遗留由全量兜底补齐，停机不会漏回收
+- 回收靠 `update ... where state='active'` 条件更新「抢到才动钱」，多实例幂等
+- **修 P0 遗留缺陷**：`expire()` 写流水时 `balance_after` 传的是 null，而 V7 该列是 NOT NULL，
+  第一次真实到期就会 1048 整笔回滚——也就是原来的过期链路一次都没真正跑通
+- 演示路径：`ttlDays = -1` 造「立即过期」批次（受 `app.credit.demo-instant-expire` 保护）；
+  `POST /open/v1/credit/expire-run` 手动触发一轮，联调和现场演示不用等一小时
+
+### 对账
+
+- 三值比对：账户余额 / 未核销批次剩余之和 / 流水累计；差异落 `credit_reconcile_diff` 并打 error 日志
+- **只暴露不修正**：自动修数会把「记账 bug」变成「数据被系统悄悄改过」，事后查不出痕迹
+- 全量对账按 `user_id` 游标分页（`id` 是各分片自增的，跨库 `order by id limit` 会漏账/重账）
+- 「未核销批次剩余」刻意**不按 `expires_at` 过滤**：到期但尚未回收的批次仍在账户余额里，排除掉会报假差异
+
+### 即将过期提醒
+
+- `credit/balance` 增加 `expiringSoon` / `nearestExpireAt` / `expiringWindowDays`（默认 7 天窗口，向后兼容）
+- 主站 `/api/me` 透出，侧栏提示「你有 X 积分将于 Y 到期」
+
+### 签到收敛
+
+- 签到仍然由中台发**抽奖次数**（`rebate_type=sku` 保留），**积分只由主站发**
+- 删除 `daily_behavior_rebate` 里 `sign/integral` 那条（V9）：返利消费者本来就不处理非 sku 类型，
+  这条配置是「哪天有人实现了 integral 就开始双发」的定时炸弹
+- 主站签到顺序改成「先发奖、最后写 sign_log」：先写记录再发奖，一旦发放失败当天就补不上了；
+  反过来用 `eventId=sign:{user}:{day}` 幂等，重试不会重复加，重复签到还会做一次幂等补发（自愈）
+
+### 上游对接修复
+
+- 注册赠送的 20 积分此前只写本地 `users.credit`，而 `/api/me` 已改读权益中心 → 新用户注册后显示 0 分。
+  现在注册时同步调 `credit/grant`（`scene=register`，`eventId=register:{user}`）
+
+### 验证
+
+- 单测 28 → 37（新增 `CreditExpireWindowTest`、`CreditReconcileDiffTest`）
+- 联调 28 → 39 项全绿：造立即过期批次 → 回收 → 余额减少 + expire 流水 → 到期提醒 → 单用户/全量对账一致；
+  另外手工改一条数据验证差异能被报出来（inconsistent=1，reason 落库）
+
+
 ## 奖品收敛为「积分 / 对话次数」
 
 - 策略 `100006` 的奖池从「积分 + 实物 + 模型解锁」收敛为两类：

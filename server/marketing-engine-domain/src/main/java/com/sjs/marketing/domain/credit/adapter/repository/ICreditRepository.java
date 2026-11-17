@@ -3,6 +3,7 @@ package com.sjs.marketing.domain.credit.adapter.repository;
 import com.sjs.marketing.domain.credit.model.CreditAccount;
 import com.sjs.marketing.domain.credit.model.CreditBatch;
 import com.sjs.marketing.domain.credit.model.CreditLedger;
+import com.sjs.marketing.domain.credit.model.CreditReconcileDiff;
 
 import java.util.Date;
 import java.util.List;
@@ -42,4 +43,46 @@ public interface ICreditRepository {
 
     /** 过期回收一个批次：批次置 expired + 账户扣减 + 记 expire 流水 */
     boolean expire(CreditBatch batch);
+
+    // ---------- 过期分桶扫描 ----------
+
+    /**
+     * 扫描 {@code [from, to)} 内到期的可用批次。
+     *
+     * <p>走 {@code idx_state_expire(state, expires_at)}，任务按自然日分桶调用，
+     * 每次只回表一天的量；全量兜底仍用 {@link #queryExpireDue(Date, int)}。</p>
+     */
+    List<CreditBatch> queryExpireDueBetween(Date from, Date to, int limit);
+
+    // ---------- 对账 / 提醒统计 ----------
+
+    /**
+     * 未核销批次剩余之和。
+     *
+     * <p>只按 {@code state='active'} 过滤，<b>不看是否已到期</b>：到期但还没被任务回收的批次，
+     * 其剩余仍在账户余额里，若这里把它排除掉，对账会报出并不存在的差异。</p>
+     */
+    int sumActiveBatchRemaining(String userId);
+
+    /** 流水累计（发放 − 消耗 − 过期），与账户余额口径一致 */
+    int sumLedgerDelta(String userId);
+
+    /** 窗口内到期的剩余量（即将过期提醒） */
+    int sumExpiringRemaining(String userId, Date from, Date to);
+
+    /** 最近一个到期时间（没有可用批次时返回 null） */
+    Date queryNearestExpire(String userId);
+
+    /**
+     * 按 {@code user_id} 游标分页取账户，供全量对账任务使用。
+     *
+     * <p>不能用 {@code order by id limit}：id 是各分片各自自增的，跨库排序再截断会漏账、重账。</p>
+     */
+    List<CreditAccount> queryAccountsAfter(String afterUserId, int limit);
+
+    /** 落一条对账差异 */
+    void saveReconcileDiff(CreditReconcileDiff diff);
+
+    /** 查对账差异；{@code runId} / {@code userId} 为空表示不加该条件 */
+    List<CreditReconcileDiff> queryReconcileDiffs(String runId, String userId, int limit);
 }

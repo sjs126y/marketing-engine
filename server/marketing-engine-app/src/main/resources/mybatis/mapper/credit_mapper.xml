@@ -26,6 +26,19 @@
         <result column="state" property="state"/>
     </resultMap>
 
+    <resultMap id="reconcileDiffMap" type="com.sjs.marketing.infrastructure.dao.po.CreditReconcileDiffPO">
+        <id column="id" property="id"/>
+        <result column="run_id" property="runId"/>
+        <result column="user_id" property="userId"/>
+        <result column="account_balance" property="accountBalance"/>
+        <result column="batch_remaining" property="batchRemaining"/>
+        <result column="ledger_sum" property="ledgerSum"/>
+        <result column="diff" property="diff"/>
+        <result column="reason" property="reason"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
     <resultMap id="ledgerMap" type="com.sjs.marketing.infrastructure.dao.po.CreditLedgerPO">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
@@ -129,6 +142,17 @@
         limit #{limit}
     </select>
 
+    <!-- 分桶扫描：走 idx_state_expire(state, expires_at)，每次只回表一个自然日 -->
+    <select id="queryExpireDueBetween" resultMap="batchMap">
+        select id, user_id, event_id, scene, amount, remaining, granted_at, expires_at, state
+        from credit_batch
+        where state = 'active'
+          and expires_at &gt;= #{from}
+          and expires_at &lt; #{to}
+        order by expires_at asc
+        limit #{limit}
+    </select>
+
     <!-- ========== 流水 ========== -->
 
     <insert id="insertLedger" parameterType="com.sjs.marketing.infrastructure.dao.po.CreditLedgerPO">
@@ -153,13 +177,38 @@
         limit #{limit}
     </select>
 
+    <!-- 只按 state 过滤，不看 expires_at：到期但未回收的批次仍在账户余额里 -->
     <select id="sumActiveRemaining" resultType="java.lang.Integer">
         select coalesce(sum(remaining), 0)
         from credit_batch
         where user_id = #{userId}
           and state = 'active'
           and remaining &gt; 0
-          and expires_at &gt; #{now}
+    </select>
+
+    <!-- 对账：按 user_id 游标分页。id 是各分片自增的，跨库 order by id 会漏账 -->
+    <select id="queryAccountsAfter" resultMap="accountMap">
+        select id, user_id, balance, frozen, total_granted, total_consumed, total_expired, create_time, update_time
+        from credit_account
+        where user_id &gt; #{afterUserId}
+        order by user_id asc
+        limit #{limit}
+    </select>
+
+    <insert id="insertReconcileDiff" parameterType="com.sjs.marketing.infrastructure.dao.po.CreditReconcileDiffPO">
+        insert into credit_reconcile_diff(run_id, user_id, account_balance, batch_remaining, ledger_sum, diff, reason, state, create_time)
+        values (#{runId}, #{userId}, #{accountBalance}, #{batchRemaining}, #{ledgerSum}, #{diff}, #{reason}, #{state}, now())
+    </insert>
+
+    <select id="queryReconcileDiffs" resultMap="reconcileDiffMap">
+        select id, run_id, user_id, account_balance, batch_remaining, ledger_sum, diff, reason, state, create_time
+        from credit_reconcile_diff
+        <where>
+            <if test="runId != null and runId != ''">and run_id = #{runId}</if>
+            <if test="userId != null and userId != ''">and user_id = #{userId}</if>
+        </where>
+        order by id desc
+        limit #{limit}
     </select>
 
     <select id="sumLedgerDelta" resultType="java.lang.Integer">

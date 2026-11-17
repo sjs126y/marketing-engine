@@ -6,7 +6,11 @@ import com.sjs.marketing.domain.activity.model.entity.ActivitySkuEntity;
 import com.sjs.marketing.domain.activity.model.entity.SkuRechargeEntity;
 import com.sjs.marketing.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.sjs.marketing.domain.credit.model.CreditAccount;
+import com.sjs.marketing.domain.credit.model.CreditBalanceVO;
 import com.sjs.marketing.domain.credit.model.CreditLedger;
+import com.sjs.marketing.domain.credit.model.CreditReconcileDiff;
+import com.sjs.marketing.domain.credit.model.CreditReconcileSummary;
+import com.sjs.marketing.domain.credit.model.CreditReconcileVO;
 import com.sjs.marketing.domain.credit.service.ICreditService;
 import com.sjs.marketing.domain.rebate.model.entity.BehaviorEntity;
 import com.sjs.marketing.domain.rebate.model.valobj.BehaviorTypeVO;
@@ -14,6 +18,7 @@ import com.sjs.marketing.domain.rebate.service.IBehaviorRebateService;
 import com.sjs.marketing.types.exception.AppException;
 import com.sjs.marketing.trigger.auth.ApiKeyAuthenticationFilter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,6 +62,10 @@ public class OpenApiController {
 
     @Resource
     private ICreditService creditService;
+
+    /** 运营/演示用接口开关：过期手动触发、对账查询。生产建议关掉 */
+    @Value("${app.credit.admin-endpoints-enabled:false}")
+    private boolean adminEndpointsEnabled;
 
     private static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
@@ -251,14 +260,18 @@ public class OpenApiController {
         if (userId == null || userId.isBlank()) {
             return ResponseEntity.badRequest().body(fail("400", "userId 必填"));
         }
-        CreditAccount account = creditService.queryAccount(userId);
+        CreditBalanceVO balance = creditService.queryBalance(userId);
         Map<String, Object> body = ok();
         body.put("userId", userId);
-        body.put("balance", account.getBalance());
-        body.put("frozen", account.getFrozen());
-        body.put("totalGranted", account.getTotalGranted());
-        body.put("totalConsumed", account.getTotalConsumed());
-        body.put("totalExpired", account.getTotalExpired());
+        body.put("balance", balance.getBalance());
+        body.put("frozen", balance.getFrozen());
+        body.put("totalGranted", balance.getTotalGranted());
+        body.put("totalConsumed", balance.getTotalConsumed());
+        body.put("totalExpired", balance.getTotalExpired());
+        // 即将过期提示：主站首页据此显示「你有 X 积分将于 Y 到期」
+        body.put("expiringSoon", balance.getExpiringSoon());
+        body.put("nearestExpireAt", balance.getNearestExpireAt());
+        body.put("expiringWindowDays", balance.getExpiringWindowDays());
         return ResponseEntity.ok(body);
     }
 
@@ -275,6 +288,80 @@ public class OpenApiController {
         Map<String, Object> body = ok();
         body.put("userId", userId);
         body.put("records", ledgers);
+        return ResponseEntity.ok(body);
+    }
+
+    /**
+     * 手动触发一次过期回收（运营/演示用）。
+     *
+     * <p>定时任务是每小时整点扫一次；联调脚本和现场演示等不起一小时，所以留一个受开关保护的手动入口。</p>
+     */
+    @PostMapping("/credit/expire-run")
+    public ResponseEntity<Map<String, Object>> expireRun() {
+        if (!adminEndpointsEnabled) {
+            return ResponseEntity.status(404).body(fail("404", "未开启运营接口"));
+        }
+        int expired = creditService.expireDue(200);
+        log.info("手动触发过期回收，本次回收 {} 个批次", expired);
+        Map<String, Object> body = ok();
+        body.put("expired", expired);
+        return ResponseEntity.ok(body);
+    }
+
+    /**
+     * 单用户对账：账户余额 / 批次剩余 / 流水累计 三值比对。
+     *
+     * <p>只暴露差异，不修正——修数必须留人工判断。</p>
+     */
+    @GetMapping("/credit/reconcile")
+    public ResponseEntity<Map<String, Object>> reconcile(@RequestParam("userId") String userId) {
+        if (!adminEndpointsEnabled) {
+            return ResponseEntity.status(404).body(fail("404", "未开启运营接口"));
+        }
+        CreditReconcileVO vo = creditService.reconcile(userId);
+        Map<String, Object> body = ok();
+        body.put("userId", vo.getUserId());
+        body.put("accountBalance", vo.getAccountBalance());
+        body.put("batchRemaining", vo.getBatchRemaining());
+        body.put("ledgerSum", vo.getLedgerSum());
+        body.put("consistent", vo.getConsistent());
+        body.put("diff", vo.getDiff());
+        body.put("reason", CreditReconcileDiff.classify(
+                vo.getAccountBalance() == null ? 0 : vo.getAccountBalance(),
+                vo.getBatchRemaining() == null ? 0 : vo.getBatchRemaining(),
+                vo.getLedgerSum() == null ? 0 : vo.getLedgerSum()));
+        return ResponseEntity.ok(body);
+    }
+
+    /** 全量对账（运营/演示用）：不一致的落差异表并告警 */
+    @PostMapping("/credit/reconcile-run")
+    public ResponseEntity<Map<String, Object>> reconcileRun(
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        if (!adminEndpointsEnabled) {
+            return ResponseEntity.status(404).body(fail("404", "未开启运营接口"));
+        }
+        CreditReconcileSummary summary = creditService.reconcileAll(pageSize == null ? 200 : pageSize);
+        Map<String, Object> body = ok();
+        body.put("runId", summary.getRunId());
+        body.put("scanned", summary.getScanned());
+        body.put("consistent", summary.getConsistent());
+        body.put("inconsistent", summary.getInconsistent());
+        body.put("stored", summary.getStored());
+        body.put("costMs", summary.getCostMs());
+        return ResponseEntity.ok(body);
+    }
+
+    /** 查询对账差异 */
+    @GetMapping("/credit/diffs")
+    public ResponseEntity<Map<String, Object>> diffs(
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "limit", required = false) Integer limit) {
+        if (!adminEndpointsEnabled) {
+            return ResponseEntity.status(404).body(fail("404", "未开启运营接口"));
+        }
+        List<CreditReconcileDiff> diffs = creditService.queryReconcileDiffs(userId, limit == null ? 50 : limit);
+        Map<String, Object> body = ok();
+        body.put("diffs", diffs);
         return ResponseEntity.ok(body);
     }
 

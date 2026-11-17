@@ -35,6 +35,7 @@
   .wallet .sign:disabled{background:#cbd5e1;cursor:default}
   .wallet .link{display:block;text-align:center;margin-top:8px;font-size:12px;color:#2563eb;text-decoration:none;background:none;border:0;cursor:pointer;width:100%}
   .wallet .link:hover{text-decoration:underline}
+  .wallet .expire{margin-top:8px;padding:6px 8px;border-radius:8px;background:#fff7ed;color:#b45309;font-size:11px;line-height:1.5}
 
   /* ---------- 主区 ---------- */
   .main{flex:1;display:flex;flex-direction:column;min-width:0}
@@ -84,6 +85,7 @@
     <div class="wallet">
       <div class="row"><span class="k">积分</span><span class="v" id="credit">—</span></div>
       <div class="row"><span class="k">对话次数</span><span class="v" id="quota">—</span></div>
+      <div class="expire" id="expireTip" style="display:none"></div>
       <button class="sign" id="signBtn" onclick="doSign()">今日签到 +10 积分</button>
       <button class="link" onclick="goPlay()">去抽奖赢对话次数 ↗</button>
     </div>
@@ -119,7 +121,8 @@
 <div id="toast"></div>
 
 <script>
-let state = { userId: '', nickname: '', credit: 0, llmQuota: 0, signedToday: false };
+let state = { userId: '', nickname: '', credit: 0, llmQuota: 0, signedToday: false,
+              expiringSoon: 0, nearestExpireAt: null, expiringWindowDays: 0 };
 
 function toast(text, bad) {
   const el = document.createElement('div');
@@ -146,6 +149,17 @@ function renderWallet() {
   document.getElementById('quota').textContent = state.llmQuota;
   document.getElementById('who').textContent = state.nickname || state.userId;
   document.getElementById('avatar').textContent = (state.nickname || state.userId || '?').slice(0, 1).toUpperCase();
+
+  // 即将过期提醒：积分快到期时给个提示，比「月底突然少了一笔」友好
+  const tip = document.getElementById('expireTip');
+  if (state.expiringSoon > 0 && state.nearestExpireAt) {
+    const d = new Date(state.nearestExpireAt);
+    const day = isNaN(d.getTime()) ? state.nearestExpireAt : d.toLocaleDateString('zh-CN');
+    tip.textContent = `你有 ${state.expiringSoon} 积分将于 ${day} 到期，记得使用`;
+    tip.style.display = 'block';
+  } else {
+    tip.style.display = 'none';
+  }
 
   const btn = document.getElementById('signBtn');
   if (state.signedToday) {

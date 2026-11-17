@@ -4,11 +4,13 @@ import com.sjs.marketing.domain.credit.adapter.repository.ICreditRepository;
 import com.sjs.marketing.domain.credit.model.CreditAccount;
 import com.sjs.marketing.domain.credit.model.CreditBatch;
 import com.sjs.marketing.domain.credit.model.CreditLedger;
+import com.sjs.marketing.domain.credit.model.CreditReconcileDiff;
 import com.sjs.marketing.domain.credit.service.CreditFifoPlanner;
 import com.sjs.marketing.infrastructure.dao.ICreditDao;
 import com.sjs.marketing.infrastructure.dao.po.CreditAccountPO;
 import com.sjs.marketing.infrastructure.dao.po.CreditBatchPO;
 import com.sjs.marketing.infrastructure.dao.po.CreditLedgerPO;
+import com.sjs.marketing.infrastructure.dao.po.CreditReconcileDiffPO;
 import com.sjs.marketing.types.enums.ResponseCode;
 import com.sjs.marketing.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -239,7 +241,9 @@ public class CreditRepository implements ICreditRepository {
             ledger.setScene(batch.getScene());
             ledger.setType(CreditLedger.TYPE_EXPIRE);
             ledger.setDelta(-batch.getRemaining());
-            ledger.setBalanceAfter(null);
+            // balance_after 是 NOT NULL：回收后账户已经扣减，取当前余额写进流水
+            CreditAccountPO account = creditDao.queryAccount(batch.getUserId());
+            ledger.setBalanceAfter(account == null || account.getBalance() == null ? 0 : account.getBalance());
             creditDao.insertLedger(ledger);
             return true;
         });
@@ -263,5 +267,105 @@ public class CreditRepository implements ICreditRepository {
         } catch (DuplicateKeyException ignore) {
             // 并发下另一个请求已建好，直接用
         }
+    }
+
+    @Override
+    public List<CreditBatch> queryExpireDueBetween(Date from, Date to, int limit) {
+        List<CreditBatchPO> rows = creditDao.queryExpireDueBetween(from, to, limit);
+        List<CreditBatch> result = new ArrayList<>(rows.size());
+        for (CreditBatchPO po : rows) {
+            result.add(CreditBatch.builder()
+                    .id(po.getId())
+                    .userId(po.getUserId())
+                    .eventId(po.getEventId())
+                    .scene(po.getScene())
+                    .amount(po.getAmount())
+                    .remaining(po.getRemaining())
+                    .grantedAt(po.getGrantedAt())
+                    .expiresAt(po.getExpiresAt())
+                    .state(po.getState())
+                    .build());
+        }
+        return result;
+    }
+
+    @Override
+    public int sumActiveBatchRemaining(String userId) {
+        Integer value = creditDao.sumActiveRemaining(userId);
+        return value == null ? 0 : value;
+    }
+
+    @Override
+    public int sumLedgerDelta(String userId) {
+        Integer value = creditDao.sumLedgerDelta(userId);
+        return value == null ? 0 : value;
+    }
+
+    @Override
+    public int sumExpiringRemaining(String userId, Date from, Date to) {
+        Integer value = creditDao.sumExpiringRemaining(userId, from, to);
+        return value == null ? 0 : value;
+    }
+
+    @Override
+    public Date queryNearestExpire(String userId) {
+        return creditDao.queryNearestExpire(userId);
+    }
+
+    @Override
+    public List<CreditAccount> queryAccountsAfter(String afterUserId, int limit) {
+        List<CreditAccountPO> rows = creditDao.queryAccountsAfter(afterUserId == null ? "" : afterUserId, limit);
+        List<CreditAccount> result = new ArrayList<>(rows.size());
+        for (CreditAccountPO po : rows) {
+            result.add(toAccount(po));
+        }
+        return result;
+    }
+
+    @Override
+    public void saveReconcileDiff(CreditReconcileDiff diff) {
+        CreditReconcileDiffPO po = new CreditReconcileDiffPO();
+        po.setRunId(diff.getRunId());
+        po.setUserId(diff.getUserId());
+        po.setAccountBalance(diff.getAccountBalance());
+        po.setBatchRemaining(diff.getBatchRemaining());
+        po.setLedgerSum(diff.getLedgerSum());
+        po.setDiff(diff.getDiff());
+        po.setReason(diff.getReason());
+        po.setState(diff.getState());
+        creditDao.insertReconcileDiff(po);
+    }
+
+    @Override
+    public List<CreditReconcileDiff> queryReconcileDiffs(String runId, String userId, int limit) {
+        List<CreditReconcileDiffPO> rows = creditDao.queryReconcileDiffs(runId, userId, limit);
+        List<CreditReconcileDiff> result = new ArrayList<>(rows.size());
+        for (CreditReconcileDiffPO po : rows) {
+            result.add(CreditReconcileDiff.builder()
+                    .id(po.getId())
+                    .runId(po.getRunId())
+                    .userId(po.getUserId())
+                    .accountBalance(po.getAccountBalance())
+                    .batchRemaining(po.getBatchRemaining())
+                    .ledgerSum(po.getLedgerSum())
+                    .diff(po.getDiff())
+                    .reason(po.getReason())
+                    .state(po.getState())
+                    .createTime(po.getCreateTime())
+                    .build());
+        }
+        return result;
+    }
+
+    private CreditAccount toAccount(CreditAccountPO po) {
+        return CreditAccount.builder()
+                .userId(po.getUserId())
+                .balance(po.getBalance())
+                .frozen(po.getFrozen())
+                .totalGranted(po.getTotalGranted())
+                .totalConsumed(po.getTotalConsumed())
+                .totalExpired(po.getTotalExpired())
+                .updateTime(po.getUpdateTime())
+                .build();
     }
 }

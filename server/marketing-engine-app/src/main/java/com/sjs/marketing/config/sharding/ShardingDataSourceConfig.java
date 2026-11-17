@@ -71,6 +71,8 @@ public class ShardingDataSourceConfig {
             "credit_account",
             "credit_batch",
             "credit_ledger",
+            // 对账差异表：按 user_id 路由，保证差异和账户同库
+            "credit_reconcile_diff",
             // task 表保留历史数据，新链路不再写入
             "task");
 
