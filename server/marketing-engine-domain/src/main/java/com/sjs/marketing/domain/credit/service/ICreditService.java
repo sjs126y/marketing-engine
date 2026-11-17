@@ -92,4 +92,16 @@ public interface ICreditService {
 
     /** 查询对账差异（最近 N 条，userId 为空表示不按用户过滤） */
     List<CreditReconcileDiff> queryReconcileDiffs(String userId, int limit);
+
+    /**
+     * 冲正一笔发放（退款用）。
+     *
+     * @param eventId 原发放的幂等键（如 {@code pay:{orderNo}}）
+     * @param bizNo   冲正流水的业务号（如 {@code refund:{orderNo}}）
+     * @return 实际冲正的数量
+     */
+    int reverseGrant(String userId, String eventId, String bizNo);
+
+    /** 按业务号查流水净额（支付对账用：pay:{orderNo} / refund:{orderNo}） */
+    int sumLedgerByBizNo(String userId, String bizNo);
 }

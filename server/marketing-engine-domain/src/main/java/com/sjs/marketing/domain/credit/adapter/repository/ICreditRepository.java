@@ -85,4 +85,17 @@ public interface ICreditRepository {
 
     /** 查对账差异；{@code runId} / {@code userId} 为空表示不加该条件 */
     List<CreditReconcileDiff> queryReconcileDiffs(String runId, String userId, int limit);
+
+    /**
+     * 冲正一笔发放（退款用）。
+     *
+     * <p>把这个 eventId 对应的批次剩余全部退回：批次置 reversed、账户扣减、写 reverse 流水。
+     * 只有 {@code state='active'} 的批次能被冲正，重复调用返回 0，因此天然幂等。</p>
+     *
+     * @return 实际冲正的数量（0 表示没有可退的）
+     */
+    int reverseGrant(String userId, String eventId, String bizNo);
+
+    /** 按业务号查流水净额（支付三方对账用） */
+    int sumLedgerByBizNo(String userId, String bizNo);
 }

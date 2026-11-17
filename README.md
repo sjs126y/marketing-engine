@@ -119,11 +119,11 @@ pwsh -File docs/scripts/stop-all.ps1 -Middleware      # 连 Docker 中间件一�
 ### 验证
 
 ```powershell
-# 41 个纯单测，不依赖任何中间件
+# 49 个纯单测，不依赖任何中间件
 cd server; mvn test
 
-# 50 项跨服务联调：注册→签到→充值→换 token→抽奖→回调入账→运营台→页面可达
-#                   →过期回收→对账（一致 + 差异）→到期提醒→支付下单/回调幂等/异步发放/关单
+# 55 项跨服务联调：注册→签到→充值→换 token→抽奖→回调入账→运营台→页面可达
+#                   →过期回收→对账（一致 + 差异）→到期提醒→支付下单/回调幂等/异步发放/关单→退款/支付三方对账
 pwsh -File docs/scripts/integration_check.ps1
 ```
 ## 设计要点
@@ -148,7 +148,8 @@ pwsh -File docs/scripts/integration_check.ps1
 | 上游 | `POST /open/v1/quota/recharge`、`GET /open/v1/activity/{id}` | API Key + HMAC 签名 |
 | 权益中心 | `POST /open/v1/credit/{grant,consume}`、`GET /open/v1/credit/{balance,records}` | API Key + HMAC 签名 |
 | 权益运营（开关保护） | `POST /open/v1/credit/{expire-run,reconcile-run}`、`GET /open/v1/credit/{reconcile,diffs}` | API Key + HMAC 签名 |
-| 支付 | `POST /open/v1/pay/{order,callback}`、`GET /open/v1/pay/{order,products}` | API Key + HMAC 签名 |
+| 支付 | `POST /open/v1/pay/{order,callback,refund}`、`GET /open/v1/pay/{order,products}` | API Key + HMAC 签名 |
+| 支付对账（开关保护） | `POST /open/v1/pay/{reconcile-run,close-timeout}`、`GET /open/v1/pay/diffs` | API Key + HMAC 签名 |
 | 观测 | `GET /actuator/health`、`/actuator/prometheus` | 无 |
 
 鉴权由 `app.auth.enabled` 控制，**默认开启**：

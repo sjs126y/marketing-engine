@@ -167,6 +167,37 @@
           and biz_no = #{bizNo}
     </select>
 
+    <select id="queryBatchByEventId" resultMap="batchMap">
+        select id, user_id, event_id, scene, amount, remaining, granted_at, expires_at, state
+        from credit_batch
+        where user_id = #{userId}
+          and event_id = #{eventId}
+    </select>
+
+    <!-- 只有 active 且仍有剩余才能冲正：抢不到就说明已经被别处处理过（幂等） -->
+    <update id="markBatchReversed">
+        update credit_batch
+        set state = 'reversed', remaining = 0, update_time = now()
+        where id = #{id}
+          and user_id = #{userId}
+          and state = 'active'
+          and remaining &gt; 0
+    </update>
+
+    <update id="reverseAccountBalance">
+        update credit_account
+        set balance = balance - #{amount}, update_time = now()
+        where user_id = #{userId}
+          and balance &gt;= #{amount}
+    </update>
+
+    <select id="sumLedgerByBizNo" resultType="java.lang.Integer">
+        select coalesce(sum(delta), 0)
+        from credit_ledger
+        where user_id = #{userId}
+          and biz_no = #{bizNo}
+    </select>
+
     <select id="queryLedgers" resultMap="ledgerMap">
         select id, user_id, biz_no, batch_id, scene, type, delta, balance_after, create_time
         from credit_ledger

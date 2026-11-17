@@ -5,6 +5,8 @@ import com.sjs.marketing.domain.pay.adapter.repository.IPayRepository;
 import com.sjs.marketing.domain.pay.event.PayGrantEvent;
 import com.sjs.marketing.domain.pay.model.PayOrder;
 import com.sjs.marketing.domain.pay.model.PayProduct;
+import com.sjs.marketing.domain.pay.model.PayReconcileDiff;
+import com.sjs.marketing.domain.pay.model.PayReconcileSummary;
 import com.sjs.marketing.types.enums.ResponseCode;
 import com.sjs.marketing.types.event.BaseEvent;
 import com.sjs.marketing.types.exception.AppException;
@@ -175,6 +177,99 @@ public class PayService implements IPayService {
         }
         payRepository.markGranted(orderNo, order.getUserId());
         return true;
+    }
+
+    @Override
+    public RefundResult refund(String orderNo, String userId) {
+        PayOrder order = payRepository.queryOrder(orderNo, userId);
+        if (order == null) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "订单不存在：" + orderNo);
+        }
+        if (PayOrder.STATE_REFUNDED.equals(order.getState())) {
+            // 幂等：已退过，直接返回上次结果
+            int already = order.getRefundedCent() == null ? 0 : order.getRefundedCent();
+            return new RefundResult(orderNo, 0, already, true, order.getState());
+        }
+        if (PayOrder.STATE_CREATED.equals(order.getState()) || PayOrder.STATE_CLOSED.equals(order.getState())) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "订单未支付，无需退款：" + orderNo);
+        }
+
+        // 冲正未消耗的发放：批次 reversed + 账户扣减 + reverse 流水，幂等键 refund:{orderNo}
+        int reversed = creditService.reverseGrant(order.getUserId(), "pay:" + orderNo, "refund:" + orderNo);
+        int orderAmount = order.getAmount() == null ? 0 : order.getAmount();
+        int orderCent = order.getAmountCent() == null ? 0 : order.getAmountCent();
+        // 按未消耗比例折算：全额未用 → 全退；用了一半 → 退一半；用完 → 0
+        int refundCent = orderAmount <= 0 ? 0 : (int) Math.floor((double) orderCent * reversed / orderAmount);
+
+        payRepository.markRefunded(orderNo, order.getUserId(), refundCent);
+        log.info("支付退款完成 orderNo:{} userId:{} 冲正:{} 退款:{}分（原订单 {}分）",
+                orderNo, order.getUserId(), reversed, refundCent, orderCent);
+        return new RefundResult(orderNo, reversed, refundCent, false, PayOrder.STATE_REFUNDED);
+    }
+
+    @Override
+    public PayReconcileSummary reconcilePay(int limit) {
+        int size = limit <= 0 || limit > 500 ? 200 : limit;
+        long begin = System.currentTimeMillis();
+        String runId = "PR" + begin;
+        int scanned = 0;
+        int inconsistent = 0;
+        int stored = 0;
+        for (String state : List.of(PayOrder.STATE_GRANTED, PayOrder.STATE_REFUNDED,
+                PayOrder.STATE_PAID, PayOrder.STATE_CREATED, PayOrder.STATE_CLOSED)) {
+            for (PayOrder order : payRepository.queryOrdersByState(state, size)) {
+                scanned++;
+                // 三方：订单（该发多少） + 权益流水（实际入账） + 退款记录
+                int grantedAmount = creditService.sumLedgerByBizNo(order.getUserId(), "pay:" + order.getOrderNo());
+                int reversedRaw = creditService.sumLedgerByBizNo(order.getUserId(), "refund:" + order.getOrderNo());
+                int ledgerAmount = grantedAmount + reversedRaw;
+                int reversedAmount = -reversedRaw;
+                int refundedCent = order.getRefundedCent() == null ? 0 : order.getRefundedCent();
+                String reason = PayReconcileDiff.classify(order.getState(),
+                        order.getAmount() == null ? 0 : order.getAmount(), ledgerAmount, reversedAmount, refundedCent);
+                if (reason == null) {
+                    continue;
+                }
+                inconsistent++;
+                try {
+                    payRepository.saveReconcileDiff(PayReconcileDiff.builder()
+                            .runId(runId)
+                            .orderNo(order.getOrderNo())
+                            .userId(order.getUserId())
+                            .orderState(order.getState())
+                            .orderAmount(order.getAmount())
+                            .ledgerAmount(ledgerAmount)
+                            .refundedCent(refundedCent)
+                            .reason(reason)
+                            .state(PayReconcileDiff.STATE_OPEN)
+                            .createTime(new Date())
+                            .build());
+                    stored++;
+                } catch (Exception e) {
+                    log.error("支付对账差异落库失败 orderNo:{}", order.getOrderNo(), e);
+                }
+            }
+        }
+        long cost = System.currentTimeMillis() - begin;
+        if (inconsistent > 0) {
+            log.error("支付对账完成，发现 {} 单不一致 runId:{} 扫描:{} 落表:{}", inconsistent, runId, scanned, stored);
+        } else {
+            log.info("支付对账完成，{} 单全部一致 runId:{} 耗时:{}ms", scanned, runId, cost);
+        }
+        return PayReconcileSummary.builder()
+                .runId(runId)
+                .scanned(scanned)
+                .consistent(scanned - inconsistent)
+                .inconsistent(inconsistent)
+                .stored(stored)
+                .costMs(cost)
+                .build();
+    }
+
+    @Override
+    public List<PayReconcileDiff> queryReconcileDiffs(String userId, int limit) {
+        int size = limit <= 0 || limit > 200 ? 50 : limit;
+        return payRepository.queryReconcileDiffs(StringUtils.isBlank(userId) ? null : userId, size);
     }
 
     @Override

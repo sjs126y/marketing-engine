@@ -188,4 +188,29 @@ $oqT = Open-Call 'GET' '/open/v1/pay/order' $null @{ orderNo=$poT; userId=$pu }
 Check '超时关单' ($oqT.state -eq 'closed') "state=$($oqT.state) 本轮关闭 $($close.closed) 单"
 $cbT = Open-Call 'POST' '/open/v1/pay/callback' @{ outTradeNo="MOCK-$poT"; orderNo=$poT; amountCent=400; notifySeq=1 } $null
 Check '已关闭订单拒绝回调' ($cbT.accepted -eq $false) $cbT.reason
+
+Write-Host "`n=== 13. 支付退款与三方对账 ===" -ForegroundColor Cyan
+$ru = 'r' + (Get-Date -Format 'HHmmss')
+$rs = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+$null = Invoke-RestMethod "$UP/api/register" -Method Post -ContentType 'application/json' `
+        -Body (@{username=$ru;password='test123456';nickname='退款验收'}|ConvertTo-Json) -WebSession $rs
+$ro = "RORD$ru"
+$null = Open-Call 'POST' '/open/v1/pay/order' @{ userId=$ru; sku='credit_100'; orderNo=$ro } $null
+$null = Open-Call 'POST' '/open/v1/pay/callback' @{ outTradeNo="MOCK-$ro"; orderNo=$ro; amountCent=100; notifySeq=1 } $null
+Start-Sleep -Seconds 3
+$ref = Open-Call 'POST' '/open/v1/pay/refund' @{ orderNo=$ro; userId=$ru } $null
+Check '全额退款（未使用全退）' ($ref.refundedCent -eq 100 -and $ref.reversed -eq 100) "冲正=$($ref.reversed) 退款=$($ref.refundedCent)分"
+$rb = Open-Call 'GET' '/open/v1/credit/balance' $null @{ userId=$ru }
+Check '退款后余额回到注册赠送' ($rb.balance -eq 20) "balance=$($rb.balance)"
+$ref2 = Open-Call 'POST' '/open/v1/pay/refund' @{ orderNo=$ro; userId=$ru } $null
+Check '重复退款幂等' ($ref2.duplicated -eq $true) "state=$($ref2.state)"
+$ro2 = "RORD2$ru"
+$null = Open-Call 'POST' '/open/v1/pay/order' @{ userId=$ru; sku='credit_500'; orderNo=$ro2 } $null
+$null = Open-Call 'POST' '/open/v1/pay/callback' @{ outTradeNo="MOCK-$ro2"; orderNo=$ro2; amountCent=400; notifySeq=1 } $null
+Start-Sleep -Seconds 3
+$null = Open-Call 'POST' '/open/v1/credit/consume' @{ userId=$ru; scene='chat'; amount=100; bizNo="rc-$ru" } $null
+$refp = Open-Call 'POST' '/open/v1/pay/refund' @{ orderNo=$ro2; userId=$ru } $null
+Check '部分退款按未消耗折算' ($refp.reversed -gt 0 -and $refp.refundedCent -gt 0 -and $refp.refundedCent -lt 400) "冲正=$($refp.reversed) 退款=$($refp.refundedCent)/400分"
+$prc = Open-Call 'POST' '/open/v1/pay/reconcile-run' $null $null
+Check '支付三方对账无差异' ($prc.inconsistent -eq 0) "扫描 $($prc.scanned) 单，不一致 $($prc.inconsistent)"
 Write-Host ("`n===== 结果：{0} 通过，{1} 失败 =====" -f $pass, $fail) -ForegroundColor $(if ($fail -eq 0) { 'Green' } else { 'Yellow' })

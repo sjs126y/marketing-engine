@@ -76,6 +76,8 @@ public class ShardingDataSourceConfig {
             // 支付：订单与回调日志同按 user_id 分库，订单和账户同库便于事务与排查
             "pay_order",
             "pay_callback_log",
+            // 支付三方对账差异：同样按 user_id 路由
+            "pay_reconcile_diff",
             // task 表保留历史数据，新链路不再写入
             "task");
 

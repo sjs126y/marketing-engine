@@ -30,6 +30,8 @@ public class PayOrder {
     public static final String STATE_GRANTED = "granted";
     /** 已关闭（超时未支付） */
     public static final String STATE_CLOSED = "closed";
+    /** 已退款（refunded_cent 记实际退款金额，允许部分退） */
+    public static final String STATE_REFUNDED = "refunded";
 
     /** 订单号：由上游业务单号充当幂等键 */
     private String orderNo;
@@ -53,6 +55,10 @@ public class PayOrder {
     private Date grantedAt;
     /** 关闭时间 */
     private Date closedAt;
+    /** 已退金额（分） */
+    private Integer refundedCent;
+    /** 退款时间 */
+    private Date refundedAt;
     /** 创建时间 */
     private Date createTime;
     /** 更新时间 */

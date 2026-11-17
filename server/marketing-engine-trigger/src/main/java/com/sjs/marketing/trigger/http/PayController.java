@@ -2,6 +2,8 @@ package com.sjs.marketing.trigger.http;
 
 import com.sjs.marketing.domain.pay.model.PayOrder;
 import com.sjs.marketing.domain.pay.model.PayProduct;
+import com.sjs.marketing.domain.pay.model.PayReconcileDiff;
+import com.sjs.marketing.domain.pay.model.PayReconcileSummary;
 import com.sjs.marketing.domain.pay.service.IPayService;
 import com.sjs.marketing.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.annotation.Resource;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -140,6 +143,60 @@ public class PayController {
         return ResponseEntity.ok(body);
     }
 
+    /**
+     * 退款：按「该笔发放还剩多少」折算，未消耗全退、部分消耗按比例退、用完不退。
+     *
+     * <p>退款是反向记账：批次置 reversed、账户扣减、写 reverse 流水，幂等键 refund:{orderNo}。</p>
+     */
+    @PostMapping("/refund")
+    public ResponseEntity<Map<String, Object>> refund(@RequestBody PayRefundRequest request) {
+        if (request.getOrderNo() == null || request.getOrderNo().isBlank()
+                || request.getUserId() == null || request.getUserId().isBlank()) {
+            return ResponseEntity.badRequest().body(fail("400", "orderNo / userId 均为必填"));
+        }
+        try {
+            IPayService.RefundResult result = payService.refund(request.getOrderNo(), request.getUserId());
+            Map<String, Object> body = ok();
+            body.put("orderNo", result.orderNo());
+            body.put("reversed", result.reversed());
+            body.put("refundedCent", result.refundedCent());
+            body.put("duplicated", result.duplicated());
+            body.put("state", result.state());
+            return ResponseEntity.ok(body);
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(fail(e.getCode(), e.getInfo()));
+        } catch (Exception e) {
+            log.error("退款失败 orderNo:{}", request.getOrderNo(), e);
+            return ResponseEntity.status(500).body(fail("500", e.getMessage()));
+        }
+    }
+
+    /** 支付三方对账（运营/演示用）：订单状态 / 应发数量 / 权益流水 */
+    @PostMapping("/reconcile-run")
+    public ResponseEntity<Map<String, Object>> reconcileRun(
+            @RequestParam(value = "limit", required = false) Integer limit) {
+        PayReconcileSummary summary = payService.reconcilePay(limit == null ? 200 : limit);
+        Map<String, Object> body = ok();
+        body.put("runId", summary.getRunId());
+        body.put("scanned", summary.getScanned());
+        body.put("consistent", summary.getConsistent());
+        body.put("inconsistent", summary.getInconsistent());
+        body.put("stored", summary.getStored());
+        body.put("costMs", summary.getCostMs());
+        return ResponseEntity.ok(body);
+    }
+
+    /** 查支付对账差异 */
+    @GetMapping("/diffs")
+    public ResponseEntity<Map<String, Object>> diffs(
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "limit", required = false) Integer limit) {
+        List<PayReconcileDiff> diffs = payService.queryReconcileDiffs(userId, limit == null ? 50 : limit);
+        Map<String, Object> body = ok();
+        body.put("diffs", diffs);
+        return ResponseEntity.ok(body);
+    }
+
     private Map<String, Object> ok() {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("code", "0000");
@@ -159,6 +216,12 @@ public class PayController {
         private String userId;
         private String sku;
         private String orderNo;
+    }
+
+    @lombok.Data
+    public static class PayRefundRequest {
+        private String orderNo;
+        private String userId;
     }
 
     @lombok.Data

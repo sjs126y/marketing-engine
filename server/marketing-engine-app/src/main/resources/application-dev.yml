@@ -54,6 +54,10 @@ app:
     order-timeout-minutes: 15
     order-timeout-job:
       enabled: true
+    reconcile-job:
+      enabled: true
+      # 每种状态最多扫多少单
+      limit: 200
 
   # 发奖回调：中台把「用户中了什么」推给上游业务系统
   callback:

@@ -84,6 +84,20 @@ public interface ICreditDao {
     /** 最近一个到期时间 */
     Date queryNearestExpire(@Param("userId") String userId);
 
+    // ---------- 退款冲正 ----------
+
+    /** 按发放幂等键查批次（退款要知道这一笔还剩多少） */
+    CreditBatchPO queryBatchByEventId(@Param("userId") String userId, @Param("eventId") String eventId);
+
+    /** 批次置 reversed：只有 active 且仍有剩余才能冲正，条件更新保证幂等 */
+    int markBatchReversed(@Param("id") Long id, @Param("userId") String userId);
+
+    /** 冲正扣账户余额（不动 total_consumed：这不是消费，是把发放退回） */
+    int reverseAccountBalance(@Param("userId") String userId, @Param("amount") int amount);
+
+    /** 按业务号求和（支付对账：pay:{orderNo} / refund:{orderNo}） */
+    Integer sumLedgerByBizNo(@Param("userId") String userId, @Param("bizNo") String bizNo);
+
     // ---------- 后台任务（分桶扫描 / 全量对账） ----------
 
     /** 扫描 {@code [from, to)} 内到期的批次，走 idx_state_expire（不带分片键，广播各分片） */

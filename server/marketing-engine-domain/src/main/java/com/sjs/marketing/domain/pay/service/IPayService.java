@@ -1,6 +1,10 @@
 package com.sjs.marketing.domain.pay.service;
 
 import com.sjs.marketing.domain.pay.model.PayOrder;
+import com.sjs.marketing.domain.pay.model.PayReconcileDiff;
+import com.sjs.marketing.domain.pay.model.PayReconcileSummary;
+
+import java.util.List;
 
 /**
  * 支付服务：下单、处理支付回调、发放权益、超时关单。
@@ -44,6 +48,24 @@ public interface IPayService {
     PayOrder queryOrder(String orderNo, String userId);
 
     /**
+     * 退款：按「该笔发放还剩多少」折算退款金额，并冲正未消耗的部分。
+     *
+     * <p>规则：未消耗 → 全额退；部分消耗 → 按未消耗比例退；已用完 → 不退（0 元）。
+     * 幂等键是 {@code refund:{orderNo}}，重复调用不会重复冲正。</p>
+     */
+    RefundResult refund(String orderNo, String userId);
+
+    /**
+     * 支付三方对账：订单状态 / 订单数量 / 权益流水 三方比对，差异落表。
+     *
+     * @param limit 每种状态最多扫多少单
+     */
+    PayReconcileSummary reconcilePay(int limit);
+
+    /** 查三方对账差异 */
+    List<PayReconcileDiff> queryReconcileDiffs(String userId, int limit);
+
+    /**
      * 关闭超时未支付的订单。
      *
      * @param timeoutMinutes 超时分钟数
@@ -59,5 +81,17 @@ public interface IPayService {
      * @param state      订单当前状态
      */
     record CallbackResult(boolean accepted, boolean duplicated, String state, String reason) {
+    }
+
+    /**
+     * 退款结果。
+     *
+     * @param orderNo     订单号
+     * @param reversed    冲正的权益数量（未消耗部分）
+     * @param refundedCent 退款金额（分）
+     * @param duplicated  是否重复退款（幂等命中）
+     * @param state       订单状态
+     */
+    record RefundResult(String orderNo, int reversed, int refundedCent, boolean duplicated, String state) {
     }
 }

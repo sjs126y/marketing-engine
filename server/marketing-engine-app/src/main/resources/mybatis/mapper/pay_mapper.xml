@@ -15,8 +15,24 @@
         <result column="paid_at" property="paidAt"/>
         <result column="granted_at" property="grantedAt"/>
         <result column="closed_at" property="closedAt"/>
+        <result column="refunded_cent" property="refundedCent"/>
+        <result column="refunded_at" property="refundedAt"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="payDiffMap" type="com.sjs.marketing.infrastructure.dao.po.PayReconcileDiffPO">
+        <id column="id" property="id"/>
+        <result column="run_id" property="runId"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="order_state" property="orderState"/>
+        <result column="order_amount" property="orderAmount"/>
+        <result column="ledger_amount" property="ledgerAmount"/>
+        <result column="refunded_cent" property="refundedCent"/>
+        <result column="reason" property="reason"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
     </resultMap>
 
     <resultMap id="callbackLogMap" type="com.sjs.marketing.infrastructure.dao.po.PayCallbackLogPO">
@@ -37,14 +53,14 @@
 
     <select id="queryOrderByNo" resultMap="orderMap">
         select id, order_no, user_id, sku, product_type, amount, amount_cent, state, out_trade_no,
-               paid_at, granted_at, closed_at, create_time, update_time
+               paid_at, granted_at, closed_at, refunded_cent, refunded_at, create_time, update_time
         from pay_order
         where order_no = #{orderNo}
     </select>
 
     <select id="queryOrder" resultMap="orderMap">
         select id, order_no, user_id, sku, product_type, amount, amount_cent, state, out_trade_no,
-               paid_at, granted_at, closed_at, create_time, update_time
+               paid_at, granted_at, closed_at, refunded_cent, refunded_at, create_time, update_time
         from pay_order
         where order_no = #{orderNo}
           and user_id = #{userId}
@@ -78,11 +94,43 @@
     <!-- 超时扫单：不带分片键，广播各分片 -->
     <select id="queryTimeoutOrders" resultMap="orderMap">
         select id, order_no, user_id, sku, product_type, amount, amount_cent, state, out_trade_no,
-               paid_at, granted_at, closed_at, create_time, update_time
+               paid_at, granted_at, closed_at, refunded_cent, refunded_at, create_time, update_time
         from pay_order
         where state = 'created'
           and create_time &lt;= #{deadline}
         order by id
+        limit #{limit}
+    </select>
+
+    <update id="markRefunded">
+        update pay_order
+        set state = 'refunded', refunded_cent = refunded_cent + #{refundedCent}, refunded_at = now(), update_time = now()
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+          and state in ('paid', 'granted')
+    </update>
+
+    <select id="queryOrdersByState" resultMap="orderMap">
+        select id, order_no, user_id, sku, product_type, amount, amount_cent, state, out_trade_no,
+               paid_at, granted_at, closed_at, refunded_cent, refunded_at, create_time, update_time
+        from pay_order
+        where state = #{state}
+        order by id desc
+        limit #{limit}
+    </select>
+
+    <insert id="insertReconcileDiff" parameterType="com.sjs.marketing.infrastructure.dao.po.PayReconcileDiffPO">
+        insert into pay_reconcile_diff(run_id, order_no, user_id, order_state, order_amount, ledger_amount, refunded_cent, reason, state, create_time)
+        values (#{runId}, #{orderNo}, #{userId}, #{orderState}, #{orderAmount}, #{ledgerAmount}, #{refundedCent}, #{reason}, #{state}, now())
+    </insert>
+
+    <select id="queryReconcileDiffs" resultMap="payDiffMap">
+        select id, run_id, order_no, user_id, order_state, order_amount, ledger_amount, refunded_cent, reason, state, create_time
+        from pay_reconcile_diff
+        <where>
+            <if test="userId != null and userId != ''">and user_id = #{userId}</if>
+        </where>
+        order by id desc
         limit #{limit}
     </select>
 

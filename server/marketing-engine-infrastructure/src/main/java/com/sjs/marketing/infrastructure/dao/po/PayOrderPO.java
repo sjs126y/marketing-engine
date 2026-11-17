@@ -24,6 +24,8 @@ public class PayOrderPO {
     private Date paidAt;
     private Date grantedAt;
     private Date closedAt;
+    private Integer refundedCent;
+    private Date refundedAt;
     private Date createTime;
     private Date updateTime;
 }

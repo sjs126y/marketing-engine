@@ -1,6 +1,7 @@
 package com.sjs.marketing.domain.pay.adapter.repository;
 
 import com.sjs.marketing.domain.pay.model.PayOrder;
+import com.sjs.marketing.domain.pay.model.PayReconcileDiff;
 
 import java.util.Date;
 import java.util.List;
@@ -50,4 +51,16 @@ public interface IPayRepository {
 
     /** 超时未支付的订单（不带分片键，广播各分片） */
     List<PayOrder> queryTimeoutOrders(Date deadline, int limit);
+
+    /** 退款：paid/granted → refunded，累加已退金额 */
+    boolean markRefunded(String orderNo, String userId, int refundedCent);
+
+    /** 对账扫单：按状态取一批订单（不带分片键，广播各分片） */
+    List<PayOrder> queryOrdersByState(String state, int limit);
+
+    /** 落一条三方对账差异 */
+    void saveReconcileDiff(PayReconcileDiff diff);
+
+    /** 查三方对账差异 */
+    List<PayReconcileDiff> queryReconcileDiffs(String userId, int limit);
 }

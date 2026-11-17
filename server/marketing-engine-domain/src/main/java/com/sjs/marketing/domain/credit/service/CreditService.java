@@ -203,6 +203,23 @@ public class CreditService implements ICreditService {
     }
 
     @Override
+    public int reverseGrant(String userId, String eventId, String bizNo) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(eventId) || StringUtils.isBlank(bizNo)) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "userId / eventId / bizNo 不能为空");
+        }
+        int reversed = creditRepository.reverseGrant(userId, eventId, bizNo);
+        if (reversed > 0) {
+            log.info("权益冲正成功 userId:{} eventId:{} 冲正数量:{} bizNo:{}", userId, eventId, reversed, bizNo);
+        }
+        return reversed;
+    }
+
+    @Override
+    public int sumLedgerByBizNo(String userId, String bizNo) {
+        return creditRepository.sumLedgerByBizNo(userId, bizNo);
+    }
+
+    @Override
     public CreditBalanceVO queryBalance(String userId) {
         if (StringUtils.isBlank(userId)) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "userId 不能为空");

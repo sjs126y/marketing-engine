@@ -367,6 +367,45 @@ public class CreditRepository implements ICreditRepository {
         return result;
     }
 
+    @Override
+    public int sumLedgerByBizNo(String userId, String bizNo) {
+        Integer value = creditDao.sumLedgerByBizNo(userId, bizNo);
+        return value == null ? 0 : value;
+    }
+
+    @Override
+    public int reverseGrant(String userId, String eventId, String bizNo) {
+        Integer reversed = transactionTemplate.execute(status -> {
+            CreditBatchPO batch = creditDao.queryBatchByEventId(userId, eventId);
+            if (batch == null || batch.getRemaining() == null || batch.getRemaining() <= 0) {
+                return 0;
+            }
+            int remaining = batch.getRemaining();
+            if (creditDao.markBatchReversed(batch.getId(), userId) != 1) {
+                // 抢不到：已被别处冲正
+                status.setRollbackOnly();
+                return 0;
+            }
+            if (creditDao.reverseAccountBalance(userId, remaining) != 1) {
+                status.setRollbackOnly();
+                log.error("退款冲正失败，账户余额不足 userId:{} batchId:{}", userId, batch.getId());
+                return 0;
+            }
+            CreditAccountPO account = creditDao.queryAccount(userId);
+            CreditLedgerPO ledger = new CreditLedgerPO();
+            ledger.setUserId(userId);
+            ledger.setBizNo(bizNo);
+            ledger.setBatchId(batch.getId());
+            ledger.setScene("pay");
+            ledger.setType(CreditLedger.TYPE_REVERSE);
+            ledger.setDelta(-remaining);
+            ledger.setBalanceAfter(account == null || account.getBalance() == null ? 0 : account.getBalance());
+            creditDao.insertLedger(ledger);
+            return remaining;
+        });
+        return reversed == null ? 0 : reversed;
+    }
+
     private CreditAccount toAccount(CreditAccountPO po) {
         return CreditAccount.builder()
                 .userId(po.getUserId())

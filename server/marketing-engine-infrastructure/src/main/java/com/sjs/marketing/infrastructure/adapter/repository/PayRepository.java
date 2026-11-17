@@ -119,6 +119,59 @@ public class PayRepository implements IPayRepository {
         return result;
     }
 
+    @Override
+    public boolean markRefunded(String orderNo, String userId, int refundedCent) {
+        return payDao.markRefunded(orderNo, userId, refundedCent) == 1;
+    }
+
+    @Override
+    public List<PayOrder> queryOrdersByState(String state, int limit) {
+        List<PayOrderPO> rows = payDao.queryOrdersByState(state, limit);
+        List<PayOrder> result = new ArrayList<>(rows.size());
+        for (PayOrderPO po : rows) {
+            result.add(toOrder(po));
+        }
+        return result;
+    }
+
+    @Override
+    public void saveReconcileDiff(com.sjs.marketing.domain.pay.model.PayReconcileDiff diff) {
+        com.sjs.marketing.infrastructure.dao.po.PayReconcileDiffPO po =
+                new com.sjs.marketing.infrastructure.dao.po.PayReconcileDiffPO();
+        po.setRunId(diff.getRunId());
+        po.setOrderNo(diff.getOrderNo());
+        po.setUserId(diff.getUserId());
+        po.setOrderState(diff.getOrderState());
+        po.setOrderAmount(diff.getOrderAmount());
+        po.setLedgerAmount(diff.getLedgerAmount());
+        po.setRefundedCent(diff.getRefundedCent());
+        po.setReason(diff.getReason());
+        po.setState(diff.getState());
+        payDao.insertReconcileDiff(po);
+    }
+
+    @Override
+    public List<com.sjs.marketing.domain.pay.model.PayReconcileDiff> queryReconcileDiffs(String userId, int limit) {
+        List<com.sjs.marketing.infrastructure.dao.po.PayReconcileDiffPO> rows = payDao.queryReconcileDiffs(userId, limit);
+        List<com.sjs.marketing.domain.pay.model.PayReconcileDiff> result = new ArrayList<>(rows.size());
+        for (com.sjs.marketing.infrastructure.dao.po.PayReconcileDiffPO po : rows) {
+            result.add(com.sjs.marketing.domain.pay.model.PayReconcileDiff.builder()
+                    .id(po.getId())
+                    .runId(po.getRunId())
+                    .orderNo(po.getOrderNo())
+                    .userId(po.getUserId())
+                    .orderState(po.getOrderState())
+                    .orderAmount(po.getOrderAmount())
+                    .ledgerAmount(po.getLedgerAmount())
+                    .refundedCent(po.getRefundedCent())
+                    .reason(po.getReason())
+                    .state(po.getState())
+                    .createTime(po.getCreateTime())
+                    .build());
+        }
+        return result;
+    }
+
     private PayOrder toOrder(PayOrderPO po) {
         if (po == null) {
             return null;
@@ -135,6 +188,8 @@ public class PayRepository implements IPayRepository {
                 .paidAt(po.getPaidAt())
                 .grantedAt(po.getGrantedAt())
                 .closedAt(po.getClosedAt())
+                .refundedCent(po.getRefundedCent())
+                .refundedAt(po.getRefundedAt())
                 .createTime(po.getCreateTime())
                 .updateTime(po.getUpdateTime())
                 .build();
