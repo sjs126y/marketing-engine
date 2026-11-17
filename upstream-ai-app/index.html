@@ -36,6 +36,7 @@
   .wallet .link{display:block;text-align:center;margin-top:8px;font-size:12px;color:#2563eb;text-decoration:none;background:none;border:0;cursor:pointer;width:100%}
   .wallet .link:hover{text-decoration:underline}
   .wallet .expire{margin-top:8px;padding:6px 8px;border-radius:8px;background:#fff7ed;color:#b45309;font-size:11px;line-height:1.5}
+  .wallet .buy{margin-top:8px;padding-top:8px;border-top:1px dashed #e8ebef;display:flex;flex-direction:column;gap:2px}
 
   /* ---------- 主区 ---------- */
   .main{flex:1;display:flex;flex-direction:column;min-width:0}
@@ -88,6 +89,10 @@
       <div class="expire" id="expireTip" style="display:none"></div>
       <button class="sign" id="signBtn" onclick="doSign()">今日签到 +10 积分</button>
       <button class="link" onclick="goPlay()">去抽奖赢对话次数 ↗</button>
+      <div class="buy">
+        <button class="link" onclick="buy('credit_100')">购买 100 积分 · ¥1</button>
+        <button class="link" onclick="buy('credit_500')">购买 500 积分 · ¥4</button>
+      </div>
     </div>
   </aside>
 
@@ -219,6 +224,20 @@ async function goPlay() {
     if (r.ok && r.url) window.open(r.url, '_blank');
     else toast('获取抽奖链接失败', true);
   } catch (e) { toast('获取抽奖链接失败：' + e.message, true); }
+}
+
+async function buy(sku) {
+  try {
+    const r = await api('/api/pay/buy', { sku });
+    if (r.ok) {
+      toast('支付成功，+' + r.amount + ' 积分发放中…');
+      // 发放走 outbox + MQ，几秒后到账
+      setTimeout(loadMe, 2500);
+      setTimeout(loadMe, 6000);
+    } else {
+      toast(r.reason || '购买失败', true);
+    }
+  } catch (e) { toast('购买失败：' + e.message, true); }
 }
 
 async function logout() {

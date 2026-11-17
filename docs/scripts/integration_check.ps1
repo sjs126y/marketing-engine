@@ -155,4 +155,37 @@ $rc = Open-Call 'GET' '/open/v1/credit/reconcile' $null @{ userId=$cu }
 Check '单用户对账一致' ($rc.consistent -eq $true) "账户=$($rc.accountBalance) 批次=$($rc.batchRemaining) 流水=$($rc.ledgerSum)"
 $rall = Open-Call 'POST' '/open/v1/credit/reconcile-run' $null $null
 Check '全量对账无差异' ($rall.code -eq '0000' -and $rall.inconsistent -eq 0) "扫描 $($rall.scanned) 不一致 $($rall.inconsistent)"
+
+Write-Host "`n=== 12. 支付闭环：下单 / 回调幂等 / 异步发放 / 关单 ===" -ForegroundColor Cyan
+$pu = 'p' + (Get-Date -Format 'HHmmss')
+$ps = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+$null = Invoke-RestMethod "$UP/api/register" -Method Post -ContentType 'application/json' `
+        -Body (@{username=$pu;password='test123456';nickname='支付验收'}|ConvertTo-Json) -WebSession $ps
+$po = "ORD$pu"
+$ord = Open-Call 'POST' '/open/v1/pay/order' @{ userId=$pu; sku='credit_100'; orderNo=$po } $null
+Check '下单成功' ($ord.code -eq '0000' -and $ord.state -eq 'created') "state=$($ord.state) 应付=$($ord.amountCent)分"
+$ord2 = Open-Call 'POST' '/open/v1/pay/order' @{ userId=$pu; sku='credit_100'; orderNo=$po } $null
+Check '重复下单幂等' ($ord2.orderNo -eq $po -and $ord2.state -eq 'created') "state=$($ord2.state)"
+$prod = Open-Call 'GET' '/open/v1/pay/products' $null $null
+Check '商品目录可用' (@($prod.products.PSObject.Properties).Count -ge 3) "$(@($prod.products.PSObject.Properties).Count) 个商品"
+$bad = Open-Call 'POST' '/open/v1/pay/callback' @{ outTradeNo="BAD-$po"; orderNo=$po; amountCent=1; notifySeq=1 } $null
+Check '金额不符被拒' ($bad.accepted -eq $false) $bad.reason
+$cb = Open-Call 'POST' '/open/v1/pay/callback' @{ outTradeNo="MOCK-$po"; orderNo=$po; amountCent=100; notifySeq=1 } $null
+Check '支付回调受理' ($cb.accepted -eq $true -and $cb.state -eq 'paid') "state=$($cb.state)"
+Start-Sleep -Seconds 3
+$oq = Open-Call 'GET' '/open/v1/pay/order' $null @{ orderNo=$po; userId=$pu }
+Check '权益异步发放完成' ($oq.state -eq 'granted') "state=$($oq.state)"
+$pb = Open-Call 'GET' '/open/v1/credit/balance' $null @{ userId=$pu }
+Check '积分到账（20 注册 + 100 购买）' ($pb.balance -eq 120) "balance=$($pb.balance)"
+$cb2 = Open-Call 'POST' '/open/v1/pay/callback' @{ outTradeNo="MOCK-$po"; orderNo=$po; amountCent=100; notifySeq=2 } $null
+Check '重复回调幂等' ($cb2.duplicated -eq $true) $cb2.reason
+$pb2 = Open-Call 'GET' '/open/v1/credit/balance' $null @{ userId=$pu }
+Check '重复回调不重复入账' ($pb2.balance -eq 120) "balance=$($pb2.balance)"
+$poT = "$po-T"
+$null = Open-Call 'POST' '/open/v1/pay/order' @{ userId=$pu; sku='credit_500'; orderNo=$poT } $null
+$close = Open-Call 'POST' '/open/v1/pay/close-timeout' $null @{ timeoutMinutes=-1 }
+$oqT = Open-Call 'GET' '/open/v1/pay/order' $null @{ orderNo=$poT; userId=$pu }
+Check '超时关单' ($oqT.state -eq 'closed') "state=$($oqT.state) 本轮关闭 $($close.closed) 单"
+$cbT = Open-Call 'POST' '/open/v1/pay/callback' @{ outTradeNo="MOCK-$poT"; orderNo=$poT; amountCent=400; notifySeq=1 } $null
+Check '已关闭订单拒绝回调' ($cbT.accepted -eq $false) $cbT.reason
 Write-Host ("`n===== 结果：{0} 通过，{1} 失败 =====" -f $pass, $fail) -ForegroundColor $(if ($fail -eq 0) { 'Green' } else { 'Yellow' })

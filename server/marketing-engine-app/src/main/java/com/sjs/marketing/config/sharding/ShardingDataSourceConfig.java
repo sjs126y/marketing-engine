@@ -73,6 +73,9 @@ public class ShardingDataSourceConfig {
             "credit_ledger",
             // 对账差异表：按 user_id 路由，保证差异和账户同库
             "credit_reconcile_diff",
+            // 支付：订单与回调日志同按 user_id 分库，订单和账户同库便于事务与排查
+            "pay_order",
+            "pay_callback_log",
             // task 表保留历史数据，新链路不再写入
             "task");
 

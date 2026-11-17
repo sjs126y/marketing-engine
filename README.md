@@ -119,11 +119,11 @@ pwsh -File docs/scripts/stop-all.ps1 -Middleware      # 连 Docker 中间件一�
 ### 验证
 
 ```powershell
-# 37 个纯单测，不依赖任何中间件
+# 41 个纯单测，不依赖任何中间件
 cd server; mvn test
 
-# 39 项跨服务联调：注册→签到→充值→换 token→抽奖→回调入账→运营台→页面可达
-#                   →过期回收→对账（一致 + 差异）→到期提醒
+# 50 项跨服务联调：注册→签到→充值→换 token→抽奖→回调入账→运营台→页面可达
+#                   →过期回收→对账（一致 + 差异）→到期提醒→支付下单/回调幂等/异步发放/关单
 pwsh -File docs/scripts/integration_check.ps1
 ```
 ## 设计要点
@@ -134,7 +134,10 @@ pwsh -File docs/scripts/integration_check.ps1
 4. **补偿收敛成一个框架**。发奖、返利、库存三处共用一张 outbox 表：`pending → sending → sent → consumed → dead` 五态，指数退避重试、超时未回执重投、超限进死信。可靠性来自数据库而不是 MQ，MQ 只是加速通道。
 5. **按「能不能自己记账」分通道**。积分/次数这类内部资产由权益中心**同步入账**（三张表同按 `user_id` 分片，扣账户+扣批次+写流水在一个本地事务里）；实物、第三方券这类要外部履约的，仍走同一条 outbox + **HTTP 回调**（`X-Event-Id` 幂等键 + HMAC 签名），上游验签入账后把 `award_state` 推进到 `complete`。回调失败同样退避重试直到死信。
 6. **过期按自然日分桶回收，对账只暴露不修正**。`credit_batch.event_id` 管发放幂等、`credit_ledger.biz_no` 管记账幂等；到期回收用 `update ... where state='active'` 条件更新抢到才动钱，多实例不会重复扣。对账每天比对「账户余额 / 未核销批次剩余 / 流水累计」，差异落表 + 告警，自动改数会让 bug 变成「数据被悄悄改过」。
-5. **配置错误在发布期被拦住**。规则、树、概率全部数据驱动，配错不会编译失败也不会抛异常。校验器检查概率归一、权重档位非空、树根/边/环/孤立节点、`rule_key` 是否有对应 Bean、有库存的奖品是否挂了 `rule_stock`，不过就不允许发布。
+7. **配置错误在发布期被拦住**。规则、树、概率全部数据驱动，配错不会编译失败也不会抛异常。校验器检查概率归一、权重档位非空、树根/边/环/孤立节点、`rule_key` 是否有对应 Bean、有库存的奖品是否挂了 `rule_stock`，不过就不允许发布。
+8. **支付：外部事实和内部动作分开**。回调只把订单推进到 `paid` 并在同一事务写 outbox，
+   权益由 MQ 消费端异步发放（`eventId=pay:{orderNo}` 幂等）。三层幂等分别挡下单重试、
+   平台重复通知（`out_trade_no` 唯一）、消息重投；金额校验不过一律不发，宁可不发也不能少收或多发。
 
 ## 接口概览
 
@@ -145,6 +148,7 @@ pwsh -File docs/scripts/integration_check.ps1
 | 上游 | `POST /open/v1/quota/recharge`、`GET /open/v1/activity/{id}` | API Key + HMAC 签名 |
 | 权益中心 | `POST /open/v1/credit/{grant,consume}`、`GET /open/v1/credit/{balance,records}` | API Key + HMAC 签名 |
 | 权益运营（开关保护） | `POST /open/v1/credit/{expire-run,reconcile-run}`、`GET /open/v1/credit/{reconcile,diffs}` | API Key + HMAC 签名 |
+| 支付 | `POST /open/v1/pay/{order,callback}`、`GET /open/v1/pay/{order,products}` | API Key + HMAC 签名 |
 | 观测 | `GET /actuator/health`、`/actuator/prometheus` | 无 |
 
 鉴权由 `app.auth.enabled` 控制，**默认开启**：

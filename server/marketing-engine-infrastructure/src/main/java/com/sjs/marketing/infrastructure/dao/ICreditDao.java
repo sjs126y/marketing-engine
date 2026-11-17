@@ -59,6 +59,9 @@ public interface ICreditDao {
 
     List<CreditLedgerPO> queryLedgers(@Param("userId") String userId, @Param("limit") int limit);
 
+    /** 幂等判定：该业务号是否已经记过账（消耗重放时直接返回上次结果） */
+    int countLedgerByBizNo(@Param("userId") String userId, @Param("bizNo") String bizNo);
+
     // ---------- 对账 / 过期统计 ----------
 
     /** 后台任务：取一批账户（不带分片键，广播各分片） */

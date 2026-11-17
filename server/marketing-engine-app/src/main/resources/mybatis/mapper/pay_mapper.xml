@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjs.marketing.infrastructure.dao.IPayDao">
+
+    <resultMap id="orderMap" type="com.sjs.marketing.infrastructure.dao.po.PayOrderPO">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="sku" property="sku"/>
+        <result column="product_type" property="productType"/>
+        <result column="amount" property="amount"/>
+        <result column="amount_cent" property="amountCent"/>
+        <result column="state" property="state"/>
+        <result column="out_trade_no" property="outTradeNo"/>
+        <result column="paid_at" property="paidAt"/>
+        <result column="granted_at" property="grantedAt"/>
+        <result column="closed_at" property="closedAt"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="callbackLogMap" type="com.sjs.marketing.infrastructure.dao.po.PayCallbackLogPO">
+        <id column="id" property="id"/>
+        <result column="out_trade_no" property="outTradeNo"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="notify_seq" property="notifySeq"/>
+        <result column="raw" property="raw"/>
+        <result column="result" property="result"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <insert id="insertOrder" parameterType="com.sjs.marketing.infrastructure.dao.po.PayOrderPO">
+        insert into pay_order(order_no, user_id, sku, product_type, amount, amount_cent, state, create_time, update_time)
+        values (#{orderNo}, #{userId}, #{sku}, #{productType}, #{amount}, #{amountCent}, #{state}, now(), now())
+    </insert>
+
+    <select id="queryOrderByNo" resultMap="orderMap">
+        select id, order_no, user_id, sku, product_type, amount, amount_cent, state, out_trade_no,
+               paid_at, granted_at, closed_at, create_time, update_time
+        from pay_order
+        where order_no = #{orderNo}
+    </select>
+
+    <select id="queryOrder" resultMap="orderMap">
+        select id, order_no, user_id, sku, product_type, amount, amount_cent, state, out_trade_no,
+               paid_at, granted_at, closed_at, create_time, update_time
+        from pay_order
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+    </select>
+
+    <!-- 条件更新：状态只能往前走，重复回调抢不到 -->
+    <update id="markPaid">
+        update pay_order
+        set state = 'paid', out_trade_no = #{outTradeNo}, paid_at = now(), update_time = now()
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+          and state = 'created'
+    </update>
+
+    <update id="markGranted">
+        update pay_order
+        set state = 'granted', granted_at = now(), update_time = now()
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+          and state in ('paid', 'granted')
+    </update>
+
+    <update id="markClosed">
+        update pay_order
+        set state = 'closed', closed_at = now(), update_time = now()
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+          and state = 'created'
+    </update>
+
+    <!-- 超时扫单：不带分片键，广播各分片 -->
+    <select id="queryTimeoutOrders" resultMap="orderMap">
+        select id, order_no, user_id, sku, product_type, amount, amount_cent, state, out_trade_no,
+               paid_at, granted_at, closed_at, create_time, update_time
+        from pay_order
+        where state = 'created'
+          and create_time &lt;= #{deadline}
+        order by id
+        limit #{limit}
+    </select>
+
+    <insert id="insertCallbackLog" parameterType="com.sjs.marketing.infrastructure.dao.po.PayCallbackLogPO">
+        insert into pay_callback_log(out_trade_no, order_no, user_id, notify_seq, raw, result, create_time)
+        values (#{outTradeNo}, #{orderNo}, #{userId}, #{notifySeq}, #{raw}, #{result}, now())
+    </insert>
+
+    <select id="queryCallbackLogs" resultMap="callbackLogMap">
+        select id, out_trade_no, order_no, user_id, notify_seq, raw, result, create_time
+        from pay_callback_log
+        where order_no = #{orderNo}
+        order by id desc
+        limit #{limit}
+    </select>
+
+</mapper>

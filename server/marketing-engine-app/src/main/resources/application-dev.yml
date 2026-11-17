@@ -48,6 +48,13 @@ app:
       enabled: true
       page-size: 200
 
+  # 支付：订单超时与关单任务
+  pay:
+    # 未支付订单多久关闭（分钟）
+    order-timeout-minutes: 15
+    order-timeout-job:
+      enabled: true
+
   # 发奖回调：中台把「用户中了什么」推给上游业务系统
   callback:
     enabled: true
@@ -102,6 +109,8 @@ spring:
       activity_sku_stock_zero: activity_sku_stock_zero
       send_award: send_award
       send_rebate: send_rebate
+      # 支付成功后发放权益的 MQ 主题
+      pay_grant: pay_grant
 
 # 线程池配置
 thread:

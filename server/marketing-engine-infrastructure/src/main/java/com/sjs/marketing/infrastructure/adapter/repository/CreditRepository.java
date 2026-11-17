@@ -92,6 +92,13 @@ public class CreditRepository implements ICreditRepository {
     @Override
     public int consume(String userId, String scene, int amount, String bizNo) {
         Integer balanceAfter = transactionTemplate.execute(status -> {
+            // 幂等前置：同一个 bizNo 重放直接返回当前余额，而不是撞唯一键报错
+            // （支付回调、上游重试都会重放，报错会让调用方以为失败）
+            if (creditDao.countLedgerByBizNo(userId, bizNo) > 0) {
+                CreditAccountPO existed = creditDao.queryAccount(userId);
+                log.info("权益消耗幂等命中，返回当前余额 userId:{} bizNo:{}", userId, bizNo);
+                return existed == null || existed.getBalance() == null ? 0 : existed.getBalance();
+            }
             CreditAccountPO account = creditDao.queryAccount(userId);
             if (account == null || account.getBalance() == null || account.getBalance() < amount) {
                 throw new AppException(ResponseCode.ACCOUNT_QUOTA_ERROR.getCode(), "权益余额不足");
@@ -120,6 +127,7 @@ public class CreditRepository implements ICreditRepository {
             }
 
             int running = account.getBalance();
+            int index = 0;
             for (CreditFifoPlanner.Deduction deduction : plan) {
                 int updated = creditDao.deductBatchRemaining(deduction.batchId(), userId, deduction.take());
                 if (updated != 1) {
@@ -135,7 +143,9 @@ public class CreditRepository implements ICreditRepository {
 
                 CreditLedgerPO ledger = new CreditLedgerPO();
                 ledger.setUserId(userId);
-                ledger.setBizNo(bizNo + ":" + deduction.batchId());
+                // 第一条直接用 bizNo：幂等判定只查这一条，能走唯一索引精确命中
+                ledger.setBizNo(index == 0 ? bizNo : bizNo + ":" + deduction.batchId());
+                index++;
                 ledger.setBatchId(deduction.batchId());
                 ledger.setScene(scene);
                 ledger.setType(CreditLedger.TYPE_CONSUME);

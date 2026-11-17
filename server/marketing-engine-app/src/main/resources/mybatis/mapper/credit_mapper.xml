@@ -160,6 +160,13 @@
         values (#{userId}, #{bizNo}, #{batchId}, #{scene}, #{type}, #{delta}, #{balanceAfter}, now())
     </insert>
 
+    <select id="countLedgerByBizNo" resultType="java.lang.Integer">
+        select count(1)
+        from credit_ledger
+        where user_id = #{userId}
+          and biz_no = #{bizNo}
+    </select>
+
     <select id="queryLedgers" resultMap="ledgerMap">
         select id, user_id, biz_no, batch_id, scene, type, delta, balance_after, create_time
         from credit_ledger

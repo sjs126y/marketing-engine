@@ -304,6 +304,10 @@ class ChatRequest(BaseModel):
     message: str
 
 
+class BuyRequest(BaseModel):
+    sku: str
+
+
 # ---------- 页面 ----------
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
@@ -488,6 +492,50 @@ def recharge(request: Request) -> dict[str, Any]:
     if result.get("code") != "0000":
         return {"ok": False, "reason": result.get("info", "充值失败")}
     return {"ok": True, "outBusinessNo": out_business_no, "orderId": result.get("orderId")}
+
+
+@app.get("/api/pay/products")
+def pay_products(request: Request) -> dict[str, Any]:
+    """商品目录：直接透传权益中心，前端不硬编码价格。"""
+    require_user(request)
+    return call_mid("GET", "/open/v1/pay/products")
+
+
+@app.post("/api/pay/buy")
+def pay_buy(request: Request, req: BuyRequest) -> dict[str, Any]:
+    """模拟一次购买：下单 → 模拟支付平台回调 → 权益中心异步发放。
+
+    真接支付平台时，这里会变成「跳转收银台」，回调由平台发起；
+    演示里把第二步放在同一个接口，方便一点就走完整条链路。
+    """
+    user_id = require_user(request)
+    order_no = f"ORD-{user_id}-{int(time.time() * 1000)}"
+
+    order = call_mid("POST", "/open/v1/pay/order",
+                     {"userId": user_id, "sku": req.sku, "orderNo": order_no})
+    if order.get("code") != "0000":
+        return {"ok": False, "reason": order.get("info", "下单失败")}
+
+    # 模拟支付平台回调（真实场景由平台异步通知，且会重复通知多次）
+    result = call_mid("POST", "/open/v1/pay/callback", {
+        "outTradeNo": "MOCK-" + order_no,
+        "orderNo": order_no,
+        "amountCent": order["amountCent"],
+        "notifySeq": 1,
+        "raw": json.dumps({"mock": True, "orderNo": order_no}, ensure_ascii=False),
+    })
+    ok = result.get("code") == "0000" and bool(result.get("accepted"))
+
+    with db() as conn:
+        add_flow(conn, user_id, "PAY", order["amount"], f"{order['sku']} 购买，{order['amountCent']} 分")
+
+    return {
+        "ok": ok,
+        "orderNo": order_no,
+        "amount": order["amount"],
+        "amountCent": order["amountCent"],
+        "state": result.get("state"),
+    }
 
 
 @app.get("/api/play-link")
