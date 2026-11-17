@@ -198,10 +198,16 @@ def _sign(method: str, path: str, timestamp: str, body: str) -> str:
     return hmac.new(API_SECRET.encode(), payload.encode(), hashlib.sha256).hexdigest()
 
 
-def call_mid(method: str, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
-    """调用中台接口。开放接口（/open/**）自动带 API Key + HMAC 签名。"""
+def call_mid(method: str, path: str, payload: dict[str, Any] | None = None,
+             query: dict[str, Any] | None = None) -> dict[str, Any]:
+    """调用中台接口。开放接口（/open/**）自动带 API Key + HMAC 签名。
+
+    注意：签名只覆盖 path，不含 query string —— 服务端用的是 request.getRequestURI()。
+    签名里带上 ?userId=x 会导致 401「签名不匹配」。
+    """
     body = "" if payload is None else json.dumps(payload, ensure_ascii=False)
-    url = f"{MID_PLATFORM}{path}"
+    qs = ("?" + urllib.parse.urlencode(query)) if query else ""
+    url = f"{MID_PLATFORM}{path}{qs}"
     req = urllib.request.Request(url, data=body.encode() if body else None, method=method)
     req.add_header("Content-Type", "application/json")
 
@@ -219,6 +225,48 @@ def call_mid(method: str, path: str, payload: dict[str, Any] | None = None) -> d
         raise HTTPException(status_code=e.code, detail=f"中台返回 {e.code}: {text[:200]}")
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"中台不可达: {e}")
+
+
+# ---------- 权益中心（中台）封装 ----------
+def credit_balance(user_id: str) -> int:
+    """余额以权益中心为准；中台不可达时返回 0 并在日志里留痕。"""
+    try:
+        result = call_mid("GET", "/open/v1/credit/balance", query={"userId": user_id})
+    except HTTPException as e:
+        print(f"[credit] 查询余额失败 user={user_id} detail={e.detail}")
+        return 0
+    if result.get("code") != "0000":
+        print(f"[credit] 查询余额异常 user={user_id} result={result}")
+        return 0
+    return int(result.get("balance") or 0)
+
+
+def credit_grant(user_id: str, scene: str, amount: int, event_id: str) -> bool:
+    """发放权益。eventId 是幂等键，重复调用不会重复入账。"""
+    try:
+        result = call_mid("POST", "/open/v1/credit/grant", {
+            "userId": user_id, "scene": scene, "amount": amount, "eventId": event_id,
+        })
+    except HTTPException as e:
+        print(f"[credit] 发放失败 user={user_id} event={event_id} detail={e.detail}")
+        return False
+    if result.get("code") != "0000":
+        print(f"[credit] 发放异常 user={user_id} result={result}")
+        return False
+    return bool(result.get("granted"))
+
+
+def credit_consume(user_id: str, scene: str, amount: int, biz_no: str) -> tuple[bool, int, str]:
+    """消耗权益，返回 (是否成功, 消耗后余额, 失败原因)。"""
+    try:
+        result = call_mid("POST", "/open/v1/credit/consume", {
+            "userId": user_id, "scene": scene, "amount": amount, "bizNo": biz_no,
+        })
+    except HTTPException as e:
+        return False, 0, f"权益中心不可达: {e.detail}"
+    if result.get("code") != "0000":
+        return False, int(result.get("balance") or 0), result.get("info", "消耗失败")
+    return True, int(result.get("balance") or 0), ""
 
 
 # ---------- 请求体 ----------
@@ -323,7 +371,8 @@ def me(request: Request) -> dict[str, Any]:
     return {
         "userId": user_id,
         "nickname": user["nickname"] or user_id,
-        "credit": user["credit"],
+        # 积分余额以权益中心为准，本地 users.credit 仅作历史留档
+        "credit": credit_balance(user_id),
         "llmQuota": user["llm_quota"],
         "signedToday": signed,
         "flows": flows,
@@ -342,7 +391,7 @@ def sign(request: Request) -> dict[str, Any]:
             "select 1 from sign_log where user_id = ? and sign_date = ?", (user_id, today)
         ).fetchone()
         if already:
-            return {"ok": False, "reason": "今天已经签到过了", "credit": SIGN_CREDIT}
+            return {"ok": False, "reason": "今天已经签到过了", "credit": credit_balance(user_id)}
 
     # 签到走开放接口（系统对系统，API Key + HMAC 签名），不是 C 端接口
     mid_result = call_mid("POST", "/open/v1/sign", {"userId": user_id})
@@ -353,34 +402,35 @@ def sign(request: Request) -> dict[str, Any]:
         with db() as conn:
             ensure_user(conn, user_id)
             conn.execute("insert or ignore into sign_log(user_id, sign_date) values (?,?)", (user_id, today))
-        return {"ok": False, "reason": "今天已经签到过了", "credit": 0}
+        return {"ok": False, "reason": "今天已经签到过了", "credit": credit_balance(user_id)}
 
     with db() as conn:
         ensure_user(conn, user_id)
         try:
             conn.execute("insert into sign_log(user_id, sign_date) values (?,?)", (user_id, today))
         except sqlite3.IntegrityError:
-            return {"ok": False, "reason": "今天已经签到过了", "credit": 0}
-        conn.execute("update users set credit = credit + ? where user_id = ?", (SIGN_CREDIT, user_id))
+            return {"ok": False, "reason": "今天已经签到过了", "credit": credit_balance(user_id)}
         add_flow(conn, user_id, "SIGN", SIGN_CREDIT, f"{today} 签到奖励")
-    return {"ok": True, "credit": SIGN_CREDIT, "reason": "签到成功"}
+    # 入账交给权益中心：幂等键用「用户 + 自然日」，与签到判定口径一致
+    credit_grant(user_id, "sign", SIGN_CREDIT, f"sign:{user_id}:{today}")
+    return {"ok": True, "credit": credit_balance(user_id), "reason": "签到成功"}
 
 
 @app.post("/api/chat")
 def chat(request: Request, req: ChatRequest) -> dict[str, Any]:
+    """对话消耗积分：扣分由权益中心执行（FIFO 扣批次 + 账户 + 流水，一个本地事务）。"""
     user_id = require_user(request)
     with db() as conn:
-        user = ensure_user(conn, user_id)
-        if user["credit"] < CHAT_COST:
-            return {"ok": False, "reason": "积分不足，去抽奖试试？", "credit": user["credit"]}
-        cur = conn.execute(
-            "update users set credit = credit - ? where user_id = ? and credit >= ?",
-            (CHAT_COST, user_id, CHAT_COST),
-        )
-        if cur.rowcount != 1:
-            return {"ok": False, "reason": "积分不足", "credit": user["credit"]}
+        ensure_user(conn, user_id)
+
+    # 每次对话是一笔独立消费，bizNo 用随机串；重复请求不会重复扣（同一 bizNo 幂等）
+    biz_no = f"chat:{uuid.uuid4().hex[:16]}"
+    ok, balance, reason = credit_consume(user_id, "chat", CHAT_COST, biz_no)
+    if not ok:
+        return {"ok": False, "reason": "积分不足，去签到或抽奖试试？", "credit": balance, "detail": reason}
+
+    with db() as conn:
         add_flow(conn, user_id, "CHAT", -CHAT_COST, "对话消耗")
-        balance = conn.execute("select credit from users where user_id = ?", (user_id,)).fetchone()["credit"]
 
     reply = f"（模拟回复）你说的是「{req.message[:40]}」，本次消耗 {CHAT_COST} 积分。"
     return {"ok": True, "reply": reply, "credit": balance}
@@ -440,6 +490,7 @@ async def award_webhook(request: Request) -> JSONResponse:
     prize_type = (payload.get("prizeType") or "").upper()
     amount = int(payload.get("amount") or 0)
 
+    pending_grant: tuple[str, int, str] | None = None
     with db() as conn:
         if conn.execute("select 1 from callbacks where event_id = ?", (event_id,)).fetchone():
             return JSONResponse(content={"ok": True, "duplicated": True})
@@ -447,7 +498,8 @@ async def award_webhook(request: Request) -> JSONResponse:
         if user_id:
             ensure_user(conn, user_id)
             if prize_type in ("CREDIT", "INTEGRAL"):
-                conn.execute("update users set credit = credit + ? where user_id = ?", (amount, user_id))
+                # 积分入账交给权益中心；eventId 用回调幂等键，重投不会重复加
+                pending_grant = (user_id, amount, f"award:{event_id}")
                 add_flow(conn, user_id, "AWARD_CREDIT", amount, payload.get("awardTitle", ""))
             elif prize_type in ("LLM_QUOTA", "OPENAI_USE_COUNT"):
                 conn.execute("update users set llm_quota = llm_quota + ? where user_id = ?", (amount, user_id))
@@ -457,6 +509,10 @@ async def award_webhook(request: Request) -> JSONResponse:
             "insert into callbacks(event_id, payload, received_at) values (?,?,?)",
             (event_id, raw, datetime.now().isoformat(timespec="seconds")),
         )
+
+    # 网络调用放在事务外，避免长事务
+    if pending_grant:
+        credit_grant(pending_grant[0], "lottery", pending_grant[1], pending_grant[2])
     return JSONResponse(content={"ok": True})
 
 
