@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjs.marketing.infrastructure.dao.ICreditDao">
+
+    <resultMap id="accountMap" type="com.sjs.marketing.infrastructure.dao.po.CreditAccountPO">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="balance" property="balance"/>
+        <result column="frozen" property="frozen"/>
+        <result column="total_granted" property="totalGranted"/>
+        <result column="total_consumed" property="totalConsumed"/>
+        <result column="total_expired" property="totalExpired"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="batchMap" type="com.sjs.marketing.infrastructure.dao.po.CreditBatchPO">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="event_id" property="eventId"/>
+        <result column="scene" property="scene"/>
+        <result column="amount" property="amount"/>
+        <result column="remaining" property="remaining"/>
+        <result column="granted_at" property="grantedAt"/>
+        <result column="expires_at" property="expiresAt"/>
+        <result column="state" property="state"/>
+    </resultMap>
+
+    <resultMap id="ledgerMap" type="com.sjs.marketing.infrastructure.dao.po.CreditLedgerPO">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="biz_no" property="bizNo"/>
+        <result column="batch_id" property="batchId"/>
+        <result column="scene" property="scene"/>
+        <result column="type" property="type"/>
+        <result column="delta" property="delta"/>
+        <result column="balance_after" property="balanceAfter"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- ========== 账户 ========== -->
+
+    <insert id="insertAccount" parameterType="com.sjs.marketing.infrastructure.dao.po.CreditAccountPO">
+        insert into credit_account(user_id, balance, frozen, total_granted, total_consumed, total_expired, create_time, update_time)
+        values (#{userId}, #{balance}, #{frozen}, #{totalGranted}, #{totalConsumed}, #{totalExpired}, now(), now())
+    </insert>
+
+    <update id="increaseAccountGrant">
+        update credit_account
+        set balance = balance + #{amount},
+            total_granted = total_granted + #{amount},
+            update_time = now()
+        where user_id = #{userId}
+    </update>
+
+    <!-- 条件扣减：余额不足时 0 行，调用方据此回滚整笔事务 -->
+    <update id="deductAccount">
+        update credit_account
+        set balance = balance - #{amount},
+            total_consumed = total_consumed + #{amount},
+            update_time = now()
+        where user_id = #{userId}
+          and balance &gt;= #{amount}
+    </update>
+
+    <update id="increaseAccountExpired">
+        update credit_account
+        set balance = balance - #{amount},
+            total_expired = total_expired + #{amount},
+            update_time = now()
+        where user_id = #{userId}
+          and balance &gt;= #{amount}
+    </update>
+
+    <select id="queryAccount" resultMap="accountMap">
+        select id, user_id, balance, frozen, total_granted, total_consumed, total_expired, create_time, update_time
+        from credit_account
+        where user_id = #{userId}
+    </select>
+
+    <!-- ========== 批次 ========== -->
+
+    <insert id="insertBatch" parameterType="com.sjs.marketing.infrastructure.dao.po.CreditBatchPO">
+        insert into credit_batch(user_id, event_id, scene, amount, remaining, granted_at, expires_at, state, create_time, update_time)
+        values (#{userId}, #{eventId}, #{scene}, #{amount}, #{remaining}, #{grantedAt}, #{expiresAt}, #{state}, now(), now())
+    </insert>
+
+    <select id="queryActiveBatches" resultMap="batchMap">
+        select id, user_id, event_id, scene, amount, remaining, granted_at, expires_at, state
+        from credit_batch
+        where user_id = #{userId}
+          and state = 'active'
+          and remaining &gt; 0
+          and expires_at &gt; #{now}
+        order by expires_at asc, id asc
+    </select>
+
+    <update id="deductBatchRemaining">
+        update credit_batch
+        set remaining = remaining - #{amount},
+            update_time = now()
+        where id = #{id}
+          and user_id = #{userId}
+          and remaining &gt;= #{amount}
+    </update>
+
+    <update id="markBatchExhausted">
+        update credit_batch
+        set state = 'exhausted', update_time = now()
+        where id = #{id}
+          and user_id = #{userId}
+          and remaining = 0
+    </update>
+
+    <update id="markBatchExpired">
+        update credit_batch
+        set state = 'expired', update_time = now()
+        where id = #{id}
+          and user_id = #{userId}
+          and state = 'active'
+    </update>
+
+    <select id="queryExpireDue" resultMap="batchMap">
+        select id, user_id, event_id, scene, amount, remaining, granted_at, expires_at, state
+        from credit_batch
+        where state = 'active'
+          and expires_at &lt;= #{now}
+        order by expires_at asc
+        limit #{limit}
+    </select>
+
+    <!-- ========== 流水 ========== -->
+
+    <insert id="insertLedger" parameterType="com.sjs.marketing.infrastructure.dao.po.CreditLedgerPO">
+        insert into credit_ledger(user_id, biz_no, batch_id, scene, type, delta, balance_after, create_time)
+        values (#{userId}, #{bizNo}, #{batchId}, #{scene}, #{type}, #{delta}, #{balanceAfter}, now())
+    </insert>
+
+    <select id="queryLedgers" resultMap="ledgerMap">
+        select id, user_id, biz_no, batch_id, scene, type, delta, balance_after, create_time
+        from credit_ledger
+        where user_id = #{userId}
+        order by id desc
+        limit #{limit}
+    </select>
+
+    <!-- ========== 对账 / 过期统计 ========== -->
+
+    <select id="queryAllAccounts" resultMap="accountMap">
+        select id, user_id, balance, frozen, total_granted, total_consumed, total_expired, create_time, update_time
+        from credit_account
+        order by id
+        limit #{limit}
+    </select>
+
+    <select id="sumActiveRemaining" resultType="java.lang.Integer">
+        select coalesce(sum(remaining), 0)
+        from credit_batch
+        where user_id = #{userId}
+          and state = 'active'
+          and remaining &gt; 0
+          and expires_at &gt; #{now}
+    </select>
+
+    <select id="sumLedgerDelta" resultType="java.lang.Integer">
+        select coalesce(sum(delta), 0)
+        from credit_ledger
+        where user_id = #{userId}
+    </select>
+
+    <select id="sumExpiringRemaining" resultType="java.lang.Integer">
+        select coalesce(sum(remaining), 0)
+        from credit_batch
+        where user_id = #{userId}
+          and state = 'active'
+          and remaining &gt; 0
+          and expires_at &gt;= #{from}
+          and expires_at &lt; #{to}
+    </select>
+
+    <select id="queryNearestExpire" resultType="java.util.Date">
+        select min(expires_at)
+        from credit_batch
+        where user_id = #{userId}
+          and state = 'active'
+          and remaining &gt; 0
+    </select>
+
+</mapper>
