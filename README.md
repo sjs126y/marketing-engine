@@ -9,6 +9,17 @@
 
 活动类业务的共同难点在于三件事：规则变化频繁（每次改规则不该发版）、流量峰值集中（不能把数据库打穿）、奖励只能发一次（重复发就是资损）。这个项目围绕这三点组织代码。
 
+## 项目进展
+
+| 阶段 | 内容 | 状态 |
+| --- | --- | --- |
+| P0 | 资产底座：账户 / 批次 / 流水三表、发放幂等、FIFO 消耗、存量数据迁移 | ✅ |
+| P1 | 资产运营：到期按自然日分桶回收、资产对账（只暴露不修正）、到期提醒 | ✅ |
+| P2 | 付费闭环：下单 / 回调 / outbox 异步发放 / 超时关单 / 退款 / 支付三方对账 | ✅ |
+| P3 | 邀请奖励 + 反作弊、活动预算熔断、看板增强 | 未做 |
+
+当前验证：**49 个纯单测**（不依赖中间件）、**55 项跨服务联调**（`docs/scripts/integration_check.ps1`）。
+
 ## 目录结构
 
 ```
@@ -29,7 +40,7 @@ marketing-engine/
 ├── docs/
 │   ├── scripts/            start-all / stop-all / integration_check
 │   ├── load-test/          压测脚本与守恒校验
-│   └── dev-ops/mysql/sql/  建库脚本与迁移 V2–V9（V7 权益三表、V8 对账差异、V9 签到返利收敛）
+│   └── dev-ops/mysql/sql/  建库脚本与迁移 V2–V11（V7 权益三表、V8 资产对账、V9 签到收敛、V10 支付两表、V11 退款与支付对账）
 └── logs/                   运行日志（gitignore）
 ```
 
@@ -46,6 +57,23 @@ marketing-engine/
    │                                              │
    │                            ┌─────────────────┴─────────────────┐
    └──► 定时扫表补偿 ──► MQ（内部事件）        HTTP 回调（通知上游入账）
+```
+
+## 权益与支付链路
+
+```
+发放 ──► 批次（event_id 唯一，防重复发）──► 账户余额 ──► 流水（biz_no 唯一，防重复记）
+                                                             │
+消耗 ──► 按过期时间 FIFO 扣批次 ──► 扣账户 ──► 写流水（三表同分片，一个本地事务）
+                                                             │
+到期 ──► 每小时按自然日分桶扫描 ──► 条件更新抢到才回收 ──► 账户扣减 + expire 流水
+                                                             │
+对账 ──► 账户 / 批次剩余 / 流水累计 三值比对 ──► 差异落表（只暴露，不修正）
+
+支付下单 ──► 订单 created ──► 回调（out_trade_no 唯一 + 金额校验）
+                              └──► 订单 paid + 本地消息表（同一事务）
+                                    └──► MQ ──► grant(event_id=pay:{orderNo}) ──► 订单 granted
+                                          └──► 退款：按批次剩余折算，批次 reversed + reverse 流水
 ```
 
 ## 技术栈
@@ -91,6 +119,11 @@ pwsh -File docs/scripts/stop-all.ps1 -Middleware      # 连 Docker 中间件一�
 | `migration/V3__sku_applied_consumed.sql` | `marketing_engine` | SKU 已扣数 |
 | `migration/V4__award_applied_consumed.sql` | `marketing_engine` | 奖品已扣数 |
 | `migration/V5__outbox_http_delivery.sql` | `_01`、`_02` **各执行一次** | outbox 支持 HTTP 回调 |
+| `migration/V7__credit_center.sql` | `_01`、`_02` **各执行一次** | 权益账户 / 批次 / 流水 |
+| `migration/V8__credit_reconcile_diff.sql` | `_01`、`_02` **各执行一次** | 资产对账差异表 |
+| `migration/V9__sign_rebate_converge.sql` | `marketing_engine` | 删除签到的 integral 返利（只保留送抽奖次数） |
+| `migration/V10__pay.sql` | `_01`、`_02` **各执行一次** | 支付订单 / 回调日志 |
+| `migration/V11__pay_refund_reconcile.sql` | `_01`、`_02` **各执行一次** | 退款字段 + 支付对账差异表 |
 
 > `V6`（奖池收敛为积分与对话次数）已合并进种子文件，新建库不需要再执行。
 > 执行任何含中文的 SQL 都要带 `--default-character-set=utf8mb4`，否则中文会双重编码成乱码。
@@ -104,8 +137,9 @@ pwsh -File docs/scripts/stop-all.ps1 -Middleware      # 连 Docker 中间件一�
 | 用户活动页 | http://localhost:3000/play?token=… | 从上游点「去抽奖」进入（带 JWT） |
 | 运营台 | http://localhost:3000/console | `admin` / `admin123`（或 `operator` / `operator123`） |
 
-**推荐走法**：上游登录 → 签到（+10 积分）→ 点「去抽奖」→ 抽一次 → 回上游等 8 秒，
-看对话额度到账（中台异步回调写入）。
+**推荐走法**：上游登录 → 签到（+10 积分，同时得抽奖次数）→ 点「去抽奖」→ 抽一次 → 回上游等 8 秒，
+看对话额度到账（中台异步回调写入）；再点侧栏「购买 100 积分」走一遍支付闭环——下单 → 模拟回调 → 
+2~6 秒后余额到账（outbox + MQ 异步发放，快照比同步发放更能说明可靠性设计）。
 
 ### 端口
 
